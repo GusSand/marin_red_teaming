@@ -1,0 +1,5 @@
+MODEL=allenai/Olmo-3-7B-Instruct
+REVISION=main
+TASK=trustllm_jailbreaktrigger:default
+SEED=2
+python /home/paperspace/marin/repro-olmo3-safety/safety-eval/evaluation/eval.py generators --use_vllm --model_name_or_path allenai/Olmo-3-7B-Instruct --hf_revision main --model_input_template_path_or_name hf --tasks trustllm_jailbreaktrigger:default --report_output_path /home/paperspace/marin/repro-olmo3-safety/runs/2026-07-26-instruct-trustllm-jailbreaktrigger-r3/metrics.json --save_individual_results_path /home/paperspace/marin/repro-olmo3-safety/runs/2026-07-26-instruct-trustllm-jailbreaktrigger-r3/all.json 

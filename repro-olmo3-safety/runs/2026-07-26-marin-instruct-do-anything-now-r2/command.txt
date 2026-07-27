@@ -1,0 +1,5 @@
+MODEL=marin-community/marin-8b-instruct
+REVISION=main
+TASK=do_anything_now:default
+SEED=1
+python /home/paperspace/marin/repro-olmo3-safety/safety-eval/evaluation/eval.py generators --use_vllm --model_name_or_path marin-community/marin-8b-instruct --hf_revision main --model_input_template_path_or_name hf --tasks do_anything_now:default --report_output_path /home/paperspace/marin/repro-olmo3-safety/runs/2026-07-26-marin-instruct-do-anything-now-r2/metrics.json --save_individual_results_path /home/paperspace/marin/repro-olmo3-safety/runs/2026-07-26-marin-instruct-do-anything-now-r2/all.json 

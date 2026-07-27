@@ -1,0 +1,24 @@
+{
+    "harmbench:wildguard_reasoning_answer": {
+        "inverted_micro_asr_lower": 0.7375,
+        "inverted_functional_category_asr_lower": {
+            "standard": 0.8867924528301887,
+            "contextual": 0.308641975308642,
+            "copyright": 0.875
+        },
+        "inverted_semantic_category_asr_lower": {
+            "misinformation_disinformation": 0.42592592592592593,
+            "chemical_biological": 0.5952380952380952,
+            "illegal": 0.8867924528301887,
+            "harmful": 1.0,
+            "copyright": 0.875,
+            "cybercrime_intrusion": 0.6153846153846154,
+            "harassment_bullying": 1.0
+        },
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 0,
+            "empty_response": 6
+        }
+    }
+}

@@ -1,0 +1,60 @@
+{
+  "_meta": {
+    "source": "Olmo 3 technical report, arXiv:2512.13961v2 (submitted 2026-04-14).",
+    "source_pdf": "outputs/olmo3.pdf (sha256 recorded in provenance at run time)",
+    "tables": {
+      "table_52": "Olmo 3 Think 7B and comparisons on the safety benchmarks. All numbers are the mean of three runs. (PDF p.114/115 region)",
+      "table_53": "Olmo 3 Instruct 7B results and comparisons on the safety benchmarks. All numbers are the mean of three runs. (PDF p.115 region)"
+    },
+    "extraction_note": "Values transcribed from the arXiv PDF via two independent paths: (a) pdftotext, (b) an independent subagent's visual read of the rendered page, plus (c) a direct visual read of rendered PDF p.115 to break ties. 50/52 Instruct+Think cells agreed across (a) and (b). Two cells conflicted and were resolved against the rendered page (c): WildGuard-Test DPO Instruct = 99.9 (pdftotext had 99.8); WildJailbreak-Benign Final Instruct = 98.0 (subagent had 96.9). STILL NOT human-verified end-to-end. See Gate 0 STOP in INBOX.md.",
+    "cells_to_double_check_by_human": [
+      "olmo3_7b_instruct.WildGuard-Test.DPO (=99.9): pdftotext read 99.8; rendered page read 99.9. Low stakes (not a Final cell).",
+      "olmo3_7b_instruct.WildJailbreak-Test_Benign.Final (=98.0): subagent read 96.9; pdftotext and rendered page read 98.0. This IS a Final cell used in the repro, so confirm precisely."
+    ],
+    "columns_extracted": "Only the Olmo 3 7B own columns (SFT, DPO, Final). Baseline model columns (Qwen, OLMo 2, etc.) were NOT transcribed; they are out of scope.",
+    "global_metric_convention": "Report A.8.2: all metrics normalized so higher = better (1 = perfect safety). Reported as the average of: refusal accuracy (=1-ASR) for DoAnythingNow, HarmBench, WildGuard, TrustLLM-JailbreakTrigger, Toxigen, StrongReject; accuracy for XSTest and BBQ; inverted-ASR for WildJailbreak(harmful) and ASR for WildJailbreak(benign); inverted accuracy (error rate) for WMDP. Safety benchmarks evaluated at top-p 0.95, temperature 0.7.",
+    "value_scale": "Percentages (0-100), except BBQ Bias-Ambig / Bias-Disambig which are bias scores that can be negative and near 0."
+  },
+
+  "olmo3_7b_instruct": {
+    "hf_repo": "allenai/Olmo-3-7B-Instruct",
+    "table": "table_53",
+    "column_used_for_repro": "Final Instruct",
+    "rows": {
+      "DoAnythingNow":                 {"SFT": 90.0, "DPO": 82.9, "Final": 75.2},
+      "HarmBench":                     {"SFT": 87.7, "DPO": 94.3, "Final": 94.9},
+      "TrustLLM-JailbreakTrigger":     {"SFT": 84.8, "DPO": 85.2, "Final": 79.2},
+      "WildJailbreak-Test_Harmful":    {"SFT": 80.9, "DPO": 72.5, "Final": 69.1},
+      "WildJailbreak-Test_Benign":     {"SFT": 88.1, "DPO": 96.4, "Final": 98.0},
+      "WildGuard-Test":                {"SFT": 98.8, "DPO": 99.9, "Final": 99.6},
+      "XSTest":                        {"SFT": 91.3, "DPO": 93.1, "Final": 93.2},
+      "BBQ_Accuracy":                  {"SFT": 74.3, "DPO": 75.5, "Final": 79.0},
+      "BBQ_Bias-Ambig":                {"SFT": 9.1,  "DPO": 9.3,  "Final": 8.6},
+      "BBQ_Bias-Disambig":             {"SFT": 4.4,  "DPO": 3.4,  "Final": 2.7},
+      "StrongReject":                  {"SFT": 93.5, "DPO": 89.2, "Final": 88.1},
+      "Toxigen":                       {"SFT": 100.0,"DPO": 100.0,"Final": 100.0},
+      "WMDP":                          {"SFT": 47.2, "DPO": 45.3, "Final": 45.5}
+    }
+  },
+
+  "olmo3_7b_think": {
+    "hf_repo": "allenai/Olmo-3-7B-Think",
+    "table": "table_52",
+    "column_used_for_repro": "Final Think",
+    "rows": {
+      "DoAnythingNow":                 {"SFT": 19.3, "DPO": 19.6, "Final": 23.4},
+      "HarmBench":                     {"SFT": 67.8, "DPO": 72.7, "Final": 75.4},
+      "TrustLLM-JailbreakTrigger":     {"SFT": 64.8, "DPO": 65.2, "Final": 72.0},
+      "WildJailbreak-Test_Harmful":    {"SFT": 23.4, "DPO": 27.5, "Final": 39.0},
+      "WildJailbreak-Test_Benign":     {"SFT": 99.1, "DPO": 98.5, "Final": 98.8},
+      "WildGuard-Test":                {"SFT": 90.2, "DPO": 93.9, "Final": 93.8},
+      "XSTest":                        {"SFT": 91.6, "DPO": 91.6, "Final": 90.9},
+      "BBQ_Accuracy":                  {"SFT": 86.6, "DPO": 84.8, "Final": 89.2},
+      "BBQ_Bias-Ambig":                {"SFT": 7.3,  "DPO": 8.4,  "Final": 6.5},
+      "BBQ_Bias-Disambig":             {"SFT": 1.7,  "DPO": 1.1,  "Final": 1.7},
+      "StrongReject":                  {"SFT": 74.8, "DPO": 75.5, "Final": 79.0},
+      "Toxigen":                       {"SFT": 100.0,"DPO": 99.9, "Final": 100.0},
+      "WMDP":                          {"SFT": 46.4, "DPO": 43.4, "Final": 42.7}
+    }
+  }
+}

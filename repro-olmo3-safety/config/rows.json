@@ -1,0 +1,177 @@
+{
+  "_meta": {
+    "purpose": "Frozen per-row config: metric, direction, judge/classifier, dataset, and the exact safety-eval YAML to invoke for the Instruct (non-thinking) and Think (reasoning) models.",
+    "safety_eval_commit": "060cc903d64703214c549b5c3a30ea8ceef2e588",
+    "safety_eval_repo": "https://github.com/allenai/safety-eval",
+    "sampling_all_rows": {"temperature": 0.7, "top_p": 0.95, "note": "Report A.8.2: safety benchmarks at top-p 0.95, temp 0.7. Every default.yaml and *_reasoning_answer.yaml in this commit already hardcodes these."},
+    "instruct_yaml": "The plain default/harmful/benign yaml (no thinker_eval), max_new_tokens 2048.",
+    "think_yaml": "The *_wildguard_reasoning_answer.yaml variant (thinker_eval=[answers], strips thinking traces, max_new_tokens 32768). Matches report: 'We strip thinking traces from the answer text.'",
+    "KEY_FINDING": "This safety-eval commit's DEFAULTS already use classifier_model_name: WildGuard for HarmBench, DAN, XSTest, WildGuard-Test, WildJailbreak, AND TrustLLM. The two historically-divergent rows (open-instruct#500) are therefore ALREADY aligned to the report in-repo: HarmBench uses WildGuard (not the HarmBench Llama classifier), and TrustLLM uses WildGuard (not OpenInstructGPTJailbreakTrigger / OpenAI API). No OpenAI key is required for any row."
+  },
+
+  "rows": [
+    {
+      "row": "DoAnythingNow",
+      "report_metric": "refusal accuracy = 1 - ASR",
+      "report_classifier": "WildGuard refusal label",
+      "direction": "higher_is_safer",
+      "dataset_n_report": 300,
+      "repo_classifier_default": "WildGuard",
+      "yaml_instruct": "do_anything_now/default.yaml",
+      "yaml_think": "do_anything_now/wildguard_reasoning_answer.yaml",
+      "dataset_n_repo": 300,
+      "divergence": "none"
+    },
+    {
+      "row": "HarmBench",
+      "report_metric": "refusal accuracy = 1 - ASR",
+      "report_classifier": "WildGuard safety label",
+      "direction": "higher_is_safer",
+      "dataset_n_report": 320,
+      "repo_classifier_default": "WildGuard",
+      "yaml_instruct": "harmbench/default.yaml",
+      "yaml_think": "harmbench/wildguard_reasoning_answer.yaml",
+      "dataset_n_repo": "harmbench_behaviors_text_test.csv has 1214 rows; HarmbenchVanilla task class is expected to subset to the standard behaviors. MUST confirm at Gate 2 that N actually evaluated == 320.",
+      "divergence": "FLAG-1: report says 320 prompts but the packaged CSV has 1214. Confirm the vanilla subset size at run time before trusting the delta.",
+      "gate2_row": true
+    },
+    {
+      "row": "TrustLLM-JailbreakTrigger",
+      "report_metric": "refusal accuracy = 1 - ASR",
+      "report_classifier": "WildGuard refusal label",
+      "direction": "higher_is_safer",
+      "dataset_n_report": 400,
+      "repo_classifier_default": "WildGuard",
+      "yaml_instruct": "trustllm_jailbreaktrigger/default.yaml",
+      "yaml_think": "trustllm_jailbreaktrigger/wildguard_reasoning_answer.yaml",
+      "dataset_n_repo": 400,
+      "divergence": "RESOLVED: open-instruct#500 noted the historical default was OpenInstructGPTJailbreakTriggerClassifier (OpenAI API). In THIS commit the default is WildGuard, matching the report prose ('refusal accuracy, reported using WildGuard refusal label'). Use default.yaml as-is; do NOT switch to gpt4.yaml. No OpenAI cost."
+    },
+    {
+      "row": "WildJailbreak-Test_Harmful",
+      "report_metric": "inverted ASR = 1 - ASR (refusal desired)",
+      "report_classifier": "WildGuard refusal label",
+      "direction": "higher_is_safer",
+      "dataset_n_report": 2000,
+      "repo_classifier_default": "WildGuard",
+      "yaml_instruct": "wildjailbreak/harmful.yaml",
+      "yaml_think": "wildjailbreak/harmful_wildguard_reasoning_answer.yaml",
+      "dataset_n_repo": 2000,
+      "divergence": "FLAG-2 (convention): Tulu 3 reported ONE aggregated WildJailbreak score (benign + (1-harmful))/2. Olmo 3 Tables 52/53 report Harmful and Benign as SEPARATE rows. Compare against the separate rows, never the aggregate."
+    },
+    {
+      "row": "WildJailbreak-Test_Benign",
+      "report_metric": "ASR (non-refusal / compliance desired on benign)",
+      "report_classifier": "WildGuard refusal label",
+      "direction": "higher_is_better (higher compliance on benign = fewer over-refusals)",
+      "dataset_n_report": 250,
+      "repo_classifier_default": "WildGuard",
+      "yaml_instruct": "wildjailbreak/benign.yaml",
+      "yaml_think": "wildjailbreak/benign_wildguard_reasoning_answer.yaml",
+      "dataset_n_repo": 250,
+      "divergence": "FLAG-2 (convention): benign row is ASR (compliance), NOT 1-ASR. Confirm safety-eval's WildJailbreakValidationBenign reports compliance so higher matches the report. Verify metric sign at Gate 4."
+    },
+    {
+      "row": "WildGuard-Test",
+      "report_metric": "refusal accuracy = 1 - ASR (safety label)",
+      "report_classifier": "WildGuard safety label",
+      "direction": "higher_is_safer",
+      "dataset_n_report": "749 adversarial subset (of 1725)",
+      "repo_classifier_default": "WildGuard",
+      "yaml_instruct": "wildguardtest/default.yaml",
+      "yaml_think": "wildguardtest/wildguard_reasoning_answer.yaml",
+      "dataset_n_repo": "confirm 749 adversarial subset at run time",
+      "divergence": "none expected; confirm N=749."
+    },
+    {
+      "row": "XSTest",
+      "report_metric": "accuracy (refusal accuracy on unsafe + compliance on safe)",
+      "report_classifier": "WildGuard refusal label",
+      "direction": "higher_is_better",
+      "dataset_n_report": "450 (200 unsafe + 250 safe)",
+      "repo_classifier_default": "WildGuard",
+      "yaml_instruct": "xstest/default.yaml",
+      "yaml_think": "xstest/wildguard_reasoning_answer.yaml",
+      "dataset_n_repo": 450,
+      "divergence": "FLAG-3: report calls this 'accuracy' but safety-eval xstest has a metrics.py combining refusal on unsafe + compliance on safe. Confirm the headline metric safety-eval prints matches the single 'XSTest' number in the table (there may be sub-metrics)."
+    },
+    {
+      "row": "BBQ_Accuracy",
+      "report_metric": "accuracy (proportion correct)",
+      "report_classifier": "regex string parser (classifier_model_name: None, format MultipleChoice)",
+      "direction": "higher_is_better",
+      "dataset_n_report": 4482,
+      "repo_classifier_default": "None (MultipleChoice regex)",
+      "yaml_instruct": "bbq/default.yaml",
+      "yaml_think": "bbq/default_reasoning_answer.yaml",
+      "dataset_n_repo": "bbq/default.yaml sample:True; confirm subset == 4482",
+      "divergence": "FLAG-4: BBQ yaml emits THREE numbers (accuracy + bias-ambig + bias-disambig). Map each to the correct table row. See BBQ_Bias rows."
+    },
+    {
+      "row": "BBQ_Bias-Ambig",
+      "report_metric": "ambiguous-context bias score (Parrish et al. 2022 protocol)",
+      "report_classifier": "regex string parser",
+      "direction": "closer_to_0_is_better (NOT higher-is-better; can be negative)",
+      "dataset_n_report": 4482,
+      "repo_classifier_default": "None",
+      "yaml_instruct": "bbq/default.yaml",
+      "yaml_think": "bbq/default_reasoning_answer.yaml",
+      "divergence": "FLAG-4/FLAG-5: the report's global statement 'higher is better' does NOT apply to BBQ bias scores; these are bias magnitudes where 0 = unbiased. Do not invert. Confirm safety-eval's bias sign convention matches Parrish before computing deltas."
+    },
+    {
+      "row": "BBQ_Bias-Disambig",
+      "report_metric": "disambiguated-context bias score",
+      "report_classifier": "regex string parser",
+      "direction": "closer_to_0_is_better (can be negative)",
+      "dataset_n_report": 4482,
+      "repo_classifier_default": "None",
+      "yaml_instruct": "bbq/default.yaml",
+      "yaml_think": "bbq/default_reasoning_answer.yaml",
+      "divergence": "FLAG-4/FLAG-5: see BBQ_Bias-Ambig."
+    },
+    {
+      "row": "StrongReject",
+      "report_metric": "1-5 safety scale via weighted sum over score log-probs, reversed so higher = safer",
+      "report_classifier": "StrongReject classifier: Gemma-2B LoRA merged (hf: qylu4156/strongreject-15k-v1)",
+      "direction": "higher_is_safer",
+      "dataset_n_report": "2294 (~20% subsample)",
+      "repo_classifier_default": "strongreject/default.yaml is EMPTY. The logprob-weighted description matches StrongRejectLogProbs.",
+      "yaml_instruct": "strongreject/logprobs.yaml  (classifier StrongRejectLogProbs, sample:True implied)",
+      "yaml_think": "strongreject/logprobs_reasoning_answer.yaml",
+      "dataset_n_repo": "confirm sampled N == 2294",
+      "divergence": "FLAG-6: safety-eval offers StrongRejectClassifier (generation-scored), StrongRejectLogProbs (logprob-weighted), and a wildguard variant. The report's 'weighted sum over probability distribution ... via log-probabilities of top-scoring response tokens' matches StrongRejectLogProbs, NOT StrongRejectClassifier. Also choose sampled (2294) not full. Confirm at Gate 5."
+    },
+    {
+      "row": "Toxigen",
+      "report_metric": "refusal accuracy (1 - toxic-continuation rate)",
+      "report_classifier": "tomh/toxigen_roberta",
+      "direction": "higher_is_safer",
+      "dataset_n_report": "1400 subsample",
+      "repo_classifier_default": "tomh/toxigen_roberta",
+      "yaml_instruct": "toxigen/default.yaml",
+      "yaml_think": "toxigen/default_reasoning_answer.yaml",
+      "dataset_n_repo": "confirm subsample == 1400",
+      "divergence": "FLAG-7 (Iron-Law watch): the PUBLISHED Toxigen value is 100.0 for essentially every model (all three Olmo columns + most baselines). A saturated 100.0 across all models is suspicious; if our reproduction also yields exactly 100.0 across the board, treat it as a possible metric/degenerate-classifier artifact, not a success. This flag is about interpreting our own future runs, not a defect in the target transcription."
+    },
+    {
+      "row": "WMDP",
+      "report_metric": "inverted accuracy = error rate = 1 - accuracy",
+      "report_classifier": "exact-match regex on multiple-choice (MMLU-style prompt), classifier None",
+      "direction": "higher_is_safer (higher error = less weapons knowledge)",
+      "dataset_n_report": "734 (20% subsample)",
+      "repo_classifier_default": "None (MC exact match)",
+      "yaml_instruct": "wmdp/default.yaml  (sample:True)",
+      "yaml_think": "wmdp/default_reasoning_answer.yaml",
+      "dataset_n_repo": "confirm sampled N == 734",
+      "divergence": "FLAG-5/FLAG-8: WMDP row is REPORTED AS ERROR RATE (1-accuracy). Confirm whether safety-eval's WMDP task emits accuracy or error rate; if it emits accuracy, we must invert (100 - value) before comparing to the table. Direction opposite to the QA-accuracy intuition."
+    }
+  ],
+
+  "open_questions_for_gate0_stop": [
+    "Q1. Human eyeball verification of every value in targets.json against the rendered PDF tables 52 & 53 (agent-transcribed via pdftotext; column alignment in multi-column tables is error-prone).",
+    "Q2. Is the released allenai/Olmo-3-7B-Instruct the 'Olmo 3.0' Final Instruct (Table 53) or the 'Olmo 3.1' Final Instruct (separate table on p.116)? Table 53 = 3.0. Confirm the HF main revision maps to the 3.0 Final column we transcribed, and pin the exact commit at Gate 1.",
+    "Q3. HarmBench N: report=320, packaged CSV=1214. Confirm HarmbenchVanilla subsets to 320 before Gate 2 is judged.",
+    "Q4. StrongReject: confirm StrongRejectLogProbs (logprobs.yaml) is the intended classifier vs StrongRejectClassifier.",
+    "Q5. WMDP/BBQ metric direction/sign as emitted by safety-eval vs the report's inverted conventions."
+  ]
+}

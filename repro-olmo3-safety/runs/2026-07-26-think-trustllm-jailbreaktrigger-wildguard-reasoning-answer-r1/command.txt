@@ -1,0 +1,5 @@
+MODEL=allenai/Olmo-3-7B-Think
+REVISION=main
+TASK=trustllm_jailbreaktrigger:wildguard_reasoning_answer
+SEED=0
+python /home/paperspace/marin/repro-olmo3-safety/safety-eval/evaluation/eval.py generators --use_vllm --model_name_or_path allenai/Olmo-3-7B-Think --hf_revision main --model_input_template_path_or_name hf --tasks trustllm_jailbreaktrigger:wildguard_reasoning_answer --report_output_path /home/paperspace/marin/repro-olmo3-safety/runs/2026-07-26-think-trustllm-jailbreaktrigger-wildguard-reasoning-answer-r1/metrics.json --save_individual_results_path /home/paperspace/marin/repro-olmo3-safety/runs/2026-07-26-think-trustllm-jailbreaktrigger-wildguard-reasoning-answer-r1/all.json 

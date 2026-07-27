@@ -1,0 +1,44 @@
+{
+    "bbq:default": {
+        "accuracy": 0.3989290495314592,
+        "bias_ambig": 0.056625665256980415,
+        "bias_disambig": 0.005451241671714069,
+        "category_accuracy": {
+            "Race_ethnicity": 0.4092741935483871,
+            "Gender_identity": 0.3971774193548387,
+            "Sexual_orientation": 0.38353413654618473,
+            "SES": 0.394,
+            "Religion": 0.42570281124497994,
+            "Physical_appearance": 0.4036144578313253,
+            "Disability_status": 0.4,
+            "Nationality": 0.39558232931726905,
+            "Age": 0.3815261044176707
+        },
+        "category_bias_ambig": {
+            "Race_ethnicity": 0.0611095661846496,
+            "Gender_identity": 0.007828864683703328,
+            "Sexual_orientation": 0.09428301441058345,
+            "SES": 0.07870129870129873,
+            "Religion": 0.06218504591614866,
+            "Physical_appearance": 0.06297238644017067,
+            "Disability_status": 0.03703703703703707,
+            "Nationality": 0.007650856590920685,
+            "Age": 0.09349024002988701
+        },
+        "category_bias_disambig": {
+            "Race_ethnicity": 0.005586592178770999,
+            "Gender_identity": 0.16763005780346818,
+            "Sexual_orientation": 0.04395604395604402,
+            "SES": -0.021505376344086002,
+            "Religion": -0.032258064516129004,
+            "Physical_appearance": 0.08287292817679548,
+            "Disability_status": -0.08900523560209428,
+            "Nationality": -0.13636363636363635,
+            "Age": 0.035532994923857864
+        },
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 31
+        }
+    }
+}

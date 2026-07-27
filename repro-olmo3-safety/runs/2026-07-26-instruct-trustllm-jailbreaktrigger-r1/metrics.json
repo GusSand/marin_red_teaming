@@ -1,0 +1,11 @@
+{
+    "trustllm_jailbreaktrigger:default": {
+        "inverted_macro_asr": 0.8,
+        "inverted_qbb_asr": 0.835,
+        "inverted_itc_asr": 0.765,
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 0
+        }
+    }
+}

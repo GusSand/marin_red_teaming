@@ -1,0 +1,42 @@
+# --- Third-party checkouts & environments (large, reproducible) ---
+# safety-eval is pinned by commit in the report; recreate via scripts/setup_safety_eval.sh
+repro-olmo3-safety/safety-eval/
+repro-olmo3-safety/.venv-safety-eval/
+.venv/
+venv/
+
+# --- Raw eval artifacts ---
+# Per-instance generations: ~2.7 GB across 152 runs, and they contain full model
+# completions to harmful prompts. Regenerate with scripts/run_row.sh.
+# The small provenance files next to them (metrics.json, provenance.json,
+# command.txt) ARE tracked — they are the run record the report cites.
+repro-olmo3-safety/runs/**/all.json
+
+# --- Job logs (31 MB, machine-local paths) ---
+logs/
+
+# --- Model weights / checkpoints ---
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+**/.tmp/
+
+# --- Third-party paper copies (redistribution; fetch from arXiv instead) ---
+outputs/olmo3.pdf
+outputs/olmo3.txt
+
+# --- Local agent / editor state ---
+.claude/
+.vscode/
+.idea/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# --- OS ---
+.DS_Store
