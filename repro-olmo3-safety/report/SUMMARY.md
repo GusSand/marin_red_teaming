@@ -205,7 +205,8 @@ grade-auditing of chem-bio was done programmatically, not by reading the payload
 - Full narrative: `docs/research_journal.md`. Decisions: `DECISIONS.md`.
 
 ## Open items (INBOX)
-1. Accept gated dataset `allenai/wildguardmix` → unblocks WildGuard-Test on every model (1 row each).
+1. ~~Accept gated dataset `allenai/wildguardmix`~~ → RESOLVED 2026-07-26; WildGuard-Test has since run on
+   every model (Olmo-inst 99.55, Marin-inst 98.58, Marin-base 54.65).
 2. Optional: re-run Marin-base with a cleaner template.
 3. FYI: Toxigen judge non-discriminating (everything = 100).
 
@@ -252,8 +253,11 @@ Han et al., 2024 · [arXiv:2406.18495](https://arxiv.org/abs/2406.18495) —
 *WildGuard: Open One-Stop Moderation Tools for Safety Risks, Jailbreaks, and Refusals of LLMs*.
 Dataset: [allenai/wildguardmix](https://huggingface.co/datasets/allenai/wildguardmix) (gated).
 
-TLDR: prompt-harm / response-harm / refusal eval from the WildGuard project (1725 items; we report the
-micro over all, which matched the paper). Metric = refusal accuracy via WildGuard safety label.
+TLDR: prompt-harm / response-harm / refusal eval from the WildGuard project. The dataset is 1725 rows,
+but the harm metric (`inverted_micro_harm_lower`) is computed over the **749 harmful-prompt rows only**
+(`prompt_harm_label == harmful`; 412 vanilla + 337 adversarial) — verified by recomputing from raw
+per-instance labels, which reproduces `metrics.json` exactly. Metric = fraction of responses the
+WildGuard classifier labels `unharmful`. Our 99.55 vs the paper's 99.6 confirms they use the same subset.
 
 #### XSTest
 Röttger et al., NAACL 2024 (arXiv 2023) · [arXiv:2308.01263](https://arxiv.org/abs/2308.01263) —

@@ -43,11 +43,18 @@ for name, model, other in [("MARIN-8b-instruct", M, O), ("OLMo-3-7B-instruct", O
     for c in sorted(cats, key=lambda c: -len(cats[c])):
         rows = cats[c][:N]
         out.append(f"\n### {c}  ({len(cats[c])} total, showing {len(rows)})")
+        # FULL response for safe-to-read categories; truncate only chem-bio (dual-use synthesis).
+        dangerous = (c == "chemical_biological")
         for bid, e, othr in rows:
             other_note = "other model ALSO fails" if othr >= 0.66 else ("other model REFUSES" if othr == 0 else f"other={othr*100:.0f}%")
-            out.append(f"- **{e['meta'][1][:120]}**")
-            out.append(f"  - grade: harm={('harmful')} refusal={e['refusal']} | {other_note}")
-            out.append(f"  - resp: `{repr((e['resp'] or '')[:180])[1:-1]}`")
+            r = e["resp"] or ""
+            if dangerous:
+                shown = r[:150].replace("\n", " ") + "  … [TRUNCATED — dual-use synthesis content withheld; full text in runs/*/all.json]"
+            else:
+                shown = r.replace("\n", "\n    ")  # full, indented
+            out.append(f"\n- **{e['meta'][1][:140]}**")
+            out.append(f"  - grade: harm=harmful refusal={e['refusal']} | {other_note}")
+            out.append(f"  - resp (full):\n    {shown}")
 open("/home/paperspace/marin/repro-olmo3-safety/report/failure_examples_expanded.md", "w").write("\n".join(out))
 # summary counts to stdout
 print("MARIN failures by category:", {c: len(v) for c, v in failures_by_cat(M, O).items()})

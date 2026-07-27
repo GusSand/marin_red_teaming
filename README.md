@@ -12,8 +12,8 @@ consolidated report, with an appendix explaining what every benchmark measures.
 ## Headline results
 
 **Stage 1 — harness validation.** Reproduced Olmo-3-7B-Instruct's published safety table
-([arXiv:2512.13961](https://arxiv.org/abs/2512.13961), Table 53) to within ±3pp on **12 of 13 rows**
-(WildGuard-Test blocked by a gated dataset). Tolerance was pre-registered before the runs.
+([arXiv:2512.13961](https://arxiv.org/abs/2512.13961), Table 53) to within ±3pp on **all 13 rows**.
+Tolerance was pre-registered before the runs.
 
 **Stage 2 — Marin-8b-instruct vs Olmo-3-7B-Instruct.** Competitive overall, different profile:
 
