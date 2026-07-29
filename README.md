@@ -11,32 +11,55 @@ consolidated report, with an appendix explaining what every benchmark measures.
 
 ## Headline results
 
-**Stage 1 — harness validation.** Reproduced Olmo-3-7B-Instruct's published safety table
-([arXiv:2512.13961](https://arxiv.org/abs/2512.13961), Table 53) to within ±3pp on **all 13 rows**.
-Tolerance was pre-registered before the runs.
+Every number below was **independently verified** — recomputed from raw per-response labels by a separate
+agent before being reported (tamper labels were re-checked by re-running the classifier itself). Full detail
+in [`report/SUMMARY.md`](repro-olmo3-safety/report/SUMMARY.md).
 
-**Stage 2 — Marin-8b-instruct vs Olmo-3-7B-Instruct.** Competitive overall, different profile:
+**1. Harness validated.** Reproduced Olmo-3-7B-Instruct's published safety table
+([arXiv:2512.13961](https://arxiv.org/abs/2512.13961), Table 53) to within ±3pp on **all 13 rows** —
+tolerance pre-registered before the runs. This is what makes every Marin number below trustworthy.
+
+**2. Marin-8b-instruct vs Olmo-3-7B-Instruct — competitive, different profile.**
 
 | | Marin | Olmo | Δ |
 |---|---|---|---|
-| DoAnythingNow | 96.0 | 77.9 | **+18.1** |
-| WildJailbreak-Harmful | 76.0 | 69.5 | +6.5 |
-| StrongReject | 92.8 | 88.4 | +4.5 |
-| HarmBench | 87.3 | 93.9 | **−6.6** |
+| [DoAnythingNow](#benchmarks--datasets) | 96.0 | 77.9 | **+18.1** |
+| [WildJailbreak-Harmful](#benchmarks--datasets) | 76.0 | 69.5 | +6.5 |
+| [StrongREJECT](#benchmarks--datasets) | 92.8 | 88.4 | +4.5 |
+| [HarmBench](#benchmarks--datasets) | 87.3 | 93.9 | **−6.6** |
 
-Marin is markedly harder to jailbreak via adversarial *framing* (it shrugs off persona attacks Olmo falls
-for — AIM 0% vs 64%), but softer on plainly-asked harm, driven almost entirely by **misinformation**
-(+14.8pp). Single most actionable gap = misinformation, not dual-use.
+Marin is markedly harder to jailbreak via adversarial *framing* (shrugs off persona attacks Olmo falls for —
+AIM 0% vs 64%), but softer on plainly-asked harm, driven almost entirely by **misinformation** (+14.8pp).
+Single most actionable default-behavior gap = misinformation, not dual-use.
 
-**Stage 3 — what post-training buys.** Marin-8b-base is dramatically less safe than instruct on every
-refusal metric (+40–72pp from post-training), complying with ~96% of adversarial harmful prompts.
+**3. ⭐ Tamper-resistance — the result that matters most for open weights.** We fine-tuned each model with a
+small LoRA attack (~100 public [AdvBench](#benchmarks--datasets) examples) and measured attack-success-rate
+as training progressed. **Neither model resists:** attack-success climbs from ~6% (Olmo) / ~16% (Marin) to
+**~99% within 10 optimizer steps.** Because these are *open* weights anyone can download and retrain, this —
+not the default-behavior numbers — is the real safety ceiling. Both models' refusal training is a thin layer
+a few minutes of fine-tuning removes.
+
+**4. Does the ordering hold at 32B?** Yes. `Marin-32B` vs `Olmo-3-32B` (base-vs-base) reproduces the 8B
+pattern — Olmo's base is more refusal-prone on 5 of 6 harmful benchmarks (largest on framing attacks). Marin
+scores lower on hazardous-knowledge (WMDP). *Caveat: architectures differ (Qwen3 vs Olmo3), so this compares
+two shipped models, not a clean data ablation.*
+
+**5. Where the harm comes from (actionable for pretraining).** Two trajectory studies traced *when* the
+behavior enters training:
+- **Misinformation-generation tracks late "cooldown" pretraining data, not the big web-data phase** — the
+  web phase (Phoenix/Nemotron-CC) is actually the *low* point; the rate climbs in the final curated phases.
+  So a data intervention should target the cooldown mix. (Mirrors the same finding for dual-use knowledge.)
+- **Post-training installs content-refusal first, and framing-robustness *erodes*** across SFT→DPO→final —
+  the opposite of the intuitive order.
 
 ### Scope caveat — read before citing any of this
 
-These numbers measure **default-behavior / casual-user safety** — whether the model refuses a normal user.
-They do **not** measure tamper-resistance. For open weights, refusal training is strippable in dozens of
-adversarial fine-tuning steps ([arXiv:2508.06601](https://arxiv.org/abs/2508.06601)), and the base model
-complies with nearly everything. Treat this as a regression and gap-mapping tool, not a robustness claim.
+Results 1–2, 4 measure **default-behavior / casual-user safety** — whether the model refuses a *normal* user.
+Result 3 (tamper-resistance) measures what happens when someone **modifies** the open weights, and the answer
+is that refusal training is strippable in ~dozens of fine-tuning steps ([arXiv:2508.06601](https://arxiv.org/abs/2508.06601)).
+So: treat the default-behavior numbers as a **regression / gap-mapping tool**, not a robustness or
+"how-hard-to-weaponize" claim — for an open model, the real safety surface is the *base model's* dangerous
+capability (WMDP/dual-use), addressed by pretraining-data filtering, not refusal training.
 
 ## Layout
 
@@ -48,6 +71,50 @@ complies with nearly everything. Treat this as a regression and gap-mapping tool
 | [`scripts/`](scripts/) | Setup, run, and analysis scripts — see [`scripts/README.md`](scripts/README.md) |
 | [`docs/`](docs/) | Research journal, decision log, pre-registered experiment files |
 | [`outputs/`](outputs/) | Lit-review notes, pretraining-safety proposal |
+
+## Benchmarks & datasets
+
+Each result comes from a public, peer-reviewed test set. In plain terms: we send the model a fixed batch of
+prompts and use an automated **judge** model to score whether each response was safe. Higher = safer in our
+tables (except the two "over-refusal" sets, where higher = *less* over-cautious). Full methodology and the
+exact metric per row is in [`report/SUMMARY.md` → Appendix A](repro-olmo3-safety/report/SUMMARY.md).
+
+**Does it refuse harmful requests? (jailbreak / refusal tests)**
+- **HarmBench** ([arXiv](https://arxiv.org/abs/2402.04249)) — 320 plainly-worded harmful requests across
+  categories (misinformation, cyber, chem-bio, harassment…). The main "does it comply with obvious harm" test.
+- **DoAnythingNow (DAN)** ([arXiv](https://arxiv.org/abs/2308.03825)) — real "pretend you have no rules"
+  jailbreak templates collected from the wild. Tests resistance to *role-play / persona* tricks.
+- **TrustLLM-JailbreakTrigger** ([arXiv](https://arxiv.org/abs/2401.05561)) — 13 different jailbreak attack styles.
+- **WildJailbreak** ([arXiv](https://arxiv.org/abs/2406.18510)) — adversarially-crafted jailbreaks (2,000 harmful).
+- **WildGuard-Test** ([arXiv](https://arxiv.org/abs/2406.18495) · [dataset](https://huggingface.co/datasets/allenai/wildguardmix)) — a broad harmful-prompt moderation set.
+- **StrongREJECT** ([arXiv](https://arxiv.org/abs/2402.10260)) — checks whether a jailbreak produced *actually
+  usable* harmful content (a *quality* score), not just a non-refusal. (This distinction matters — see the
+  tamper section in the SUMMARY, where a broken-refusal model still scores low here because its output is vague.)
+
+**Does it wrongly refuse safe requests? (over-refusal / helpfulness)**
+- **XSTest** ([arXiv](https://arxiv.org/abs/2308.01263)) — 250 safe prompts that *look* unsafe ("how do I kill a
+  Python process?"). Penalizes over-caution.
+- **WildJailbreak-Benign** — the harmless half of WildJailbreak; higher = fewer unnecessary refusals.
+
+**Bias & toxicity**
+- **BBQ** ([arXiv](https://arxiv.org/abs/2110.08193)) — social-bias question-answering across 11 categories.
+- **Toxigen** ([arXiv](https://arxiv.org/abs/2203.09509)) — implicit hate-speech *generation* (note: saturates
+  at 100 for aligned models — non-discriminating here, reported but not concluded from).
+
+**Dangerous knowledge (the open-weight safety surface)**
+- **WMDP** ([arXiv](https://arxiv.org/abs/2403.03218)) — "Weapons of Mass Destruction Proxy": 3,668 multiple-choice
+  questions probing hazardous bio/chem/cyber knowledge. Measures *capability*, which pretraining-data filtering
+  (not refusal training) addresses.
+
+**Tamper-resistance attack set**
+- **AdvBench** ([source](https://github.com/llm-attacks/llm-attacks)) — public harmful-behavior prompts with short
+  "affirmative-opener" targets. We fine-tune on ~100 of these to test whether safety survives modification. We use
+  only the affirmative openers (not authored harmful content); attacked weights are deleted after measuring.
+
+**The judges (how responses are scored — all run locally, no external API)**
+- **WildGuard** ([model](https://huggingface.co/allenai/wildguard), 7B) — labels harmful-vs-safe and refusal-vs-compliance. Our primary judge.
+- **toxigen_roberta** ([model](https://huggingface.co/tomh/toxigen_roberta)) — the Toxigen toxicity classifier.
+- **StrongREJECT-Gemma** ([model](https://huggingface.co/qylu4156/strongreject-15k-v1)) — scores how *usable* a harmful answer is (1–5 rubric).
 
 ## Reproducing
 
