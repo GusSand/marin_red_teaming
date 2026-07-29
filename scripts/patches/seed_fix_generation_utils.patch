@@ -1,0 +1,20 @@
+diff --git a/src/generation_utils.py b/src/generation_utils.py
+index 36a7577..0093166 100644
+--- a/src/generation_utils.py
++++ b/src/generation_utils.py
+@@ -573,6 +573,15 @@ def inference_with_vllm(
+             stop_token_ids.append(llama3_stop_id)
+         sampling_args["stop_token_ids"] = stop_token_ids
+ 
++    # PATCH (2026-07-29, gs157-approved INBOX): inject a real per-run vLLM sampling seed from the
++    # env var SAFETYEVAL_SAMPLING_SEED. Without this, different "seeds" only vary PYTHONHASHSEED,
++    # which does NOT control vLLM's sampler -> runs collapse to identical outputs where generation
++    # is stable. Additive only: does nothing unless the env var is set; no metric definition changes.
++    import os as _os
++    _seed_env = _os.environ.get("SAFETYEVAL_SAMPLING_SEED")
++    if _seed_env is not None and "seed" not in sampling_args:
++        sampling_args["seed"] = int(_seed_env)
++
+     sampling_params = SamplingParams(
+         max_tokens=max_tokens,
+         temperature=temperature,
