@@ -117,6 +117,23 @@ and flag StrongREJECT's divergence explicitly** rather than averaging them. Ever
 recomputed from raw labels (and tamper labels re-checked by re-running the classifier) to separate real effects
 from judge noise.
 
+## What's next
+
+The default-behavior gap map and the tamper collapse are step one. Where the work goes from here:
+
+1. **How much capability does tampering *unlock*, and does it widen with scale?** *(pre-registered, next up.)*
+   Part 10 shows refusal strips to ~99% ASR; the deeper question is the *dangerous capability* a stripped model
+   can be made to use. We adapt the [Safety Gap Toolkit](https://github.com/AlignmentResearch/safety-gap) to
+   measure it on Olmo at **7B vs 32B** (Marin-8B as anchor), using WMDP as the capability probe — because ASR
+   saturates, capability is the metric that reveals a widening gap. Design: `docs/experiments/07-29_safety-gap_scale-widening_olmo-marin.md`.
+2. **Fix the one actionable default-behavior gap — misinformation — in *pretraining*.** Study A localized it to
+   the **late-cooldown data**, not the web-data phase, so the lever is the cooldown mix, not more refusal
+   training. Proposal: [`outputs/marin_pretraining_safety_proposal.md`](outputs/marin_pretraining_safety_proposal.md).
+3. **Measure tamper-*resistant* interventions, not just refusal.** Since post-training safety is strippable, the
+   real defenses live earlier: pretraining-data filtering (Deep Ignorance, [arXiv:2508.06601](https://arxiv.org/abs/2508.06601))
+   and tamper-resistant training (TAR) — evaluated with **held-out attacks** (TamperBench), not aligned-checkpoint
+   benchmarks. This is where "safe to release?" actually gets decided.
+
 ## Layout
 
 | Path | What's in it |
