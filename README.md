@@ -2,7 +2,7 @@
 
 ## TL;DR
 
-I red-teamed **[Marin-8B](https://huggingface.co/marin-community/marin-8b-base)** against **[Olmo-3-7B-Instruct](https://huggingface.co/allenai/Olmo-3-7B-Instruct)** as a reference, then asked the question that actually matters for an *open* model: does its safety survive someone fine-tuning the weights?
+I red-teamed **[Marin-8B](https://huggingface.co/marin-community/marin-8b-base)** against **[Olmo-3-7B-Instruct](https://huggingface.co/allenai/Olmo-3-7B-Instruct)** as a reference, then asked the question that matters for an *open* model: does its safety survive someone fine-tuning the weights?
 
 ![Safety collapses under a small fine-tuning attack: both models go from near-safe to ~99% attack-success within 10 fine-tuning steps](repro-olmo3-safety/report/figures/tamper_collapse.png)
 
@@ -92,7 +92,7 @@ The gap map and the tamper collapse are step one. From here:
 
 1. **How much capability does tampering unlock, and does the gap widen with scale?** (Pre-registered, next up.) Part 10 shows refusal strips to ~99% ASR, so ASR saturates and can't show a widening gap. The sharper question is the dangerous capability a stripped model can be made to use. I adapt the [Safety Gap Toolkit](https://github.com/AlignmentResearch/safety-gap) to measure it on Olmo at 7B vs 32B, with Marin-8B as the anchor and WMDP as the capability probe. Design: `docs/experiments/07-29_safety-gap_scale-widening_olmo-marin.md`.
 2. **Attack the gaps at the data level, where a fix survives weight release.** Refusal training comes off, so the durable lever is pretraining-data curation, and it's category-specific. It works for capability harms (chem-bio/dual-use, copyright, partly cyber), which are discrete knowledge you can filter out (Deep-Ignorance style). Misinformation, my biggest gap, is the hard case. It's a general ability, fluent persuasive writing plus plausible fabrication, not knowledge you can delete. So Study A's finding that it enters in the late-cooldown data is a lead, not a fix, and it probably needs factuality/data-quality work or something in post-training. Proposal: [`outputs/marin_pretraining_safety_proposal.md`](outputs/marin_pretraining_safety_proposal.md).
-3. **Measure tamper-resistant interventions, not just refusal.** Post-training safety comes off, so the real defenses live earlier: pretraining-data filtering (Deep Ignorance, [arXiv:2508.06601](https://arxiv.org/abs/2508.06601)) and tamper-resistant training (TAR), scored with held-out attacks (TamperBench) rather than aligned-checkpoint benchmarks. That's where "safe to release?" actually gets decided.
+3. **Measure tamper-resistant interventions, not just refusal.** Post-training safety comes off, so the real defenses live earlier: pretraining-data filtering (Deep Ignorance, [arXiv:2508.06601](https://arxiv.org/abs/2508.06601)) and tamper-resistant training (TAR), scored with held-out attacks (TamperBench) rather than aligned-checkpoint benchmarks. That's where "safe to release?" gets decided.
 
 ## Layout
 
@@ -115,7 +115,7 @@ Each result comes from a public, peer-reviewed test set. The pipeline is simple:
 - **TrustLLM-JailbreakTrigger** ([arXiv](https://arxiv.org/abs/2401.05561)): 13 different jailbreak attack styles.
 - **WildJailbreak** ([arXiv](https://arxiv.org/abs/2406.18510)): adversarially-crafted jailbreaks (2,000 harmful).
 - **WildGuard-Test** ([arXiv](https://arxiv.org/abs/2406.18495) · [dataset](https://huggingface.co/datasets/allenai/wildguardmix)): a broad harmful-prompt moderation set.
-- **StrongREJECT** ([arXiv](https://arxiv.org/abs/2402.10260)): checks whether a jailbreak produced *actually usable* harmful content (a quality score), not just a non-refusal. That distinction matters, and the tamper section in the SUMMARY shows why: a broken-refusal model can still score low here when its output is vague.
+- **StrongREJECT** ([arXiv](https://arxiv.org/abs/2402.10260)): checks whether a jailbreak produced *usable* harmful content (a quality score), not just a non-refusal. That distinction matters, and the tamper section in the SUMMARY shows why: a broken-refusal model can still score low here when its output is vague.
 
 **Does it wrongly refuse safe requests? (over-refusal / helpfulness)**
 - **XSTest** ([arXiv](https://arxiv.org/abs/2308.01263)): 250 safe prompts that *look* unsafe ("how do I kill a Python process?"). Penalizes over-caution.
