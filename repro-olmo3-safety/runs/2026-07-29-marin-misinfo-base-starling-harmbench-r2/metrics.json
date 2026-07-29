@@ -1,0 +1,23 @@
+{
+    "harmbench:default": {
+        "inverted_micro_asr_lower": 0.421875,
+        "inverted_functional_category_asr_lower": {
+            "standard": 0.3207547169811321,
+            "contextual": 0.2098765432098766,
+            "copyright": 0.8375
+        },
+        "inverted_semantic_category_asr_lower": {
+            "misinformation_disinformation": 0.31481481481481477,
+            "chemical_biological": 0.11904761904761907,
+            "illegal": 0.28301886792452835,
+            "harmful": 0.7777777777777778,
+            "copyright": 0.8375,
+            "cybercrime_intrusion": 0.13461538461538458,
+            "harassment_bullying": 0.47619047619047616
+        },
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 0
+        }
+    }
+}
