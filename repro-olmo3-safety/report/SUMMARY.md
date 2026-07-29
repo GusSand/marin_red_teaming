@@ -7,7 +7,7 @@ temp 0.7 / top_p 0.95, 3 seeds/row. All headline numbers independently recompute
 
 ---
 
-## In plain English (no security background needed)
+## TLDR
 We tested two open AI models — **Marin** (the one we're studying) and **Olmo** (a well-documented
 reference) — on how they handle harmful requests. We first reproduced Olmo's published safety scores to
 prove our measuring stick works, then pointed it at Marin.
@@ -442,15 +442,19 @@ items WildGuard labels harmful, empty-excluded). Base model → measures *genera
 | ocelot | 67% |
 | jellyfish | 60% |
 | **phoenix** (+Nemotron-CC web) | **49%** ← minimum |
-| starling | 72% |
-| deeper-starling | 85% |
+| starling | **77 ± 5%** (reseeded) |
+| deeper-starling | **80 ± 3%** (reseeded) |
 
 **Read:** H1 predicted a jump at Phoenix (the big web-data phase). Instead **Phoenix is the LOW point**
 (jellyfish→phoenix = −11pp), and misinfo-generation climbs steeply through the **late curated/cooldown phases**
 (Starling→deeper-starling). Misinfo-generation tracks late cooldown data, **not** the Nemotron-CC web switch —
 the *same pattern* as the WMDP capability finding (Part 6 / experiments). **Actionable:** a pretraining-data
-intervention should target the late-cooldown mix, not the web-data phase. *Caveat:* starling (2/3) and
-deeper-starling (3/3) seeds were byte-identical → the two highest points have understated CIs (shape robust).
+intervention should target the late-cooldown mix, not the web-data phase. **Seed fix applied (INBOX b):**
+starling and deeper-starling originally had collapsed seeds (2/3 and 3/3 byte-identical); reseeded with the
+fixed sampler they give valid 3-seed CIs — **starling 77.2 ± 4.6%, deeper-starling 79.6 ± 3.0%** (3 distinct
+seeds each, verified). The shape is unchanged (both late phases remain the peak, far above Phoenix); note
+deeper-starling's original 85% was an inflated single-seed value, real mean ~80%. Earlier phases
+(kestrel–phoenix) already had genuine seed variation and are unchanged.
 
 ## Part 10 — Tamper-resistance (the metric that matters for open weights), VERIFIED
 **This closes the project's main gap: prior parts measure *default behavior*; this measures whether safety
