@@ -1,0 +1,13 @@
+{
+  "model": "allenai/Olmo-3-7B-Instruct-SFT",
+  "revision": "main",
+  "task": "do_anything_now:default",
+  "seed": 1,
+  "safety_eval_sha": "060cc903d64703214c549b5c3a30ea8ceef2e588",
+  "torch": "2.8.0+cu128",
+  "cuda": "12.8",
+  "transformers": "4.57.1",
+  "vllm": "0.11.0",
+  "gpu": "NVIDIA A100-SXM4-80GB",
+  "nvidia_smi": "NVIDIA A100-SXM4-80GB, 535.129.03"
+}

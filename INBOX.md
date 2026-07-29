@@ -10,6 +10,12 @@ SHAPES unaffected. FIX for future runs: pass a real sampling seed into vLLM Samp
 PYTHONHASHSEED. Verifier recommends re-running starling + deeper-starling (Study A) with confirmed-distinct seeds
 before quoting their magnitudes as multi-seed CIs — needs the remote (32G tags), currently shut down.
 → answer: (a) note it as a limitation + report point estimates only (no CI claims) for now / (b) re-run affected cells with fixed seeding (needs remote) / (c) other
+→ answer: b
+→ [RESOLVED 2026-07-29] Fixed run_row.sh + generation_utils.py to inject a real per-run vLLM sampling seed
+  (patch tracked in scripts/patches/seed_fix_generation_utils.patch); validated cross-process (same seed
+  reproduces, different seeds diverge). Reseeded Study B (SFT/DPO/final, all 3 ckpts) + Study A (starling,
+  deeper-starling) — all seeds now DISTINCT, valid 3-seed CIs, findings unchanged (point estimates within
+  ~1–3pp). SUMMARY Parts 8 & 9 updated.
 
 ## 2026-07-29 · REPORTING DECISION — tamper StrongREJECT reads backwards (verified, but misleading)
 Independent verifier confirmed the tamper result (all 24 cells reproduce exactly; WildGuard labels re-validated
@@ -22,6 +28,7 @@ report HarmBench as the tamper headline; present StrongREJECT only WITH the leng
 collapse curve). Also minor: marin step-0 HarmBench inv-asr 0.844 is ~0.019 below its prior instruct band
 (~1 run's noise, conservative direction, adapter definitely applied).
 → answer: (a) agree — HarmBench headline + StrongREJECT caveat-only / (b) drop StrongREJECT from tamper writeup / (c) other
+→ answer: a
 
 ## 2026-07-28 · DECISION (sign-off) — tamper-resistance eval (dual-use)
 The one measurement gap: our harness = default behavior, NOT tamper-resistance (does refusal survive

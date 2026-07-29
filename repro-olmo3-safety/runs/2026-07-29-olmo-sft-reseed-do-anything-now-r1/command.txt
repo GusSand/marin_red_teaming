@@ -1,0 +1,5 @@
+MODEL=allenai/Olmo-3-7B-Instruct-SFT
+REVISION=main
+TASK=do_anything_now:default
+SEED=0
+python /home/paperspace/marin/repro-olmo3-safety/safety-eval/evaluation/eval.py generators --use_vllm --model_name_or_path allenai/Olmo-3-7B-Instruct-SFT --hf_revision main --model_input_template_path_or_name hf --tasks do_anything_now:default --report_output_path /home/paperspace/marin/repro-olmo3-safety/runs/2026-07-29-olmo-sft-reseed-do-anything-now-r1/metrics.json --save_individual_results_path /home/paperspace/marin/repro-olmo3-safety/runs/2026-07-29-olmo-sft-reseed-do-anything-now-r1/all.json 

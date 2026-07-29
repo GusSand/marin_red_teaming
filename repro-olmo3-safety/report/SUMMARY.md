@@ -422,15 +422,19 @@ a recurring pattern (see Part 10): Marin complies but emits lower-specificity co
 All 18 runs recompute exactly. Tests whether alignment installs framing-detection (DAN) *before* content-refusal
 (HarmBench-misinfo). Result is the **opposite**:
 
-| inverted-ASR (↑=safer) | SFT | DPO | final |
+Reseeded 3-seed mean ± std (INBOX seed-fix b applied; all seeds now distinct):
+
+| inverted-ASR % (↑=safer) | SFT | DPO | final |
 |---|---|---|---|
-| DAN (framing refusal) | 0.90 | 0.85 | **0.76** ↓ erodes across post-training |
-| HarmBench misinfo (content refusal) | 0.67 | **0.90** | 0.86 ↑ locked in by DPO |
+| DAN (framing refusal) | 87.3 ± 2.3 | 81.6 ± 3.5 | **73.4 ± 1.8** ↓ erodes across post-training |
+| HarmBench misinfo (content refusal) | 67.3 ± 8.6 | **88.9 ± 1.5** | 86.4 ± 5.7 ↑ locked in by DPO |
 
 **Read:** content/misinformation refusal is installed **first** (essentially complete by the DPO stage), while
 framing-attack robustness **erodes** across post-training. No evidence alignment installs framing-detection
-early. *Caveat:* the SFT-HarmBench 3 seeds were byte-identical (near-deterministic) → that row's CI is understated
-(point estimate verified). Sanity: final ≈ prior Olmo-3-7B-Instruct within ~1.5 pts.
+early. **Seed fix applied (INBOX b):** the original run had byte-identical seeds on SFT-HarmBench (understated
+CI); reseeded with the fixed sampler, all cells now have 3 distinct seeds and the valid CIs shown above. The
+reseeded point estimates match the originals within ~1–3pp, so the H1-rejected finding is unchanged. Sanity:
+final ≈ prior Olmo-3-7B-Instruct within ~1.5 pts.
 
 ## Part 9 — Pretraining trajectory (Study A: Marin base misinfo-emergence), VERIFIED — H1 REJECTED
 All 18 runs recompute exactly (misinfo-generation rate = fraction of the 54 misinformation-category HarmBench
