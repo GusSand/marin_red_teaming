@@ -1,0 +1,5 @@
+MODEL=/home/paperspace/marin/repro-olmo3-safety/tamper_work/marin8b/merged-step5
+REVISION=main
+TASK=strongreject:logprobs
+SEED=0
+python /home/paperspace/marin/repro-olmo3-safety/safety-eval/evaluation/eval.py generators --use_vllm --model_name_or_path /home/paperspace/marin/repro-olmo3-safety/tamper_work/marin8b/merged-step5 --hf_revision main --model_input_template_path_or_name hf --tasks strongreject:logprobs --report_output_path /home/paperspace/marin/repro-olmo3-safety/runs/2026-07-29-tamper-marin8b-step5-strongreject/metrics.json --save_individual_results_path /home/paperspace/marin/repro-olmo3-safety/runs/2026-07-29-tamper-marin8b-step5-strongreject/all.json 

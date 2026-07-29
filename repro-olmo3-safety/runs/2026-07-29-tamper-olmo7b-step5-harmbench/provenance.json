@@ -1,0 +1,13 @@
+{
+  "model": "/home/paperspace/marin/repro-olmo3-safety/tamper_work/olmo7b/merged-step5",
+  "revision": "main",
+  "task": "harmbench:default",
+  "seed": 0,
+  "safety_eval_sha": "060cc903d64703214c549b5c3a30ea8ceef2e588",
+  "torch": "2.8.0+cu128",
+  "cuda": "12.8",
+  "transformers": "4.57.1",
+  "vllm": "0.11.0",
+  "gpu": "NVIDIA A100-SXM4-80GB",
+  "nvidia_smi": "NVIDIA A100-SXM4-80GB, 535.129.03"
+}
