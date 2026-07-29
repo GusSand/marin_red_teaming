@@ -35,7 +35,7 @@ The methodology has two pieces:
 - **The harness** [`allenai/safety-eval`](https://github.com/allenai/safety-eval) that runs each benchmark prompt through the model. I used it because it's the same harness Olmo 3 used for its published table, so reproducing those numbers is what makes mine trustworthy. 
 - **The judge** [WildGuard](https://huggingface.co/allenai/wildguard): a separate model that reads each answer and labels it harmful-or-safe (you can't hand-grade thousands of responses). 
 
-All the work was done in a single A100 GPU and Every number was verified independently: recomputed from the raw labels on a separate code path, and for the tamper study I re-ran WildGuard itself to confirm its labels.
+All the work ran on a single A100. Every number was verified independently: recomputed from the raw labels on a separate code path, and for the tamper study I re-ran WildGuard itself to confirm its labels.
 
 ---
 
