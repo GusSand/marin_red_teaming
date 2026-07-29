@@ -84,3 +84,7 @@ NOT RUN (design only; awaiting gs157 sign-off on the dual-use 32B run + remote s
 ## Links
 Extends SUMMARY Part 10; refs outputs/refs_safety_pretraining.md (Safety Gap Toolkit + refusal-ablation 2410.03415);
 BACKLOG "QUEUED 2026-07-29 — adapt the Safety Gap Toolkit".
+Motivation is also framed in the companion blog post *Red-Teaming Language Models*
+(https://gussand.github.io/posts/2026/07/red-teaming-language-models/#measuring-any-of-this-is-its-own-problem),
+which names the Safety Gap Toolkit + TamperBench as the instruments for measuring safeguard durability — this
+experiment is that measurement carried out on Olmo (scale sweep) + Marin (8B anchor).

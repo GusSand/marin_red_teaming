@@ -50,6 +50,28 @@ of adversarial fine-tuning steps ([arXiv:2508.06601](https://arxiv.org/abs/2508.
 *capability* (WMDP/dual-use), addressed by pretraining-data filtering, not refusal training. Read these
 numbers as "default behavior + red-team gap map," a regression/comparison tool — not a claim of robustness.
 
+## MEASUREMENT CAVEAT (2026-07-29) — the judges are not ground truth
+Safety benchmarks are graded by automated **judge** models, which disagree with each other and with humans and
+carry real error rates (10–40%+ in the literature; see the companion blog's
+[*measurement problem*](https://gussand.github.io/posts/2026/07/red-teaming-language-models/#measuring-any-of-this-is-its-own-problem)).
+Three consequences we take seriously here:
+- **Judges can disagree in *sign*.** Our clearest case: under the tamper attack (Part 10), **WildGuard** (a
+  *refusal* judge) correctly flags the jailbroken model harmful, while **StrongREJECT** (a *quality* judge)
+  scores its short, low-specificity output as *safe* — so the same model reads as both fully-broken and
+  tamper-resistant depending on the judge. The same WildGuard-vs-StrongREJECT split appears in the 32B
+  comparison (Part 7). **We therefore report a single primary judge (HarmBench/WildGuard) and flag StrongREJECT's
+  divergence explicitly — we do NOT average judges.**
+- **Estimand matters.** Our ASR numbers are **single-attempt, 3-seed-mean** compliance, not adversarial
+  *top-1-of-N-retries*. A determined attacker who retries gets strictly higher success, so our default-behavior
+  ASRs are a **floor**, not the worst case.
+- **Benchmark prompts vary in real harmfulness.** Some public red-team prompts are mild or web-searchable; our
+  numbers inherit whatever validity the underlying sets (HarmBench, DAN, WildJailbreak, …) have. Treat
+  cross-benchmark comparisons as directional.
+What we do to separate real effects from judge noise: every headline is **independently recomputed from raw
+per-instance labels** by a fresh agent, and the tamper labels were additionally **re-validated by re-running the
+WildGuard classifier itself** (30/30 agreement). This is the empirical instance of the blog's argument, not a
+refutation of it — the judges are a tool with error bars, and we treat them that way.
+
 ## Executive summary
 
 1. **Harness validated.** We reproduced Olmo-3-7B-Instruct's published safety table

@@ -40,3 +40,14 @@ report/marin_vs_olmo.md (base vs instruct vs Olmo), docs/research_journal.md.
 - **Refusal in LLMs Is Mediated by a Single Direction** (refusal ablation / "abliteration"). arXiv:2410.03415.
   White-box, gradient-free safeguard removal (ablate the refusal direction from the residual stream) used by
   the Safety Gap toolkit — a second, cheaper removal path than fine-tuning that we don't currently implement.
+- **TamperBench** — arXiv:2602.06911. Standardizes tamper-resistance comparison across ~21 open-weight models
+  (held-out attack-success after safeguard removal). The community benchmark our tamper study (SUMMARY Part 10)
+  and the safety-gap follow-up are instances of; cited in the companion blog's measurement section.
+- **Model tampering attacks predict held-out input-space attack success** — instrument (cited in the blog)
+  showing that fine-tuning/latent-space tampering forecasts a model's worst-case jailbreak susceptibility better
+  than static prompt benchmarks. Motivates measuring the *stripped* model, not the aligned checkpoint.
+- **Companion blog — *Red-Teaming Language Models*** (gs157, https://gussand.github.io/posts/2026/07/red-teaming-language-models/).
+  Conceptual/landscape framing for this whole project: threat models & the "access ladder"; jailbreaks vs prompt
+  injection; the measurement problem (judge error rates, incomparable estimands, non-harmful benchmark prompts);
+  "open weights changes the order" (red-teaming aligned checkpoints is a config no adversary uses). Our report is
+  the concrete empirical instance; the blog is the theory. Bidirectional companion.
