@@ -11,6 +11,7 @@ NEEDS YOUR OK because it's DUAL-USE: it deliberately fine-tunes a model to be MO
 Standard defensive red-team methodology, but it briefly produces a harmful artifact. Mitigation: all
 artifacts stay local, attacked checkpoints deleted after measuring, only ASR curves logged.
 → answer: (a) proceed as designed / (b) adjust (Marin-only? fewer steps? different attack set?) / (c) hold
+a. Proceed as designed. 
 
 ## 2026-07-27 · BLOCKER (small) — `paperclip` is not installed / invocation unknown
 CLAUDE.md names `paperclip` as the lit-review tool but the invocation line is still `TODO`, and the

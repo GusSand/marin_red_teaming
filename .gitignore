@@ -43,3 +43,7 @@ __pycache__/
 
 # transient scratch files (root)
 /_*.txt
+
+# tamper-resistance: transient adapters/merged weights + fetched attack data (never commit)
+repro-olmo3-safety/tamper_work/
+repro-olmo3-safety/data/advbench_*.csv
