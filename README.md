@@ -8,6 +8,26 @@ The approach is two-stage:
 trustworthy
 - Second point that validated harness at Marin and compare with the first stage
 
+## TL;DR
+
+We red-teamed **[Marin-8B](https://huggingface.co/marin-community/marin-8b-base)** against **Olmo-3-7B** as a reference, then asked the question that actually matters for an *open* model: does its safety survive someone fine-tuning the weights?
+
+![Safety collapses under a small fine-tuning attack: both models go from near-safe to ~99% attack-success within 10 fine-tuning steps](repro-olmo3-safety/report/figures/tamper_collapse.png)
+
+- **Harness validated.** We reproduced Olmo's *published* safety table to within ±3pp on all 13 rows, so the Marin numbers are trustworthy.
+- **Default behavior: competitive, different profile.** Marin resists jailbreak "trick" prompts better than Olmo (persona attacks: 0% vs 64% compliance), but gives in more to *plainly-asked* harm — almost all of it **misinformation** (+14.8pp on HarmBench). That's its one clearly-fixable gap.
+- **The headline: neither model is tamper-resistant.** A tiny fine-tuning attack (~100 public examples) drives attack-success from ~6% / ~16% to **~99% within 10 steps** (chart above). For open weights, default refusal is a thin layer that peels off in minutes — so read the default-behavior comparison as a *casual-user map*, not a robustness claim.
+- **It holds at 32B**, and the misinformation tendency traces to **late-cooldown pretraining data** (not the web-data phase) — a lead on where a durable, pre-release fix would have to act, since post-training safety just strips off.
+
+**Methodology.** [`allenai/safety-eval`](https://github.com/allenai/safety-eval), WildGuard as the judge, one A100. Every number was independently verified (recomputed from raw labels; tamper labels re-checked by re-running the classifier).
+
+---
+
+## Full report
+
+The detail behind the TL;DR: the threat model, the full per-benchmark results, the caveats, what's next, and
+how to reproduce every number.
+
 ## Why open-weight safety is different — read this first
 
 **Closed models** (GPT, Claude) are reached only through an API the provider controls, so the model's
