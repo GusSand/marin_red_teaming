@@ -8,3 +8,4 @@
 2026-07-26 · Gate 2 tolerance pre-registered: |produced − 94.9| ≤ 3.0 pp (single run) → repro-olmo3-safety/DECISIONS.md
 2026-07-29 · 32B BBQ+Toxigen cut to 1 seed (giant benchmarks; base full-length gen ~2.5-4h/seed; negligible 8B seed-variance); core framing benchmarks keep 3 seeds → experiments/07-28_marin-vs-olmo-32b_base-vs-base_safety.md (DEVIATION)
 2026-07-29 · 32B compute = one model per A100 (marin-32b LOCAL fp32-122G, Olmo-32b REMOTE 61G); run Study B on remote before shutdown; rsync remote results local first → scripts/README.md
+2026-07-29 · Safety-gap scale-widening test runs on OLMO (7B-Instruct vs 3.1-32B-Instruct — both exist); Marin is 8B-only anchor (no marin-32b-instruct); gap metric = stripped-model WMDP capability, not saturating ASR → experiments/07-29_safety-gap_scale-widening_olmo-marin.md
