@@ -126,9 +126,13 @@ The default-behavior gap map and the tamper collapse are step one. Where the wor
    can be made to use. We adapt the [Safety Gap Toolkit](https://github.com/AlignmentResearch/safety-gap) to
    measure it on Olmo at **7B vs 32B** (Marin-8B as anchor), using WMDP as the capability probe — because ASR
    saturates, capability is the metric that reveals a widening gap. Design: `docs/experiments/07-29_safety-gap_scale-widening_olmo-marin.md`.
-2. **Fix the one actionable default-behavior gap — misinformation — in *pretraining*.** Study A localized it to
-   the **late-cooldown data**, not the web-data phase, so the lever is the cooldown mix, not more refusal
-   training. Proposal: [`outputs/marin_pretraining_safety_proposal.md`](outputs/marin_pretraining_safety_proposal.md).
+2. **Attack the gaps at the data level, where a fix survives weight release.** Since post-training refusal is
+   strippable, the durable lever is pretraining-data curation — but it's **category-specific**. It works for
+   *capability* harms (chem-bio/dual-use, copyright, partly cyber), which are discrete knowledge you can filter
+   out (Deep-Ignorance style). **Misinformation** — our single biggest gap — is the *hard* case: it's a
+   *general* ability (fluent persuasive writing + plausible fabrication), not knowledge to delete, so Study A's
+   finding that it enters in the **late-cooldown data** is a lead, not a clean fix (it likely needs
+   factuality/data-quality work, or a post-training approach). Proposal: [`outputs/marin_pretraining_safety_proposal.md`](outputs/marin_pretraining_safety_proposal.md).
 3. **Measure tamper-*resistant* interventions, not just refusal.** Since post-training safety is strippable, the
    real defenses live earlier: pretraining-data filtering (Deep Ignorance, [arXiv:2508.06601](https://arxiv.org/abs/2508.06601))
    and tamper-resistant training (TAR) — evaluated with **held-out attacks** (TamperBench), not aligned-checkpoint
