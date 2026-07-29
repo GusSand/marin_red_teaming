@@ -27,3 +27,16 @@
 
 Our own inputs (on-disk, verified): repro-olmo3-safety/report/harmbench_gap_analysis.md (red-team gap map),
 report/marin_vs_olmo.md (base vs instruct vs Olmo), docs/research_journal.md.
+
+## Safety-gap / tamper-resistance toolkit (added 2026-07-29)
+- **The Safety Gap Toolkit: Evaluating Hidden Dangers of Open-Source Models.** Dombrowski, Bowen, Gleave,
+  Cundy, 2025. arXiv:2507.11544 · code https://github.com/AlignmentResearch/safety-gap . Defines the
+  **"safety gap"** = difference in *dangerous capability* between a model with intact safeguards and one
+  stripped of them; KEY CLAIM: the gap **widens with model scale** (tested Llama-3 + Qwen-2.5, 0.5B–405B).
+  Toolkit (Hydra + PEFT/vLLM/accelerate): attacks = SFT + refusal-ablation; evals = MC-accuracy +
+  refusal (`strong_reject` pkg) + quality (Anthropic API). Directly generalizes our tamper-resistance study
+  (SUMMARY Part 10) from refusal-collapse to capability-uplift-vs-scale. NO explicit license on repo — check
+  before redistributing adapted code. Follow-up task: BACKLOG "adapt the Safety Gap Toolkit".
+- **Refusal in LLMs Is Mediated by a Single Direction** (refusal ablation / "abliteration"). arXiv:2410.03415.
+  White-box, gradient-free safeguard removal (ablate the refusal direction from the residual stream) used by
+  the Safety Gap toolkit — a second, cheaper removal path than fine-tuning that we don't currently implement.

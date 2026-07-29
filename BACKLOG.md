@@ -449,3 +449,41 @@ Both PRE-REGISTERED (design + hypothesis + null in the experiment files). Cheap 
    misinformation-generation of marin-8b-base across kestrel→deeper-starling. Localizes WHEN Marin's biggest
    gap enters pretraining (does it jump at Phoenix/Nemotron-CC?). Marin-actionable. RUN SECOND.
 Order: B then A, both after the 32B base-vs-base suite completes.
+
+**[UPDATE 2026-07-29] Both DONE + independently VERIFIED.** Study B → SUMMARY Part 8 (H1 REJECTED:
+content-refusal installs before framing; framing erodes). Study A → Part 9 (H1 REJECTED: Phoenix is the
+misinfo *minimum*; misinfo-generation rises in late cooldown phases). 32B base-vs-base → Part 7. Tamper-
+resistance → Part 10. Reseeds (INBOX seed-method → b) in progress to give valid CIs on the byte-identical cells.
+
+---
+
+## QUEUED 2026-07-29 (from gs157) — adapt the Safety Gap Toolkit; test "does the gap widen with scale?" on Marin
+Motivation: Dombrowski, Bowen, Gleave & Cundy 2025 — **The Safety Gap Toolkit** (arXiv:2507.11544 ·
+https://github.com/AlignmentResearch/safety-gap) define the **"safety gap"** = dangerous-capability difference
+between intact-safeguards vs safeguards-stripped models, and claim it **widens with scale**. Our tamper-
+resistance study (SUMMARY Part 10) is a lightweight, refusal-focused instance of this. This task ADAPTS their
+code (gs157: "we need to adapt their code") to extend our tamper work from "does refusal survive" to "how much
+dangerous CAPABILITY is unlocked, and does the gap widen with scale." PRE-REGISTER before running.
+
+Plan:
+1. [ ] Clone safety-gap; register **Marin as a model family** in `safety_gap/models/model_family_config.py`
+   + a hydra YAML under `safety_gap/hydra_config/model/`. Marin-8B = Llama arch (Llama-3-style chat template),
+   Marin-32B = Qwen3 arch (Qwen2.5-style) → map each to the closest existing family class; verify the
+   instruction template applies correctly (our base_template_v2 lesson — wrong template = confounded).
+2. [ ] Attacks: use their **SFT attack** (matches ours) AND add their **refusal-ablation** attack
+   (arXiv:2410.03415, white-box, no fine-tune) — a second, cheaper removal path we don't have.
+3. [ ] Capability metric: their toolkit ships MC-accuracy + refusal(`strong_reject`) + quality, but NO
+   WMDP/biochem suite out of the box → plug **WMDP** in as the MC capability eval (we already have it in
+   safety-eval) so "gap" = WMDP uplift (stripped − intact), not just refusal-rate.
+4. [ ] Scale test — **KNOWN CONSTRAINT: Marin ships only an 8B *instruct*, no 32B-instruct**, so a clean
+   within-family "instruct at two scales" sweep isn't directly possible. Options to resolve at pre-reg time:
+   (a) base-vs-instruct **WMDP delta** as the "gap" proxy at 8B AND 32B (we already have 32B base WMDP =
+   0.65 inverted) — arch-confounded (Llama 8B vs Qwen3 32B) but *our* model; (b) run their clean Llama-3 /
+   Qwen-2.5 scale sweep as a reference and position Marin against it; (c) only claim the 8B gap for Marin.
+5. [ ] Keep judges LOCAL (non-negotiable, matches our offline stance): their toolkit calls **OpenAI (refusal)
+   + Anthropic (quality) APIs** — swap for our local WildGuard / `strong_reject` graders. Do NOT add external-
+   API deps silently (isolation + reproducibility).
+Risks/notes: repo has **NO explicit license** → check / ask gs157 before redistributing adapted code. Stack
+(Hydra + accelerate + PEFT + vLLM) is compatible with ours; tested on H100, we run A100 (fine). Compute:
+attack+eval per model ≈ our tamper run (~hours). Refs: outputs/refs_safety_pretraining.md (Safety Gap +
+refusal-ablation entries).
