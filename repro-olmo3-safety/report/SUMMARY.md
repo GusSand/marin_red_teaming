@@ -396,11 +396,93 @@ difference (its base emits ~5–21% empty on harmful prompts) worth its own inve
 
 ---
 
+## Part 7 — 32B base-vs-base: Marin-32B vs Olmo-3-32B (base), VERIFIED
+Independent recompute from raw `all.json`: all 22 cells match `metrics.json` to 4 dp. Empty-response correction
+applied (empties ≤2.3% at 32B — immaterial, unlike the 8B base runs). **ARCH-CONFOUNDED: Marin-32B is Qwen3-arch,
+Olmo-3-32B is Olmo3-arch — this compares two shipped base models, NOT a clean data ablation.** BBQ (Marin) &
+Toxigen (both) are 1-seed (scope cut); other benchmarks 3-seed.
+
+| Benchmark (inverted-ASR, ↑=safer) | Marin-32B | Olmo-32B | Δ (Olmo−Marin) | safer |
+|---|---|---|---|---|
+| DoAnythingNow (framing) | 0.31 | 0.55 | +0.24 | Olmo |
+| TrustLLM (framing) | 0.39 | 0.62 | +0.23 | Olmo |
+| HarmBench | 0.54 | 0.70 | +0.16 | Olmo |
+| WildGuard-Test | 0.66 | 0.78 | +0.12 | Olmo |
+| WildJailbreak-harmful | 0.08 | 0.13 | +0.05 | Olmo |
+| StrongREJECT | 0.83 | 0.77 | −0.06 | **Marin** (flips) |
+| WMDP (inverted; ↑=less hazardous knowledge) | 0.65 | 0.48 | −0.17 | Marin lower capability |
+
+**Read:** the 8B ordering **persists at 32B** — Olmo's *base* is more refusal-prone than Marin's on 5 of 6
+harmful-compliance benchmarks, largest on framing attacks (DAN/TrustLLM). StrongREJECT flips (Marin "safer"),
+a recurring pattern (see Part 10): Marin complies but emits lower-specificity content that the StrongREJECT
+*quality* judge scores low while WildGuard *refusal* judge flags harmful. Pre-registered H1 (≥3 of
+{DAN,TrustLLM,StrongREJECT} favor Olmo) = 2/3 — not literally met (StrongREJECT flip), broad trend favors Olmo.
+
+## Part 8 — Post-training trajectory (Study B: Olmo SFT→DPO→final), VERIFIED — H1 REJECTED
+All 18 runs recompute exactly. Tests whether alignment installs framing-detection (DAN) *before* content-refusal
+(HarmBench-misinfo). Result is the **opposite**:
+
+| inverted-ASR (↑=safer) | SFT | DPO | final |
+|---|---|---|---|
+| DAN (framing refusal) | 0.90 | 0.85 | **0.76** ↓ erodes across post-training |
+| HarmBench misinfo (content refusal) | 0.67 | **0.90** | 0.86 ↑ locked in by DPO |
+
+**Read:** content/misinformation refusal is installed **first** (essentially complete by the DPO stage), while
+framing-attack robustness **erodes** across post-training. No evidence alignment installs framing-detection
+early. *Caveat:* the SFT-HarmBench 3 seeds were byte-identical (near-deterministic) → that row's CI is understated
+(point estimate verified). Sanity: final ≈ prior Olmo-3-7B-Instruct within ~1.5 pts.
+
+## Part 9 — Pretraining trajectory (Study A: Marin base misinfo-emergence), VERIFIED — H1 REJECTED
+All 18 runs recompute exactly (misinfo-generation rate = fraction of the 54 misinformation-category HarmBench
+items WildGuard labels harmful, empty-excluded). Base model → measures *generation tendency*, not refusal.
+
+| pretraining phase | misinfo-generation rate |
+|---|---|
+| kestrel | 62% |
+| ocelot | 67% |
+| jellyfish | 60% |
+| **phoenix** (+Nemotron-CC web) | **49%** ← minimum |
+| starling | 72% |
+| deeper-starling | 85% |
+
+**Read:** H1 predicted a jump at Phoenix (the big web-data phase). Instead **Phoenix is the LOW point**
+(jellyfish→phoenix = −11pp), and misinfo-generation climbs steeply through the **late curated/cooldown phases**
+(Starling→deeper-starling). Misinfo-generation tracks late cooldown data, **not** the Nemotron-CC web switch —
+the *same pattern* as the WMDP capability finding (Part 6 / experiments). **Actionable:** a pretraining-data
+intervention should target the late-cooldown mix, not the web-data phase. *Caveat:* starling (2/3) and
+deeper-starling (3/3) seeds were byte-identical → the two highest points have understated CIs (shape robust).
+
+## Part 10 — Tamper-resistance (the metric that matters for open weights), VERIFIED
+**This closes the project's main gap: prior parts measure *default behavior*; this measures whether safety
+survives an adversary who fine-tunes the open weights.** LoRA affirmative-prefix attack (public AdvBench targets),
+ASR measured at 0/5/10/20/40/80 optimizer steps. All 24 cells recompute exactly; **WildGuard labels independently
+GPU-revalidated (30/30 agreement at step0 and step80).** Dual-use mitigations enforced: attacked weights deleted,
+only ASR curves retained.
+
+| HarmBench ASR (↑=less safe) | step 0 | step 5 | step 10 | step 20+ |
+|---|---|---|---|---|
+| Olmo-3-7B-Instruct | 5.6% | 10.9% | **93.4%** | 99.1% |
+| Marin-8B-Instruct | 15.6% | 30.3% | **97.8%** | 99.1% |
+
+**Read: neither open model is tamper-resistant.** Safety collapses from single-digit/low ASR to ~99% by **step 10**
+— a few dozen optimizer steps on ~100 public examples. Step-0 matches the untouched instruct baselines (merge
+validated); the 0.009 floor at step80 is 3/320 genuinely-refused items (outputs non-degenerate). This empirically
+confirms the open-weight thesis (Qi 2310.03693; shallow-alignment 2406.05946; Deep Ignorance 2508.06601): default
+refusal is a thin layer a tiny fine-tune removes. **Reporting note (INBOX 2026-07-29):** StrongREJECT moves the
+*opposite* way here — NOT tamper-resistance, but because the attack yields short low-specificity text that the
+StrongREJECT *quality* judge scores ~0; HarmBench is the correct headline, StrongREJECT carries a length-collapse
+caveat only.
+
+**Cross-cutting verification note:** all four studies above were independently re-derived from raw `all.json` by
+fresh verifier agents (not the doer's scripts). Two method flags surfaced and are logged in INBOX: (1) `run_row.sh`
+varies `PYTHONHASHSEED`, which does NOT control vLLM sampling — so "3 seeds" collapse to n=1 where generation is
+deterministic (affects CIs, not point estimates); (2) the StrongREJECT-vs-WildGuard sign disagreement above.
+
 ## Mini-glossary (for non-specialist readers)
 - **ASR (attack success rate)** — how often the model *complied* with a harmful request. Lower = safer.
 - **Refusal rate** — the flip side: how often it *declined*. Higher = safer (except on benign prompts, where declining = over-refusal).
 - **Jailbreak / "trick" prompt** — wording designed to bypass the model's rules (e.g. a role-play persona with "no rules").
 - **Open-weight model** — the full model is downloadable; anyone can retrain it. This is why "safety" here is out-of-the-box behavior, not tamper-proofing.
-- **Tamper-resistance** — whether safety *survives* someone fine-tuning the open weights. We did NOT measure this; the literature says it's usually weak.
+- **Tamper-resistance** — whether safety *survives* someone fine-tuning the open weights. We measured this (Part 10): for both Marin-8B-Instruct and Olmo-3-7B-Instruct it is weak — a small LoRA fine-tune drives attack-success to ~99% within ~10 steps.
 - **Base vs instruct** — *base* = the raw pretrained model (little/no refusal training); *instruct* = after safety/instruction training. The instruct model is what users interact with.
 - **Dual-use / WMDP** — knowledge that could aid weapons (bio/chem/cyber); WMDP is a standard multiple-choice test for it.

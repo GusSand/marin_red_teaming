@@ -271,3 +271,25 @@ finishes and (b) a fresh subagent recomputes every headline from raw all.json ag
 Pre-reg: docs/experiments/07-28_marin-vs-olmo-32b_base-vs-base_safety.md,
 07-28_olmo-posttraining-trajectory_framing-test.md, 07-28_marin-base-trajectory_misinfo-emergence.md.
 Scripts: scripts/marin32b_remainder_scopecut.sh, scripts/olmo_posttraining_studyB.sh (documented in scripts/README.md).
+
+## 2026-07-29 — All four studies COMPLETE + independently VERIFIED (fresh verifier agents, recompute from raw all.json)
+Verification: 4 fresh subagents each re-derived headlines from raw all.json (not the doer's scripts); tamper labels
+additionally GPU-revalidated by re-running WildGuard (30/30 agreement). Every headline reconciles with metrics.json
+within tolerance. Findings (VERIFIED point estimates; see caveats):
+- 32B base-vs-base (Marin-32B Qwen3 vs Olmo-3-32B Olmo3; ARCH-CONFOUNDED): Olmo base more refusal-prone on 5/6
+  harmful benchmarks (DAN +0.24, TrustLLM +0.23, HarmBench +0.16, WildGuard +0.12, WJ-H +0.05); StrongREJECT flips
+  (Marin +0.06); WMDP inverted 0.65 vs 0.48 (Marin lower hazardous-knowledge). Empties immaterial at 32B (≤2.3%).
+  8B ordering persists at 32B. Pre-reg H1 = 2/3 (StrongREJECT flip). SUMMARY Part 7.
+- Study B (Olmo SFT→DPO→final framing test): H1 REJECTED. DAN-refusal 0.90→0.85→0.76 (ERODES); HarmBench-misinfo
+  0.67→0.90→0.86 (locked in by DPO). Content-refusal installed before framing-refusal; framing erodes. SUMMARY Part 8.
+- Study A (Marin base misinfo-emergence across kestrel..deeper-starling): H1 REJECTED. Phoenix (+Nemotron-CC web) is
+  the MINIMUM (49%); misinfo-generation rises in late cooldown (starling 72%, deeper-starling 85%). Tracks late
+  cooldown data, NOT the web switch — same pattern as WMDP. Actionable for pretraining-data intervention. SUMMARY Part 9.
+- Tamper-resistance (LoRA affirmative-prefix attack): NEITHER model tamper-resistant. HarmBench ASR collapses to
+  ~99% by step 10 (Olmo 5.6→99.1, Marin 15.6→99.1). Step-0 matches instruct baselines (merge valid). Labels
+  GPU-revalidated. Closes the project's default-vs-tamper gap. SUMMARY Part 10.
+CROSS-CUTTING METHOD FLAGS (INBOX 2026-07-29): (1) run_row.sh varies PYTHONHASHSEED which does NOT control vLLM
+sampling → "3 seeds" collapse to n=1 in deterministic cells (Study-B SFT-HarmBench, Study-A starling/deeper-starling);
+point estimates VERIFIED, only CIs understated. (2) StrongREJECT (quality judge) vs WildGuard (refusal judge)
+disagree in sign under the attack and in the 32B comparison — Marin complies but with lower specificity. Both logged
+for gs157 decision. Written up: SUMMARY Parts 7–10 + glossary tamper line corrected.

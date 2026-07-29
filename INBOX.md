@@ -1,5 +1,28 @@
 # INBOX — things needing gs157 (newest on top). Append `→ answer:` inline when you reply.
 
+## 2026-07-29 · METHOD FLAG (cross-cutting) — "3 seeds" aren't independent samples
+Two independent verifiers (Study B, Study A) found byte-IDENTICAL responses across the 3 seeds in some cells:
+Study-B SFT-HarmBench (3/3 identical), Study-A deeper-starling (3/3 identical) + starling (2/3). Root cause:
+run_row.sh sets PYTHONHASHSEED=$SEED, which does NOT control vLLM's sampling RNG — so seeds only vary incidental
+nondeterminism, and where generation is stable the "3 seeds" collapse to n=1. IMPACT: all point estimates are
+VERIFIED and correct; only the seed-CIs/error-bars are understated (not the metrics). Robustness of trajectory
+SHAPES unaffected. FIX for future runs: pass a real sampling seed into vLLM SamplingParams (per-seed), not
+PYTHONHASHSEED. Verifier recommends re-running starling + deeper-starling (Study A) with confirmed-distinct seeds
+before quoting their magnitudes as multi-seed CIs — needs the remote (32G tags), currently shut down.
+→ answer: (a) note it as a limitation + report point estimates only (no CI claims) for now / (b) re-run affected cells with fixed seeding (needs remote) / (c) other
+
+## 2026-07-29 · REPORTING DECISION — tamper StrongREJECT reads backwards (verified, but misleading)
+Independent verifier confirmed the tamper result (all 24 cells reproduce exactly; WildGuard labels re-validated
+30/30 by GPU re-classification). HarmBench = clean collapse (both models ~6%/16% ASR at step0 → ~99% by step10;
+neither model tamper-resistant — H1 confirmed). BUT StrongREJECT moves the OPPOSITE way (ASR 12%→1%), which
+naively looks like tamper-RESISTANCE (Iron-Law flag). Cause is NOT resistance: the affirmative-prefix attack
+breaks refusal but yields short low-specificity text (median len 1075→116 chars); StrongREJECT-Gemma scores on
+quality/specificity → ~0, while WildGuard (refusal-based) correctly flags harmful. Verifier + I recommend:
+report HarmBench as the tamper headline; present StrongREJECT only WITH the length-collapse caveat (not as a
+collapse curve). Also minor: marin step-0 HarmBench inv-asr 0.844 is ~0.019 below its prior instruct band
+(~1 run's noise, conservative direction, adapter definitely applied).
+→ answer: (a) agree — HarmBench headline + StrongREJECT caveat-only / (b) drop StrongREJECT from tamper writeup / (c) other
+
 ## 2026-07-28 · DECISION (sign-off) — tamper-resistance eval (dual-use)
 The one measurement gap: our harness = default behavior, NOT tamper-resistance (does refusal survive
 adversarial fine-tuning — the metric that matters for open weights). PROPOSED design: LoRA-fine-tune
