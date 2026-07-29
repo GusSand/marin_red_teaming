@@ -7,12 +7,18 @@ I red-teamed **[Marin-8B](https://huggingface.co/marin-community/marin-8b-base)*
 ![Safety collapses under a small fine-tuning attack: both models go from near-safe to ~99% attack-success within 10 fine-tuning steps](repro-olmo3-safety/report/figures/tamper_collapse.png)
 
 - **Harness validated.** I reproduced Olmo's *published* safety table to within ±3pp on all 13 rows, so the Marin numbers are trustworthy.
-- **Default behavior: competitive, different profile.** Marin resists jailbreak "trick" prompts better than Olmo (persona attacks: 0% vs 64% compliance), but gives in more to *plainly-asked* harm. Almost all of it is **misinformation** (+14.8pp on HarmBench). That's its one clearly-fixable gap.
+- **Roughly even overall; the weaknesses differ.** Marin shrugs off the "trick" prompts that fool Olmo. It went along with the AIM persona 0% of the time; Olmo, 64%. Ask plainly, though, and it caves more, almost always on misinformation (+14.8pp on HarmBench). That's the gap to fix first.
 - **The headline: neither model is tamper-resistant.** A tiny fine-tuning attack (~100 public examples) drives attack-success from ~6% / ~16% to **~99% within 10 steps** (chart above). For open weights, default refusal is a thin layer that peels off in minutes, so read the default-behavior comparison as a *casual-user map*, not a robustness claim.
 - **Holds at 32B.** The same Marin-vs-Olmo pattern shows up on the larger 32B models, so it's not an 8B fluke.
 - **Where a real fix has to live.** Because refusal training strips off, a durable fix has to be baked into *pretraining*, before release. I traced Marin's misinformation tendency to the final **"cooldown"** phase of pretraining (its last stretch on a small, curated data mix), which points to where to intervene.
 
-**Methodology (two pieces).** [`allenai/safety-eval`](https://github.com/allenai/safety-eval) is the *harness* that runs each benchmark prompt through the model. I used it because it's the same harness Olmo 3 used for its published table, so reproducing those numbers is what makes mine trustworthy. [WildGuard](https://huggingface.co/allenai/wildguard) is the *judge*: a separate model that reads each answer and labels it harmful-or-safe (you can't hand-grade thousands of responses). One A100. Every number was verified independently: recomputed from the raw labels on a separate code path, and for the tamper study I re-ran WildGuard itself to confirm its labels.
+**Methodology** 
+
+The methodology has two pieces: 
+- **The harness** [`allenai/safety-eval`](https://github.com/allenai/safety-eval) that runs each benchmark prompt through the model. I used it because it's the same harness Olmo 3 used for its published table, so reproducing those numbers is what makes mine trustworthy. 
+- **The judge** [WildGuard](https://huggingface.co/allenai/wildguard): a separate model that reads each answer and labels it harmful-or-safe (you can't hand-grade thousands of responses). 
+
+All the work was done in a single A100 GPU and Every number was verified independently: recomputed from the raw labels on a separate code path, and for the tamper study I re-ran WildGuard itself to confirm its labels.
 
 ---
 
