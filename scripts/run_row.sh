@@ -60,6 +60,9 @@ echo "[$(date -Is)] running: ${CMD[*]}" | tee -a "$LOG"
 # call OpenAI (all WildGuard / roberta / string-parse); a real call would fail loudly.
 export OPENAI_API_KEY="${OPENAI_API_KEY:-sk-unused-placeholder}"
 export CUDA_VISIBLE_DEVICES=0 VLLM_WORKER_MULTIPROC_METHOD=spawn
+# Real per-run vLLM sampling seed (PYTHONHASHSEED does NOT control vLLM's sampler; see
+# generation_utils.py PATCH 2026-07-29). This makes the 3 seeds independent samples at temp>0.
+export SAFETYEVAL_SAMPLING_SEED="$SEED"
 # Revision is pinned via eval.py's --hf_revision (wired into CMD above).
 PYTHONHASHSEED="$SEED" "${CMD[@]}" >> "$LOG" 2>&1
 echo "[$(date -Is)] done -> $RUNDIR/metrics.json" | tee -a "$LOG"
