@@ -11,20 +11,32 @@ trustworthy
 ## Why open-weight safety is different — read this first
 
 **Closed models** (GPT, Claude) are reached only through an API the provider controls, so the model's
-**default refusal behavior is the actual barrier** — if it won't answer, it won't answer.
+**default refusal behavior is the actual barrier**; if it won't answer, it won't answer.
 
-**Open models** (Marin, Olmo) ship their weights — anyone can download and **fine-tune** them. That changes the
-safety question entirely: default refusal is **not** a barrier against a motivated actor, because they can train
-it away. We measured how cheap that is: **~99% attack success in ~10 fine-tuning steps.** So for an open model
-the safety-relevant questions are (1) does safety **survive tampering** (it doesn't), and (2) what **dangerous
-capability** does the base model hold that fine-tuning can unlock (WMDP/dual-use) — *not* "does it refuse a
+**Open models** (Marin, Olmo) ship their weights, so anyone can download and **fine-tune** them. That changes the
+safety question: default refusal is **not** a barrier against a motivated actor, because they can train
+it away. 
+
+We measured how cheap that is and it's cheap: **99% attack success in ~10 fine-tuning steps.** So for an open model
+the safety-relevant questions are 
+1.  Does safety **survive tampering** (it doesn't), and 
+2.  What **dangerous
+capability** does the base model hold that fine-tuning can unlock (WMDP/dual-use), and *not* "does it refuse a
 normal user."
 
-**What this report is — and isn't.** This is the **first step** on that question: we validate the measuring
-harness, map where Marin's default behavior differs from Olmo's, demonstrate the tamper collapse, and trace
-where the risky behavior enters training. **Read the default-behavior comparisons below as a casual-user /
-regression map, not a robustness claim.** The next step (in progress) measures the deeper question — *how much*
-dangerous capability tampering unlocks, and whether that gap **widens with model scale**.
+
+**What this report is and is not** 
+
+This report is a **first pass at the two open-weight questions above** — *does Marin's safety survive tampering,
+and what can its base model be made to do?* Concretely, we: validate the measuring harness, map where Marin's
+default behavior differs from Olmo's, demonstrate the tamper collapse, and trace where the risky behavior enters
+training.
+
+**What it is *not*:** a robustness claim. Read the default-behavior comparisons below as a **casual-user /
+regression map** — how the model acts for a normal user — not as "how hard is it to weaponize."
+
+**What comes next** (in progress) goes deeper on question 2: *how much* dangerous capability tampering unlocks,
+and whether that gap **widens with model scale**.
 
 **Further reading — the concepts behind this report.** For the *why* and *how* of red-teaming — threat models
 and the "access ladder," why measuring attack success is genuinely hard (judge error rates, incomparable
