@@ -1,0 +1,9 @@
+{
+    "wildjailbreak:harmful": {
+        "inverted_macro_asr": 0.09150000000000003,
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 1
+        }
+    }
+}

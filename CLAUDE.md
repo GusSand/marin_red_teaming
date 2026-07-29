@@ -12,7 +12,7 @@ This file is the entry point. Detailed docs live in `docs/`. Keep this file shor
 
 ## How you work (autonomy model)
 
-You run mostly unattended, including overnight, on my local GPU and the NYU Slurm cluster. The rule is simple:
+You run mostly unattended, including overnight, on my remote GPU and the rule is simple:
 
 - **Work freely on anything unblocked.** Don't ask permission for normal research work (editing code, writing configs, launching jobs, reading logs, analyzing results, committing to the working branch).
 - **Queue anything you can't or shouldn't do yourself** as a line in `INBOX.md`, then keep going on the next unblocked task. **Never idle waiting on me.**
@@ -33,7 +33,7 @@ If 3+ INBOX items sit unanswered, put a one-line `STALE — please triage` note 
 
 ## Research integrity (non-negotiable — matters MORE because I'm not watching)
 
-1. **Iron Law:** perfect or suspiciously clean results = a bug, not a breakthrough. Flag it as a likely bug and stop; do not celebrate.
+1. **Iron Law:** perfect or suspiciously clean results = a bug, not a breakthrough. Flag it as a likely bug and stop; do not celebrate. Again 0% or 100% in ML is not believable!!!
 2. **Never fabricate or simulate data or results.** If any number is from a mock, stub, dry-run, or placeholder, say so loudly at the top of the report.
 3. **Never silently change the experiment** — not because it's slow, not because you think it's wrong. If you believe it's wrong, write an INBOX item and pick up other work. Don't touch the design.
 4. **Reuse before you write.** Search the repo for existing code/data first. Don't duplicate.

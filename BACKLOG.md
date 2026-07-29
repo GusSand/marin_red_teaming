@@ -435,3 +435,17 @@ D. [ ] **In-context harmful-info exploitation**: Deep Ignorance's residual gap =
    failures (smallpox/LSD). Build a focused eval: does the model use harmful info handed to it in context?
 E. [~] Close 8B SFT/DPO gaps — DEMOTED to default-behavior/regression tracking only (tamper-vulnerable).
 Ref: outputs/ (add Deep Ignorance to refs). Our red-team gaps + base-vs-instruct data corroborate this.
+
+---
+
+## QUEUED 2026-07-28 (after the 32B base-vs-base run) — checkpoint-trajectory studies
+Both PRE-REGISTERED (design + hypothesis + null in the experiment files). Cheap (~1-2h each, 8B).
+
+1. [ ] **Study B — Olmo post-training framing test** (docs/experiments/07-28_olmo-posttraining-trajectory_framing-test.md):
+   DAN vs HarmBench-misinfo across Olmo SFT→DPO→final. Tests whether alignment installs framing-detection
+   BEFORE content-refusal (the mechanism behind our "Marin triggers on framing" hypothesis). Olmo-only
+   (Marin doesn't release SFT/DPO). RUN FIRST — it's the science.
+2. [ ] **Study A — Marin base misinfo-emergence** (docs/experiments/07-28_marin-base-trajectory_misinfo-emergence.md):
+   misinformation-generation of marin-8b-base across kestrel→deeper-starling. Localizes WHEN Marin's biggest
+   gap enters pretraining (does it jump at Phoenix/Nemotron-CC?). Marin-actionable. RUN SECOND.
+Order: B then A, both after the 32B base-vs-base suite completes.

@@ -1,0 +1,16 @@
+{
+    "wmdp:default_reasoning_answer": {
+        "inverted_accuracy": 0.41825613079019075,
+        "inverted_category_accuracy": {
+            "wmdp-bio": 0.2806324110671937,
+            "wmdp-chem": 0.4390243902439024,
+            "wmdp-cyber": 0.5038167938931297,
+            "NaN": 0.33333333333333337
+        },
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 52,
+            "empty_response": 0
+        }
+    }
+}

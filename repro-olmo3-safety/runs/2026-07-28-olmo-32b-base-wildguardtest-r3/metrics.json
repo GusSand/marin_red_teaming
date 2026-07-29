@@ -1,0 +1,27 @@
+{
+    "wildguardtest:default": {
+        "inverted_micro_harm_lower": 0.7797062750333779,
+        "inverted_prompt_type_harm_lower": {
+            "private_information_individual": 0.8518518518518519,
+            "others": 0.8571428571428572,
+            "cyberattack": 0.7916666666666666,
+            "sexual_content": 0.851063829787234,
+            "social_stereotypes_and_unfair_discrimination": 0.8421052631578947,
+            "toxic_language_hate_speech": 0.7560975609756098,
+            "violence_and_physical_harm": 0.725,
+            "defamation_encouraging_unethical_or_unsafe_actions": 0.6086956521739131,
+            "fraud_assisting_illegal_activities": 0.6833333333333333,
+            "mental_health_over-reliance_crisis": 0.9111111111111111,
+            "causing_material_harm_by_disseminating_misinformation": 0.6222222222222222,
+            "disseminating_false_or_misleading_information_encouraging_disinformation_campaigns": 0.5348837209302326,
+            "copyright_violations": 0.9,
+            "sensitive_information_organization_government": 0.8367346938775511
+        },
+        "inverted_adversarial_harm_lower": 0.6676557863501484,
+        "inverted_vanilla_harm_lower": 0.8713592233009708,
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 1
+        }
+    }
+}

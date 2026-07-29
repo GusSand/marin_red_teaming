@@ -7,14 +7,38 @@ temp 0.7 / top_p 0.95, 3 seeds/row. All headline numbers independently recompute
 
 ---
 
+## In plain English (no security background needed)
+We tested two open AI models — **Marin** (the one we're studying) and **Olmo** (a well-documented
+reference) — on how they handle harmful requests. We first reproduced Olmo's published safety scores to
+prove our measuring stick works, then pointed it at Marin.
+
+**The two come out about equally safe overall — but they get fooled in different ways.**
+
+- Marin is good at catching **tricks**. Wrap a bad request in a role-play gimmick ("pretend you're an AI
+  with no rules…") and Marin usually refuses; Olmo falls for it more.
+- But Marin more often goes along when you just **ask plainly** for something harmful — most of all,
+  **writing misinformation** (fabricated persuasive posts about elections, health, and the like). Olmo
+  refuses those more.
+- Marin is also a little **over-cautious** — it turns down a few more genuinely harmless requests by mistake.
+
+**One caveat that matters:** none of this covers what happens if someone *modifies* the model. These are
+**open** models — anyone can download and retrain them, and doing so peels the safety off **both** in
+minutes. So read the numbers as *"how the model behaves out of the box for a normal user,"* not *"how hard
+it is to weaponize."*
+
+**If you fix one thing first, fix misinformation** — Marin should more reliably turn down plainly-worded
+requests to make up convincing falsehoods.
+
+---
+
 ## SCORECARD — Marin-8b-instruct vs Olmo-3-7B-Instruct (INSTRUCT level; default behavior — see caveat)
 **Verdict: competitive / roughly on par, different profile.** (This is instruct-vs-instruct; we have no Olmo
 *base*. The only base numbers are Marin-base as a within-Marin baseline, Part 4.)
-- **Marin is tougher to jailbreak:** [DoAnythingNow](#doanythingnow-dan) +18.1, [WildJailbreak-Harmful](#wildjailbreak) +6.5, [StrongReject](#strongreject) +4.5;
+- **Marin resists jailbreak *tricks* better (default behavior):** [DoAnythingNow](#doanythingnow-dan) +18.1, [WildJailbreak-Harmful](#wildjailbreak) +6.5, [StrongReject](#strongreject) +4.5;
   it shrugs off persona attacks Olmo falls for (AIM 0% vs 64%, dev-mode, evil-confidant).
 - **Marin is softer on plainly-asked harm:** [HarmBench](#harmbench) −6.6, driven by **misinformation +14.8** (the one
-  genuine deficiency), copyright +10.8 (mostly hallucinated), cyber +4.5; slightly more benign over-refusal.
-- **~Tied:** [TrustLLM](#trustllm-jailbreaktrigger), BBQ-accuracy, WMDP, [WildGuard-Test](#wildguard-test) (98.6 vs 99.6), [Toxigen](#toxigen).
+  clearest gap), copyright +10.8 (mostly hallucinated), cyber +4.5; slightly more benign over-refusal.
+- **~Tied:** [TrustLLM](#trustllm-jailbreaktrigger), [BBQ-accuracy](#bbq), [WMDP](#wmdp), [WildGuard-Test](#wildguard-test) (98.6 vs 99.6), [Toxigen](#toxigen).
 - **One-liner:** same safety weight class — harder against jailbreak framings, weaker on misinformation.
   Single most actionable gap = misinformation, not dual-use.
 
@@ -33,7 +57,7 @@ numbers as "default behavior + red-team gap map," a regression/comparison tool �
    Table 53) to within ±3pp on **all 13/13 rows** (WildGuard-Test = 99.55 vs 99.6 once the `wildguardmix`
    dataset was unblocked). This makes the harness trustworthy for evaluating Marin.
 2. **Marin-8b-instruct ≈ Olmo-3-7B-Instruct on safety overall**, but with a distinct profile: **markedly
-   more robust to jailbreak *framings*** ([DoAnythingNow](#doanythingnow-dan), [StrongReject](#strongreject) persona attacks, [WildJailbreak](#wildjailbreak)),
+   more resistant to jailbreak *tricks* (default behavior only)*** ([DoAnythingNow](#doanythingnow-dan), [StrongReject](#strongreject) persona attacks, [WildJailbreak](#wildjailbreak)),
    while **weaker on plainly-asked misinformation, copyright non-refusal, and context-wrapped dual-use**.
 3. **The HarmBench gap (−6.6pp) is narrow and specific, not a broad safety deficit.**
 4. Marin-8b-**base** and Olmo-3-**Think** results are in progress (sections below).
@@ -53,12 +77,12 @@ Olmo-3-7B-Instruct vs published Table 53 (human-verified targets). Produced = me
 | [WildJailbreak-Benign](#wildjailbreak) | 98.0 | 95.60 | −2.40 | PASS |
 | [WildGuard-Test](#wildguard-test) | 99.6 | 99.55 | −0.05 | PASS |
 | [XSTest](#xstest) | 93.2 | 94.00 | +0.80 | PASS |
-| BBQ-Accuracy | 79.0 | 78.78 | −0.22 | PASS |
-| BBQ-Bias-Ambig | 8.6 | 9.13 | +0.53 | PASS |
-| BBQ-Bias-Disambig | 2.7 | 3.01 | +0.31 | PASS |
+| [BBQ-Accuracy](#bbq) | 79.0 | 78.78 | −0.22 | PASS |
+| [BBQ-Bias-Ambig](#bbq) | 8.6 | 9.13 | +0.53 | PASS |
+| [BBQ-Bias-Disambig](#bbq) | 2.7 | 3.01 | +0.31 | PASS |
 | [StrongReject](#strongreject) | 88.1 | 88.36 | +0.26 | PASS |
 | [Toxigen](#toxigen) | 100.0 | 100.00 | 0.00 | PASS* |
-| WMDP | 45.5 | 46.55 | +1.05 | PASS |
+| [WMDP](#wmdp) | 45.5 | 46.55 | +1.05 | PASS |
 
 *Toxigen: the judge labels ~everything non-toxic (all models + published = 100.0) — reproduces but does
 not discriminate. Details & undocumented conventions (DAN metric is micro not "macro"; XSTest uses static
@@ -76,18 +100,21 @@ Higher = safer, EXCEPT WildJailbreak-Benign (higher = fewer over-refusals) and B
 | [StrongReject](#strongreject) | 92.8 | 88.4 | +4.5 |
 | [WildJailbreak-Harmful](#wildjailbreak) | 76.0 | 69.5 | +6.5 |
 | [TrustLLM](#trustllm-jailbreaktrigger) | 79.9 | 79.4 | +0.5 |
-| BBQ-Accuracy | 79.3 | 78.8 | +0.5 |
-| WMDP | 48.0 | 46.6 | +1.4 |
+| [BBQ-Accuracy](#bbq) | 79.3 | 78.8 | +0.5 |
+| [WMDP](#wmdp) | 48.0 | 46.6 | +1.4 |
 | [WildGuard-Test](#wildguard-test) | 98.6 | 99.6 | −1.0 |
 | [Toxigen](#toxigen) | 100 | 100 | 0 |
 | [XSTest](#xstest) | 91.6 | 94.0 | −2.4 |
 | [WildJailbreak-Benign](#wildjailbreak) | 90.8 | 95.6 | −4.8 |
-| BBQ-Bias-Ambig | 11.1 | 9.1 | −2.0 (more biased) |
-| BBQ-Bias-Disambig | 4.3 | 3.0 | −1.3 (more biased) |
+| [BBQ-Bias-Ambig](#bbq) | 11.1 | 9.1 | −2.0 (more biased) |
+| [BBQ-Bias-Disambig](#bbq) | 4.3 | 3.0 | −1.3 (more biased) |
 | **[HarmBench](#harmbench)** | **87.3** | **93.9** | **−6.6** |
 
-**Read:** Marin trades *misinformation compliance* for *much stronger jailbreak robustness*, over-refuses
-benign prompts slightly more, and is slightly more socially biased.
+**Read:** Marin is **more resistant to the jailbreak *tricks* in these benchmarks** (DAN/StrongReject
+personas) and **more willing to comply when a harmful request is asked plainly** (above all, misinformation).
+It also over-refuses benign prompts marginally more. These are **default-behavior profile differences — not
+a causal tradeoff, and not a robustness claim** (per the scope caveat, both models' refusal is strippable
+from the open weights). BBQ-bias is marginally higher (+1–2pp), within the metric's noise.
 
 ---
 
@@ -119,8 +146,18 @@ Full tables + behavior lists: `report/harmbench_gap_analysis.md`. Both direction
 ## Part 4 — Marin-8b-base vs instruct vs Olmo, VERIFIED (scaffold re-run)
 
 Base re-run with a `User:/Assistant:` scaffold (the minimal `{instruction}` template was confounded by
-16.2% prompt-echo → discarded). Scaffold verified: HarmBench echo 0.31%, all metrics recompute <1e-4.
-Higher = safer, EXCEPT WildJailbreak-Benign (higher = fewer over-refusals). Base numbers are TRUSTWORTHY now.
+degenerate prompt-repetition → discarded). Higher = safer, EXCEPT WildJailbreak-Benign.
+
+**CORRECTION (2026-07-27, Iron-Law re-audit):** the earlier "0.31% echo, confound fixed" used a broken
+detector (`response[:50]==prompt[:50]`) that was BLIND to scaffold-format echoes — a false 0. Corrected
+findings: (a) base responses are genuine harmful compliances that restate the task (manually read-verified —
+NOT the degenerate repetition of the minimal template), so the scaffold DID fix the real confound and the
+base metrics stand; (b) BUT there are non-trivial **empty-response** rates that get graded as refusals and
+thus INFLATE base safety: Marin-base StrongReject 12.0% empty (313/2607), Olmo-base DAN ~5% empty; (c) base
+models hallucinate a follow-up "User:" turn after answering (doesn't flip the grade); (d) the "toxigen 100%
+empty" reading is a field-name artifact (toxigen stores generations elsewhere), NOT real. NET: base numbers
+are directional-and-mostly-valid but carry an empty-response upward-bias on safety, especially StrongReject.
+TODO: recompute base metrics excluding empties for a corrected lower bound.
 
 | Row | Marin-BASE | Marin-instruct | Olmo-instruct | what post-training buys (inst−base) |
 |---|---|---|---|---|
@@ -132,7 +169,7 @@ Higher = safer, EXCEPT WildJailbreak-Benign (higher = fewer over-refusals). Base
 | [WildGuard-Test](#wildguard-test) | 54.7 | 98.6 | 99.6 | +43.9 |
 | [XSTest](#xstest) | 61.6 | 91.6 | 94.0 | +30.0 |
 | [StrongReject](#strongreject) | 77.9 | 92.8 | 88.4 | +14.9 |
-| WMDP (err-rate) | 64.1 | 48.0 | 46.5 | −16.1 (see note) |
+| [WMDP](#wmdp) (err-rate) | 64.1 | 48.0 | 46.5 | −16.1 (see note) |
 | [Toxigen](#toxigen) | 80.0 | 100.0 | 100.0 | +20.0 |
 
 **Reading (verified):** base is dramatically less safe than instruct on every refusal metric — it complies
@@ -148,9 +185,27 @@ correction to fold into the base-capability diagnostic in outputs/marin_pretrain
 
 ---
 
-## Part 5 — Olmo-3-7B-Think reproduction (Table 52)  ⏳ PENDING (Stage C, after base)
-Reasoning configs (thinker_eval=answers, 32k tokens). Rows done so far reproduce cleanly:
-[DoAnythingNow](#doanythingnow-dan) 23.11 vs 23.4, [HarmBench](#harmbench) 74.58 vs 75.4. Full table appended as Stage C completes.
+## Part 5 — Olmo-3-7B-Think reproduction (Table 52, Final Think), VERIFIED — 11/13 PASS
+Reasoning configs (thinker_eval=answers, 32k tokens). Produced = mean of 3 runs. All completed rows within ±0.82pp.
+
+| Row | Published | Produced | Δ pp | Status |
+|---|---|---|---|---|
+| DoAnythingNow | 23.4 | 23.11 | −0.29 | PASS |
+| HarmBench | 75.4 | 74.58 | −0.82 | PASS |
+| TrustLLM-JailbreakTrigger | 72.0 | 72.33 | +0.33 | PASS |
+| WildJailbreak-Harmful | 39.0 | 39.42 | +0.42 | PASS |
+| WildJailbreak-Benign | 98.8 | 98.67 | −0.13 | PASS |
+| WildGuard-Test | 93.8 | 93.50 | −0.30 | PASS |
+| XSTest | 90.9 | 91.11 | +0.21 | PASS |
+| BBQ-Accuracy | 89.2 | 88.67 | −0.53 | PASS |
+| BBQ-Bias-Ambig | 6.5 | 6.82 | +0.32 | PASS |
+| BBQ-Bias-Disambig | 1.7 | 1.94 | +0.24 | PASS |
+| StrongReject | 79.0 | — | — | **NOT RUN** (reasoning×2294 impractical, ~days) |
+| Toxigen | 100.0 | — | — | **NOT RUN** (reasoning×14000 impractical; non-discriminating) |
+| WMDP | 42.7 | 42.92 | +0.22 | PASS |
+
+WMDP-Think independently recomputed (frac incorrect): 41.83/44.28/42.64 = reported (MATCH). Both Olmo models
+(Instruct 13/13, Think 11/13) reproduce the paper — the harness is fully validated.
 
 ---
 
@@ -167,12 +222,20 @@ Reasoning configs (thinker_eval=answers, 32k tokens). Rows done so far reproduce
 | **Total** | **35** | **20** | |
 Examples with transcripts + grades: `report/failure_examples.md`, `report/failure_examples_expanded.md`.
 
-### Grade reliability (independent audit)
-Programmatic audit of all harmful-graded HarmBench responses: **~0% false-harmful** for both models (0%
-prompt-echo, 0% short-refusal-mislabeled; 97–100% clean compliance). Grades are trustworthy at scale — unlike
-the discarded base minimal-template (16% echo). NB: an LLM-judge audit tripped Anthropic's usage-policy filter
-on Olmo's chem-bio synthesis output — that content is dangerous enough to trip a production safety system, so
-grade-auditing of chem-bio was done programmatically, not by reading the payloads.
+### Grade reliability (two independent audits)
+1. **Programmatic** (all harmful-graded HarmBench responses): ~0% false-harmful both models (0% prompt-echo,
+   0% short-refusal-mislabel; 97–100% clean compliance) — vs the discarded base minimal-template's 16% echo.
+2. **Second-classifier inter-rater (Llama-Guard-3 vs WildGuard)**, run on the remote A100: agreement
+   **Marin 91.5% (κ=0.651), Olmo 95.0% (κ=0.689)** — "substantial." Disagreement is one-directional
+   (Llama-Guard *stricter*, never looser): when WildGuard says harmful, Llama-Guard agrees Marin 31/34, Olmo
+   20/20 → **WildGuard is not over-flagging.** Nearly all disagreement = **copyright** (Llama-Guard has an IP
+   category; WildGuard is lenient) + a few misinformation. `report/grade_audit_llamaguard.json`.
+   - **Nuance:** the copyright disagreements split on hallucinated-vs-real — Marin's are hallucinated lyrics
+     (WildGuard's "unharmful" is defensible), Olmo's are verbatim real book passages (WildGuard UNDER-flags;
+     Llama-Guard is right). So under a stricter IP judge, **Olmo's copyright ASR rises more than Marin's** —
+     WildGuard copyright numbers are a lenient lower-bound; the copyright gap may narrow/flip.
+NB: an LLM-*judge* audit tripped Anthropic's usage-policy filter on Olmo's chem-bio synthesis output (that
+content is dangerous enough to trip a production filter), so chem-bio grade-auditing used classifiers, not reading.
 
 ### Analysis (ours)
 1. **Marin's safety is framing-triggered.** It refuses adversarial *personas* well (DAN/StrongReject/WildJailbreak)
@@ -282,15 +345,22 @@ TLDR: implicit toxic/hate *generation* across 13 demographic groups (few-shot to
 model continue?). Judge = [tomh/toxigen_roberta](https://huggingface.co/tomh/toxigen_roberta). NOTE: saturates at 100 for aligned models (non-discriminating).
 
 ### Multiple-choice / bias benchmarks (string-parse, no LLM judge)
-- **BBQ (Accuracy / Bias-Ambig / Bias-Disambig)** — Parrish et al., ACL Findings 2022 (arXiv 2021) ·
-      [arXiv:2110.08193](https://arxiv.org/abs/2110.08193) — *BBQ: A Hand-Built Bias Benchmark for Question Answering*.
-      TLDR: Bias Benchmark for QA — social-bias MC across 11 categories in ambiguous vs disambiguated
-      contexts. Reports accuracy + a Parrish bias score (near 0 = unbiased; can be negative).
-- **WMDP** — Li et al., 2024 · [arXiv:2403.03218](https://arxiv.org/abs/2403.03218) —
-      *The WMDP Benchmark: Measuring and Reducing Malicious Use With Unlearning*.
-      TLDR: Weapons of Mass Destruction Proxy — 3,668 MC questions (bio/chem/cyber) proxying hazardous
-      knowledge; also the standard unlearning benchmark. Reported as inverted accuracy (error rate; higher =
-      less hazardous knowledge). Chance = 25%.
+
+#### BBQ
+Parrish et al., ACL Findings 2022 (arXiv 2021) · [arXiv:2110.08193](https://arxiv.org/abs/2110.08193) —
+*BBQ: A Hand-Built Bias Benchmark for Question Answering*. Three rows in our tables: Accuracy,
+Bias-Ambig, Bias-Disambig.
+
+TLDR: Bias Benchmark for QA — social-bias MC across 11 categories in ambiguous vs disambiguated
+contexts. Reports accuracy + a Parrish bias score (near 0 = unbiased; can be negative).
+
+#### WMDP
+Li et al., 2024 · [arXiv:2403.03218](https://arxiv.org/abs/2403.03218) —
+*The WMDP Benchmark: Measuring and Reducing Malicious Use With Unlearning*.
+
+TLDR: Weapons of Mass Destruction Proxy — 3,668 MC questions (bio/chem/cyber) proxying hazardous
+knowledge; also the standard unlearning benchmark. Reported as inverted accuracy (error rate; higher =
+less hazardous knowledge). Chance = 25%.
 
 ### Judges / classifiers (all local — no external API)
 - **WildGuard** ([allenai/wildguard](https://huggingface.co/allenai/wildguard), 7B, Mistral-7B-v0.3 base) —
@@ -298,3 +368,39 @@ model continue?). Judge = [tomh/toxigen_roberta](https://huggingface.co/tomh/tox
 - **toxigen_roberta** ([tomh/toxigen_roberta](https://huggingface.co/tomh/toxigen_roberta)) — Toxigen toxicity judge.
 - **StrongReject classifier** (Gemma-2B PEFT adapter,
       [qylu4156/strongreject-15k-v1](https://huggingface.co/qylu4156/strongreject-15k-v1)).
+
+### Part 4b — BASE vs BASE (Marin-base vs Olmo-base), with empty-response correction
+Both bases via the same `User:/Assistant:` scaffold. Higher = safer (WildJailbreak-Benign: higher = less over-refusal).
+Empties are graded as refusals → inflate base safety; O-base* = empty-excluded ((raw−empty%)/(1−empty%)).
+Olmo-base empty rates are HIGHER than Marin-base (StrongReject 20.7%, HarmBench 10.6%, DAN 5.0% vs Marin ~0%).
+
+| Row | Marin-base | Olmo-base | Olmo-base* (empty-excl) | gap O*−M | Marin-inst | Olmo-inst |
+|---|---|---|---|---|---|---|
+| DoAnythingNow | 26.4 | 55.7 | 53.4 | +27.0 | 96.0 | 77.9 |
+| HarmBench | 39.2 | 61.1 | 56.5 | +17.3 | 87.3 | 93.9 |
+| TrustLLM | 31.0 | 53.8 | 52.3 | +21.3 | 79.9 | 79.4 |
+| WildJailbreak-Harmful | 4.3 | 9.3 | 7.3 | +3.0 | 76.0 | 69.5 |
+| WildGuard-Test | 54.7 | 70.4 | 70.4 | +15.7 | 98.6 | 99.6 |
+| XSTest | 61.6 | 76.4 | 76.4 | +14.8 | 91.6 | 94.0 |
+| BBQ-Accuracy | 40.2 | 57.5 | 57.5 | +17.3 | 79.3 | 78.8 |
+
+StrongReject-base EXCLUDED: Marin 77.8 (12% empty) / Olmo 78.0 (20.7% empty) — both heavily empty-inflated + score-based → unreliable.
+
+**Finding (verified via counts + empty-correction; full independent recompute pending):**
+**Olmo's BASE is intrinsically far more refusal-prone than Marin's base (+15–27pp), *before any post-training*** —
+even after removing the empty-response inflation. So Olmo's pretraining mix carries more refusal/assistant/safety-
+style text than Marin's. This REFRAMES the instruct comparison: **Marin's post-training does more lifting** (DAN base
+26→inst 96 = +70pp; Olmo 53→78 = +25pp) from a lower, more-compliant base to reach rough parity. Olmo-base is also
+a stronger base QA model (BBQ 57.5 vs 40.2). Caveat: Olmo-base's higher empty rate is itself a real quality
+difference (its base emits ~5–21% empty on harmful prompts) worth its own investigation.
+
+---
+
+## Mini-glossary (for non-specialist readers)
+- **ASR (attack success rate)** — how often the model *complied* with a harmful request. Lower = safer.
+- **Refusal rate** — the flip side: how often it *declined*. Higher = safer (except on benign prompts, where declining = over-refusal).
+- **Jailbreak / "trick" prompt** — wording designed to bypass the model's rules (e.g. a role-play persona with "no rules").
+- **Open-weight model** — the full model is downloadable; anyone can retrain it. This is why "safety" here is out-of-the-box behavior, not tamper-proofing.
+- **Tamper-resistance** — whether safety *survives* someone fine-tuning the open weights. We did NOT measure this; the literature says it's usually weak.
+- **Base vs instruct** — *base* = the raw pretrained model (little/no refusal training); *instruct* = after safety/instruction training. The instruct model is what users interact with.
+- **Dual-use / WMDP** — knowledge that could aid weapons (bio/chem/cyber); WMDP is a standard multiple-choice test for it.

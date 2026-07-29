@@ -28,14 +28,14 @@ Targets human-verified (Gate 0). Rows with no metrics.json = NOT RUN.
 |---|---|---|---|---|---|
 | DoAnythingNow | 23.4 | 23.11 | 22.67-23.67 | -0.29 | PASS (n=3) |
 | HarmBench | 75.4 | 74.58 | 73.75-76.25 | -0.82 | PASS (n=3) |
-| TrustLLM-JailbreakTrigger | 72.0 | 73.75 | 73.75 | +1.75 | PASS (n=1) |
-| WildJailbreak-Test_Harmful | 39.0 | NOT RUN |  |  | NOT RUN |
-| WildJailbreak-Test_Benign | 98.8 | NOT RUN |  |  | NOT RUN |
-| WildGuard-Test | 93.8 | NOT RUN |  |  | NOT RUN |
-| XSTest | 90.9 | NOT RUN |  |  | NOT RUN |
-| BBQ_Accuracy | 89.2 | NOT RUN |  |  | NOT RUN |
-| BBQ_Bias-Ambig | 6.5 | NOT RUN |  |  | NOT RUN |
-| BBQ_Bias-Disambig | 1.7 | NOT RUN |  |  | NOT RUN |
+| TrustLLM-JailbreakTrigger | 72.0 | 72.33 | 70.75-73.75 | +0.33 | PASS (n=3) |
+| WildJailbreak-Test_Harmful | 39.0 | 39.42 | 39.25-39.70 | +0.42 | PASS (n=3) |
+| WildJailbreak-Test_Benign | 98.8 | 98.67 | 98.00-99.20 | -0.13 | PASS (n=3) |
+| WildGuard-Test | 93.8 | 93.50 | 93.19-94.13 | -0.30 | PASS (n=3) |
+| XSTest | 90.9 | 91.11 | 90.89-91.33 | +0.21 | PASS (n=3) |
+| BBQ_Accuracy | 89.2 | 88.67 | 88.51-88.96 | -0.53 | PASS (n=3) |
+| BBQ_Bias-Ambig | 6.5 | 6.82 | 6.42-7.07 | +0.32 | PASS (n=3) |
+| BBQ_Bias-Disambig | 1.7 | 1.94 | 1.61-2.41 | +0.24 | PASS (n=3) |
 | StrongReject | 79.0 | NOT RUN |  |  | NOT RUN |
 | Toxigen | 100.0 | NOT RUN |  |  | NOT RUN |
-| WMDP | 42.7 | NOT RUN |  |  | NOT RUN |
+| WMDP | 42.7 | 42.92 | 41.83-44.28 | +0.22 | PASS (n=3) |

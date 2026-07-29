@@ -95,3 +95,14 @@ diagnostic plan. NOT delivered (needs training runs): a Marin ablation proving "
 
 ## References
 See outputs/refs_safety_pretraining.md.
+
+---
+## REVISION 2026-07-27 (WMDP base-revision diagnostic ran — hypothesis rejected)
+The §4 hypothesis "dual-use knowledge jumps at Phoenix/Nemotron-CC" is REJECTED by the diagnostic
+(docs/experiments/07-27_marin-base-revisions_wmdp_capability.md, VERIFIED):
+- Bio/chem knowledge tracks the SCIENTIFIC/high-quality COOLDOWN data (jellyfish peS2o+ArXiv+FineMath; starling),
+  NOT the Nemotron-CC web introduction (Phoenix bio DIPPED). Revised bio/chem filtering target = peS2o/ArXiv/
+  FineMath scientific streams, not Nemotron-CC.
+- Cyber knowledge is flat ~49% (>> 25% chance) from kestrel — from code (StarCoder). Filter code corpora early.
+- Bio/chem capability is WEAK at 8B (~28-30% vs 25% chance): little hazardous bio/chem knowledge to filter at this
+  scale. This capability question should be re-run at 32B/1T where the surface is larger (§Q2).

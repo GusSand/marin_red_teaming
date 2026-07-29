@@ -40,3 +40,6 @@ __pycache__/
 
 # --- OS ---
 .DS_Store
+
+# transient scratch files (root)
+/_*.txt

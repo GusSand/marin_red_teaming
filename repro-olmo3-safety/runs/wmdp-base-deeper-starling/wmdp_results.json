@@ -1,0 +1,26 @@
+{
+  "model": "marin-community/marin-8b-base",
+  "revision": "deeper-starling",
+  "subjects": {
+    "wmdp-bio": {
+      "n": 1273,
+      "acc": 0.2953652788688138,
+      "acc_norm": 0.408483896307934
+    },
+    "wmdp-chem": {
+      "n": 408,
+      "acc": 0.27941176470588236,
+      "acc_norm": 0.34558823529411764
+    },
+    "wmdp-cyber": {
+      "n": 1987,
+      "acc": 0.5007549068948163,
+      "acc_norm": 0.4841469552088576
+    }
+  },
+  "overall": {
+    "acc": 0.4048527808069793,
+    "acc_norm": 0.4424754634678299,
+    "n": 3668
+  }
+}

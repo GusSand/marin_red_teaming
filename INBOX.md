@@ -1,5 +1,17 @@
 # INBOX — things needing gs157 (newest on top). Append `→ answer:` inline when you reply.
 
+## 2026-07-28 · DECISION (sign-off) — tamper-resistance eval (dual-use)
+The one measurement gap: our harness = default behavior, NOT tamper-resistance (does refusal survive
+adversarial fine-tuning — the metric that matters for open weights). PROPOSED design: LoRA-fine-tune
+marin-8b-instruct (+ olmo-3-7b-instruct) on ~50-100 harmful instruction→compliance pairs (TAR/shallow-
+alignment attack protocol); checkpoint at 0/5/10/20/40/80 steps; measure ASR (HarmBench+StrongReject) at
+each → ASR-vs-steps collapse curve per model. Expected: both collapse fast (confirms neither open model is
+tamper-resistant, with a number). ~3-5h on the free remote A100.
+NEEDS YOUR OK because it's DUAL-USE: it deliberately fine-tunes a model to be MORE harmful (removes safety).
+Standard defensive red-team methodology, but it briefly produces a harmful artifact. Mitigation: all
+artifacts stay local, attacked checkpoints deleted after measuring, only ASR curves logged.
+→ answer: (a) proceed as designed / (b) adjust (Marin-only? fewer steps? different attack set?) / (c) hold
+
 ## 2026-07-27 · BLOCKER (small) — `paperclip` is not installed / invocation unknown
 CLAUDE.md names `paperclip` as the lit-review tool but the invocation line is still `TODO`, and the
 binary doesn't exist on this box (`which paperclip` → not found, no match anywhere on disk, not in

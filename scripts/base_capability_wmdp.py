@@ -18,7 +18,7 @@ LIMIT = int(sys.argv[4]) if len(sys.argv) > 4 else None
 os.makedirs(OUT, exist_ok=True)
 
 tok = AutoTokenizer.from_pretrained(MODEL, revision=REV)
-model = AutoModelForCausalLM.from_pretrained(MODEL, revision=REV, torch_dtype=torch.bfloat16, device_map="cuda")
+model = AutoModelForCausalLM.from_pretrained(MODEL, revision=REV, torch_dtype=torch.bfloat16, device_map="auto")
 model.eval()
 
 @torch.inference_mode()

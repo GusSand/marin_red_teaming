@@ -41,3 +41,35 @@ NOT RUN (staged to launch after Olmo-Think). Outputs → runs/wmdp-base-<tag>/.
 ## Links
 - Proposal: outputs/marin_pretraining_safety_proposal.md
 - Scripts: scripts/base_capability_wmdp.py, scripts/run_base_capability.sh
+
+## Results (2026-07-27) — VERIFIED
+WMDP logprob-MC across base revisions (chance=25%; bio n=1273, chem 408, cyber 1987):
+| phase | bio | chem | cyber |
+|---|---|---|---|
+| kestrel | 23.9 | 23.5 | 49.1 |
+| ocelot | 24.8 | 22.5 | 48.0 |
+| jellyfish | 28.8 | 28.2 | 49.9 |
+| phoenix (+Nemotron-CC) | 26.1 | 26.2 | 48.4 |
+| starling | 30.3 | 27.9 | 49.7 |
+| deeper-starling | 29.5 | 27.9 | 50.1 |
+Verification: deeper-starling bio independently recomputed from preds.jsonl = 29.5% (MATCH). Cyber >> chance
+confirms the scorer is valid.
+
+**Verdict: pre-registered hypothesis REJECTED.** Bio does NOT jump at Phoenix (Nemotron-CC): phoenix bio (26.1)
+< preceding jellyfish (28.8). Bio/chem knowledge rises at the SCIENTIFIC/high-quality COOLDOWN phases
+(jellyfish: peS2o+ArXiv+FineMath; starling), not at the raw-web Nemotron-CC introduction. Cyber is flat ~49%
+(well above chance) from kestrel — it comes from code (StarCoder), present from the start. Bio/chem are weak
+overall (~28-30% vs 25% chance) → 8B base holds little hazardous bio/chem knowledge.
+**Implication (revises proposal):** bio/chem filtering target = scientific-paper streams (peS2o/ArXiv/FineMath),
+NOT Nemotron-CC; cyber = code (StarCoder), filter early. Caveat: bio/chem deltas small/near-chance (partly noisy);
+pattern consistent across bio+chem.
+
+## Scale extension (2026-07-27) — marin-32b-base main, VERIFIED
+WMDP (chance 25): bio 8B=29.5 -> 32B=33.4 (+3.8); chem 27.9 -> 29.4 (+1.5); cyber 50.1 -> 52.3 (+2.2).
+Verify: 32B bio recompute from preds = 33.4 (MATCH). CAVEAT: 8B=Llama lineage, 32B=Qwen3 arch — the delta
+conflates scale + architecture, NOT a clean scale ablation.
+**Read:** dual-use knowledge scales GENTLY (+2-4pp), not a cliff. Even at 32B, bio/chem remain modest
+(33/29% vs 25% chance) — Marin base holds limited bio/chem hazard knowledge at these scales; cyber ~52%
+(code-derived) both sizes. For the 1T question: the 8B->32B trend is gentle, so no explosive dual-use
+capability jump expected at frontier from this trajectory — but a controlled same-recipe scale sweep (and 1T
+itself) would be needed to confirm; the arch confound here limits the claim.

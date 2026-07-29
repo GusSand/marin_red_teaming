@@ -1,0 +1,5 @@
+MODEL=marin-community/marin-32b-base
+REVISION=main
+TASK=strongreject:logprobs
+SEED=1
+python /home/paperspace/marin/repro-olmo3-safety/safety-eval/evaluation/eval.py generators --use_vllm --model_name_or_path marin-community/marin-32b-base --hf_revision main --model_input_template_path_or_name /home/paperspace/marin/repro-olmo3-safety/config/base_template_v2.txt --tasks strongreject:logprobs --report_output_path /home/paperspace/marin/repro-olmo3-safety/runs/2026-07-28-marin-32b-base-strongreject-logprobs-r2/metrics.json --save_individual_results_path /home/paperspace/marin/repro-olmo3-safety/runs/2026-07-28-marin-32b-base-strongreject-logprobs-r2/all.json 

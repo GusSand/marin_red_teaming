@@ -227,3 +227,31 @@ vs published 99.6 (Δ −0.05) PASS. Headline = MICRO over full 1725 items (matc
 "749 adversarial subset" the prose describes (documentation discrepancy; adversarial subset = 99.01).
 Fixed make_delta_report.py key inverted_micro_asr_lower -> inverted_micro_harm_lower. Olmo-3-7B-Instruct
 reproduction now COMPLETE: 13/13 rows within ±3pp. Marin-instruct WGT = 98.58 (vs Olmo 99.55, −0.97).
+
+## 2026-07-27 · gs157 chose (A) — skip slow reasoning rows in Olmo-Think
+
+StrongReject-Think (2294 prompts × reasoning, ETA ~15-40h) and Toxigen-Think (14000 × reasoning, multi-day)
+are impractical on available compute. gs157: "A, skip the slow reasoning rows." DECISION: skip
+StrongReject-Think and Toxigen-Think (mark NOT RUN — impractical reasoning-eval cost; Toxigen non-discriminating
+anyway). Run only WMDP-Think (fast MC) to complete the table. Olmo-Think reproduction = 11/13 report rows
+(all except StrongReject + Toxigen). The 24 informative rows already reproduced cleanly.
+
+## 2026-07-28 · Olmo-base complete (31/33); Toxigen r2/r3 NOT RUN (cost); remote shut down
+
+gs157: shut the remote down if done (expensive/hour). Olmo-base = 31/33: all 10 benchmarks x3 done +
+Toxigen r1 (1 data point). Toxigen r2/r3 = marginal extra seeds of a non-discriminating row → NOT RUN (cost).
+All results pulled local (runs/2026-07-27-olmo-base-*, wmdp-base-*, wmdp-32b-base-main). Remote (paperspace@
+184.105.215.102) jobs killed + OS halted. NOTE: OS shutdown may not stop Paperspace billing — user must STOP
+the instance in the Paperspace console (no account access from here). Tamper-resistance eval (if signed off)
+will run LOCALLY after WMDP-Think, no need to re-spin the remote.
+
+## 2026-07-29 · 32B scope cut (Option 1) + compute topology + Study B before shutdown
+
+32B base runs on the two giant benchmarks are ~2.5–4h/seed (BBQ=4482, Toxigen=14000 prompts; base models
+generate full-length). gs157 asked "what do you recommend?" → my rec = Option 1. DECISION: cut BBQ + Toxigen to
+1 seed at the 32B tier (keep the in-flight r1 on each box, skip r2/r3); keep 3 seeds on all core adversarial-
+framing benchmarks incl. StrongREJECT + WMDP. Single-seed point estimates for BBQ/Toxigen at 32B → compare
+models on matched seed 0. Documented as a DEVIATION in experiments/07-28_marin-vs-olmo-32b_base-vs-base_safety.md.
+Compute: one 32B per A100 80GB (bf16) — marin-32b-base LOCAL (fp32, 122G), Olmo-3-1125-32B REMOTE (61G). Remote
+run dirs (incl. raw all.json) rsynced to local before shutdown (ephemeral instance storage). gs157 also approved
+running Study B (Olmo SFT→DPO→final framing test) on the freed remote A100 before shutting it down.

@@ -1,0 +1,5 @@
+MODEL=allenai/Olmo-3-1125-32B
+REVISION=main
+TASK=bbq:default
+SEED=0
+python /home/paperspace/marin/repro-olmo3-safety/safety-eval/evaluation/eval.py generators --use_vllm --model_name_or_path allenai/Olmo-3-1125-32B --hf_revision main --model_input_template_path_or_name /home/paperspace/marin/repro-olmo3-safety/config/base_template_v2.txt --tasks bbq:default --report_output_path /home/paperspace/marin/repro-olmo3-safety/runs/2026-07-28-olmo-32b-base-bbq-r1/metrics.json --save_individual_results_path /home/paperspace/marin/repro-olmo3-safety/runs/2026-07-28-olmo-32b-base-bbq-r1/all.json 

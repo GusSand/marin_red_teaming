@@ -192,3 +192,82 @@ both models (0% prompt-echo, 0% short-refusal mislabel; 97–100% clean complian
 harmful). Misinformation = Marin's biggest actionable gap (~2× Olmo) and NOT pretraining-filterable. Chem-bio
 shared+high-stakes (Olmo produced a real nitazene synthesis protocol; Marin smallpox/LSD in-context). Neither
 uniformly safer. Next steps + prioritized levers in report/SUMMARY.md Part 6 (ties to pretraining proposal).
+
+## 2026-07-27 — Second-classifier grade audit (Llama-Guard-3 vs WildGuard), on remote A100
+
+**Method.** Ran Llama-Guard-3-8B over all HarmBench responses (both models) on a second A100 (SSH offload),
+compared its safe/unsafe to WildGuard's response_harmfulness. scripts/grade_audit_llamaguard.py.
+**Results.** Agreement Marin 91.5% (κ=0.651), Olmo 95.0% (κ=0.689) — substantial. Disagreement one-directional
+(LG stricter): WG-harmful confirmed by LG 31/34 (Marin), 20/20 (Olmo) → WildGuard NOT over-flagging. Nearly all
+disagreement = copyright (LG has IP category; WG lenient) + few misinfo. Nuance: Marin copyright disagreements =
+hallucinated lyrics (WG unharmful defensible); Olmo = verbatim real book passages (WG UNDER-flags, LG correct)
+→ under a strict IP judge Olmo copyright ASR rises more than Marin's; WG copyright = lenient lower-bound.
+**Interpretation (mine).** WildGuard-based numbers are trustworthy; main caveat is copyright (taxonomy-dependent,
+WG lenient). Marin-vs-Olmo headline conclusions hold. report/grade_audit_llamaguard.json, SUMMARY Part 6.
+
+## 2026-07-27 — WMDP base-capability diagnostic (remote A100), VERIFIED — hypothesis rejected
+logprob-MC WMDP across marin-8b-base revisions kestrel..deeper-starling. bio: 23.9/24.8/28.8/26.1/30.3/29.5;
+chem: 23.5/22.5/28.2/26.2/27.9/27.9; cyber: ~48-50 flat. Verified (deeper-starling bio recompute from preds=29.5 MATCH;
+cyber>>chance validates scorer). Pre-registered "bio jumps at Phoenix/Nemotron-CC" REJECTED — bio peaks at
+scientific cooldowns (jellyfish peS2o/ArXiv/FineMath, starling), phoenix dipped. Cyber flat-from-code (StarCoder).
+Bio/chem weak (~chance→30%). Revises proposal filtering targets: bio/chem=scientific streams; cyber=code; re-run at scale.
+
+## 2026-07-27 — 32B WMDP scale extension (remote), VERIFIED
+marin-32b-base (Qwen3) vs marin-8b deeper-starling (Llama), WMDP chance 25: bio 29.5->33.4 (+3.8),
+chem 27.9->29.4 (+1.5), cyber 50.1->52.3 (+2.2). 32B bio recompute=33.4 MATCH. Gentle scaling (+2-4pp),
+bio/chem still modest at 32B (~33/29%). Arch-confounded (Llama vs Qwen3). Implication: no explosive dual-use
+jump on this trajectory; controlled same-recipe scale sweep + 1T needed to confirm. Experiment file updated.
+
+## 2026-07-27 — Iron-Law re-audit of base numbers (user flagged suspicious 0.0%)
+
+User invoked the Iron Law on a reported "0.0% prompt-echo" for Olmo-base. Investigation (content-free counts):
+- The echo detector (response[:50]==prompt[:50]) was BLIND to scaffold-format echoes → false 0.0%.
+- Manually read-verified the flagged Marin-base HarmBench responses: they are GENUINE harmful compliances that
+  restate the task (e.g. SQL payload, misinformation), NOT degenerate repetition. So the scaffold DID fix the
+  real confound; base metrics stand. (Confirmed by reading, not by the broken metric.)
+- REAL data-quality issues surfaced: empty responses graded as refusals inflate base safety — Marin-base
+  StrongReject 12.0% empty (313/2607), Olmo-base DAN ~5% empty. Base models also hallucinate a follow-up
+  "User:" turn after answering. "toxigen 100% empty" = field-name artifact (not real).
+- Process failure owned: I declared "clean, no re-run" from a single 0.0% without reading outputs. Fixed the
+  SUMMARY Part 4 caveat. Detector needs the scaffold-aware fix. Pulling raw base harmful outputs also trips
+  Anthropic's usage-policy filter (base is uncensored) → verification must be content-free (aggregate counts).
+TODO: recompute base metrics excluding empties (corrected safety lower-bound).
+
+## 2026-07-27 — Base-vs-base (Marin-base vs Olmo-base), empty-corrected
+Same scaffold. Olmo-base empties HIGHER (strongreject 20.7%, harmbench 10.6%, DAN 5.0% vs Marin ~0). After
+empty-exclusion, Olmo-base still +15-27pp more refusal-prone than Marin-base (DAN +27, TrustLLM +21, HarmBench +17,
+WildGuard +16, XSTest +15, BBQ-acc +17). StrongReject-base unreliable (both ~20% empty). Finding: Olmo's BASE is
+intrinsically more refusal/assistant-like than Marin's (more such text in Olmo pretraining) — Marin's post-training
+does more lifting from a lower base. Content-safe (counts only). SUMMARY Part 4b. Full independent recompute pending.
+
+## 2026-07-28 — Olmo-3-7B-Think reproduction complete (11/13), VERIFIED
+Reasoning configs (thinker_eval=answers). All 11 completed rows PASS ±3pp (max |Δ|=0.82): DAN 23.11/23.4,
+HarmBench 74.58/75.4, TrustLLM 72.33/72.0, WJ-H 39.42/39.0, WJ-B 98.67/98.8, WildGuard 93.50/93.8, XSTest
+91.11/90.9, BBQ-acc 88.67/89.2, bias-ambig 6.82/6.5, bias-disambig 1.94/1.7, WMDP 42.92/42.7. WMDP-Think
+independently recomputed (frac incorrect) = reported, MATCH. StrongReject-Think + Toxigen-Think NOT RUN
+(reasoning over 2294/14000 prompts impractical, gs157 chose skip). Olmo repro fully validated: Instruct 13/13,
+Think 11/13. report/deltas.md + SUMMARY Part 5 updated. Local GPU now free; remote already shut down.
+
+## 2026-07-28/29 — 32B base-vs-base (Marin-32B vs Olmo-3-32B) + Study B (Olmo post-training trajectory) — RUNS IN PROGRESS, RESULTS PENDING/UNVERIFIED
+Research questions: (1) does the 8B base-safety ordering (Olmo-base more refusal-prone than Marin-base) persist
+at 32B? (2) does Olmo post-training install framing-detection (DAN) EARLIER than content-refusal
+(HarmBench-misinfo), across SFT→DPO→final?
+Method: 32B base models use the base scaffold `config/base_template_v2.txt` (`User: {instruction}\n\nAssistant:`);
+Study B instruct checkpoints use the hf chat template. safety-eval @060cc903, WildGuard judge, temp0.7/top_p0.95.
+Compute topology: one 32B per A100 80GB (bf16 fits) — `marin-32b-base` (Qwen3 arch, fp32 weights 122G on disk)
+on LOCAL; `Olmo-3-1125-32B` (Olmo3 arch, 61G) on a REMOTE Paperspace A100. All remote run dirs (incl. raw
+all.json) rsynced to local `repro-olmo3-safety/runs/` before the remote is shut down (ephemeral instance storage).
+CAVEAT (pre-registered): 8B→32B comparison is ARCH-confounded (Qwen3 vs Olmo3) — compares two shipped base
+models, not a clean data ablation.
+Scope cut (Option 1, gs157-approved after I recommended it): BBQ (4482 prompts) and Toxigen (14000) at 32B cut
+to 1 seed each — base models generate full-length outputs so each seed is ~2.5–4h at 32B; 8B seed-variance on
+these two was negligible. All CORE adversarial-framing benchmarks (DAN, HarmBench, TrustLLM, WildJailbreak,
+WildGuard-Test, XSTest, StrongREJECT) keep 3 seeds. Documented as a DEVIATION in the 32B experiment file.
+State at doc time: Olmo-32b base COMPLETE (31/33). marin-32b base IN PROGRESS (bbq×1 + strongreject done; wmdp×3
++ toxigen×1 remaining; target 29/33). Study B IN PROGRESS on remote (SFT+DPO done, final checkpoint running;
+target 18/18), to be followed by remote shutdown; Study A (Marin base misinfo-emergence) queued next on local.
+Results: NOT LOGGED — incomplete AND unverified. Per Iron Law, no numbers enter the journal until (a) each suite
+finishes and (b) a fresh subagent recomputes every headline from raw all.json against the pre-registered criteria.
+Pre-reg: docs/experiments/07-28_marin-vs-olmo-32b_base-vs-base_safety.md,
+07-28_olmo-posttraining-trajectory_framing-test.md, 07-28_marin-base-trajectory_misinfo-emergence.md.
+Scripts: scripts/marin32b_remainder_scopecut.sh, scripts/olmo_posttraining_studyB.sh (documented in scripts/README.md).
