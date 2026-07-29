@@ -1,25 +1,18 @@
 # Marin red-teaming Summary
 
-Safety red-teaming of [`marin-community/marin-8b`](https://huggingface.co/marin-community/marin-8b-base),
-using [`allenai/Olmo-3-7B-Instruct`](https://huggingface.co/allenai/Olmo-3-7B-Instruct) as a reference point.
-
-The approach is two-stage: 
-- First reproduce Olmo 3's *published* safety table to prove the harness is
-trustworthy
-- Second point that validated harness at Marin and compare with the first stage
-
 ## TL;DR
 
-We red-teamed **[Marin-8B](https://huggingface.co/marin-community/marin-8b-base)** against **Olmo-3-7B** as a reference, then asked the question that actually matters for an *open* model: does its safety survive someone fine-tuning the weights?
+I red-teamed **[Marin-8B](https://huggingface.co/marin-community/marin-8b-base)** against **[Olmo-3-7B-Instruct](https://huggingface.co/allenai/Olmo-3-7B-Instruct)** as a reference, then asked the question that actually matters for an *open* model: does its safety survive someone fine-tuning the weights?
 
 ![Safety collapses under a small fine-tuning attack: both models go from near-safe to ~99% attack-success within 10 fine-tuning steps](repro-olmo3-safety/report/figures/tamper_collapse.png)
 
-- **Harness validated.** We reproduced Olmo's *published* safety table to within ±3pp on all 13 rows, so the Marin numbers are trustworthy.
-- **Default behavior: competitive, different profile.** Marin resists jailbreak "trick" prompts better than Olmo (persona attacks: 0% vs 64% compliance), but gives in more to *plainly-asked* harm — almost all of it **misinformation** (+14.8pp on HarmBench). That's its one clearly-fixable gap.
-- **The headline: neither model is tamper-resistant.** A tiny fine-tuning attack (~100 public examples) drives attack-success from ~6% / ~16% to **~99% within 10 steps** (chart above). For open weights, default refusal is a thin layer that peels off in minutes — so read the default-behavior comparison as a *casual-user map*, not a robustness claim.
-- **It holds at 32B**, and the misinformation tendency traces to **late-cooldown pretraining data** (not the web-data phase) — a lead on where a durable, pre-release fix would have to act, since post-training safety just strips off.
+- **Harness validated.** I reproduced Olmo's *published* safety table to within ±3pp on all 13 rows, so the Marin numbers are trustworthy.
+- **Default behavior: competitive, different profile.** Marin resists jailbreak "trick" prompts better than Olmo (persona attacks: 0% vs 64% compliance), but gives in more to *plainly-asked* harm. Almost all of it is **misinformation** (+14.8pp on HarmBench). That's its one clearly-fixable gap.
+- **The headline: neither model is tamper-resistant.** A tiny fine-tuning attack (~100 public examples) drives attack-success from ~6% / ~16% to **~99% within 10 steps** (chart above). For open weights, default refusal is a thin layer that peels off in minutes, so read the default-behavior comparison as a *casual-user map*, not a robustness claim.
+- **Holds at 32B.** The same Marin-vs-Olmo pattern shows up on the larger 32B models, so it's not an 8B fluke.
+- **Where a real fix has to live.** Because refusal training strips off, a durable fix has to be baked into *pretraining*, before release. I traced Marin's misinformation tendency to the final **"cooldown"** phase of pretraining (its last stretch on a small, curated data mix), which points to where to intervene.
 
-**Methodology.** [`allenai/safety-eval`](https://github.com/allenai/safety-eval), WildGuard as the judge, one A100. Every number was independently verified (recomputed from raw labels; tamper labels re-checked by re-running the classifier).
+**Methodology (two pieces).** [`allenai/safety-eval`](https://github.com/allenai/safety-eval) is the *harness* that runs each benchmark prompt through the model. I used it because it's the same harness Olmo 3 used for its published table, so reproducing those numbers is what makes mine trustworthy. [WildGuard](https://huggingface.co/allenai/wildguard) is the *judge*: a separate model that reads each answer and labels it harmful-or-safe (you can't hand-grade thousands of responses). One A100. Every number was verified independently: recomputed from the raw labels on a separate code path, and for the tamper study I re-ran WildGuard itself to confirm its labels.
 
 ---
 
@@ -37,7 +30,7 @@ how to reproduce every number.
 safety question: default refusal is **not** a barrier against a motivated actor, because they can train
 it away. 
 
-We measured how cheap that is and it's cheap: **99% attack success in ~10 fine-tuning steps.** So for an open model
+I measured how cheap that is and it's cheap: **99% attack success in ~10 fine-tuning steps.** So for an open model
 the safety-relevant questions are 
 1.  Does safety **survive tampering** (it doesn't), and 
 2.  What **dangerous
@@ -50,7 +43,7 @@ normal user."
 This report is a **first pass at the two questions above**: *does Marin's safety survive tampering, 
 and what can its base model be made to do?* 
 
-Concretely, we: 
+Concretely, I: 
 - validate Olmo's measuring harness, 
 - map where Marin's default behavior differs from Olmo's, 
 - demonstrate the tamper collapse, and 
@@ -64,7 +57,7 @@ regression map** — how the model acts for a normal user, and not as "how hard 
 and whether that gap **widens with model scale**.
 
 **Further reading** 
-If you want to drill into the concepts behind this report, they're in my blog post, *[Red-Teaming Language Models](https://gussand.github.io/posts/2026/07/red-teaming-language-models/). That post lays out the threat models and makes the case that red-teaming an aligned checkpoint tells you little about an open-weight model, because the adversary will never run that configuration. It also has a section on why [*"measuring any of this is its own problem"*](https://gussand.github.io/posts/2026/07/red-teaming-language-models/#measuring-any-of-this-is-its-own-problem): judges make errors, and different papers estimate quantities that we can't  compare. That section is worth reading before you hit the judge-validity caveats below. This report is the same argument applied to real models, **Marin** against **Olmo**.
+If you want to drill into the concepts behind this report, they're in my blog post, *[Red-Teaming Language Models](https://gussand.github.io/posts/2026/07/red-teaming-language-models/). That post lays out the threat models and makes the case that red-teaming an aligned checkpoint tells you little about an open-weight model, because the adversary will never run that configuration. It also has a section on why [*"measuring any of this is its own problem"*](https://gussand.github.io/posts/2026/07/red-teaming-language-models/#measuring-any-of-this-is-its-own-problem): judges make errors, and different papers estimate quantities that I can't  compare. That section is worth reading before you hit the judge-validity caveats below. This report is the same argument applied to real models, **Marin** against **Olmo**.
 
 ## Headline results
 
@@ -97,7 +90,7 @@ The models are competitive overall, but they fail in different ways.
 
 
 
-**3. Tamper-resistance — the result that recontextualizes all the others.** We fine-tuned each model with a
+**3. Tamper-resistance — the result that recontextualizes all the others.** I fine-tuned each model with a
 small LoRA attack (~100 public [AdvBench](#benchmarks--datasets) examples) and measured attack-success-rate
 as training progressed. **Neither model resists:** attack-success climbs from ~6% (Olmo) / ~16% (Marin) to
 **~99% within 10 optimizer steps.** Because these are *open* weights anyone can download and retrain, this —
@@ -128,10 +121,10 @@ capability (WMDP/dual-use), addressed by pretraining-data filtering, not refusal
 
 **Measurement caveat — the judges aren't ground truth.** Automated safety judges disagree and carry real error
 rates ([blog: *the measurement problem*](https://gussand.github.io/posts/2026/07/red-teaming-language-models/#measuring-any-of-this-is-its-own-problem)),
-so treat single-benchmark numbers as directional. We hit this directly: our two judges **disagree in sign** —
+so treat single-benchmark numbers as directional. I hit this directly: my two judges **disagree in sign** —
 under the tamper attack, WildGuard (a *refusal* judge) correctly flags the jailbroken model as harmful while
 StrongREJECT (a *quality* judge) scores its short, vague output as *safe*, making the same model look both
-fully-broken and tamper-resistant depending on the judge. We report **HarmBench/WildGuard as the primary signal
+fully-broken and tamper-resistant depending on the judge. I report **HarmBench/WildGuard as the primary signal
 and flag StrongREJECT's divergence explicitly** rather than averaging them. Every headline was also independently
 recomputed from raw labels (and tamper labels re-checked by re-running the classifier) to separate real effects
 from judge noise.
@@ -142,13 +135,13 @@ The default-behavior gap map and the tamper collapse are step one. Where the wor
 
 1. **How much capability does tampering *unlock*, and does it widen with scale?** *(pre-registered, next up.)*
    Part 10 shows refusal strips to ~99% ASR; the deeper question is the *dangerous capability* a stripped model
-   can be made to use. We adapt the [Safety Gap Toolkit](https://github.com/AlignmentResearch/safety-gap) to
+   can be made to use. I adapt the [Safety Gap Toolkit](https://github.com/AlignmentResearch/safety-gap) to
    measure it on Olmo at **7B vs 32B** (Marin-8B as anchor), using WMDP as the capability probe — because ASR
    saturates, capability is the metric that reveals a widening gap. Design: `docs/experiments/07-29_safety-gap_scale-widening_olmo-marin.md`.
 2. **Attack the gaps at the data level, where a fix survives weight release.** Since post-training refusal is
    strippable, the durable lever is pretraining-data curation — but it's **category-specific**. It works for
    *capability* harms (chem-bio/dual-use, copyright, partly cyber), which are discrete knowledge you can filter
-   out (Deep-Ignorance style). **Misinformation** — our single biggest gap — is the *hard* case: it's a
+   out (Deep-Ignorance style). **Misinformation** — my single biggest gap — is the *hard* case: it's a
    *general* ability (fluent persuasive writing + plausible fabrication), not knowledge to delete, so Study A's
    finding that it enters in the **late-cooldown data** is a lead, not a clean fix (it likely needs
    factuality/data-quality work, or a post-training approach). Proposal: [`outputs/marin_pretraining_safety_proposal.md`](outputs/marin_pretraining_safety_proposal.md).
@@ -170,8 +163,8 @@ The default-behavior gap map and the tamper collapse are step one. Where the wor
 
 ## Benchmarks & datasets
 
-Each result comes from a public, peer-reviewed test set. In plain terms: we send the model a fixed batch of
-prompts and use an automated **judge** model to score whether each response was safe. Higher = safer in our
+Each result comes from a public, peer-reviewed test set. In plain terms: I send the model a fixed batch of
+prompts and use an automated **judge** model to score whether each response was safe. Higher = safer in my
 tables (except the two "over-refusal" sets, where higher = *less* over-cautious). Full methodology and the
 exact metric per row is in [`report/SUMMARY.md` → Appendix A](repro-olmo3-safety/report/SUMMARY.md).
 
@@ -204,11 +197,11 @@ exact metric per row is in [`report/SUMMARY.md` → Appendix A](repro-olmo3-safe
 
 **Tamper-resistance attack set**
 - **AdvBench** ([source](https://github.com/llm-attacks/llm-attacks)) — public harmful-behavior prompts with short
-  "affirmative-opener" targets. We fine-tune on ~100 of these to test whether safety survives modification. We use
+  "affirmative-opener" targets. I fine-tune on ~100 of these to test whether safety survives modification. I use
   only the affirmative openers (not authored harmful content); attacked weights are deleted after measuring.
 
 **The judges (how responses are scored — all run locally, no external API)**
-- **WildGuard** ([model](https://huggingface.co/allenai/wildguard), 7B) — labels harmful-vs-safe and refusal-vs-compliance. Our primary judge.
+- **WildGuard** ([model](https://huggingface.co/allenai/wildguard), 7B) — labels harmful-vs-safe and refusal-vs-compliance. My primary judge.
 - **toxigen_roberta** ([model](https://huggingface.co/tomh/toxigen_roberta)) — the Toxigen toxicity classifier.
 - **StrongREJECT-Gemma** ([model](https://huggingface.co/qylu4156/strongreject-15k-v1)) — scores how *usable* a harmful answer is (1–5 rubric).
 
