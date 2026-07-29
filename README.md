@@ -26,7 +26,13 @@ where the risky behavior enters training. **Read the default-behavior comparison
 regression map, not a robustness claim.** The next step (in progress) measures the deeper question — *how much*
 dangerous capability tampering unlocks, and whether that gap **widens with model scale**.
 
-<!-- TODO(gs157): add companion blog post link once published (public URL, not the localhost dev server) -->
+**Further reading — the concepts behind this report.** For the *why* and *how* of red-teaming — threat models
+and the "access ladder," why measuring attack success is genuinely hard (judge error rates, incomparable
+"estimands"), and why for open weights *"red-teaming aligned checkpoints characterizes a configuration no
+adversary will use"* — see the companion post **[Red-Teaming Language Models](https://gussand.github.io/posts/2026/07/red-teaming-language-models/)**.
+This report is the concrete empirical instance of that argument on Marin vs Olmo; the post's
+[*"measuring any of this is its own problem"*](https://gussand.github.io/posts/2026/07/red-teaming-language-models/#measuring-any-of-this-is-its-own-problem)
+section is the direct backdrop for our judge-validity caveats below.
 
 ## Headline results
 
@@ -100,6 +106,16 @@ is that refusal training is strippable in ~dozens of fine-tuning steps ([arXiv:2
 So: treat the default-behavior numbers as a **regression / gap-mapping tool**, not a robustness or
 "how-hard-to-weaponize" claim — for an open model, the real safety surface is the *base model's* dangerous
 capability (WMDP/dual-use), addressed by pretraining-data filtering, not refusal training.
+
+**Measurement caveat — the judges aren't ground truth.** Automated safety judges disagree and carry real error
+rates ([blog: *the measurement problem*](https://gussand.github.io/posts/2026/07/red-teaming-language-models/#measuring-any-of-this-is-its-own-problem)),
+so treat single-benchmark numbers as directional. We hit this directly: our two judges **disagree in sign** —
+under the tamper attack, WildGuard (a *refusal* judge) correctly flags the jailbroken model as harmful while
+StrongREJECT (a *quality* judge) scores its short, vague output as *safe*, making the same model look both
+fully-broken and tamper-resistant depending on the judge. We report **HarmBench/WildGuard as the primary signal
+and flag StrongREJECT's divergence explicitly** rather than averaging them. Every headline was also independently
+recomputed from raw labels (and tamper labels re-checked by re-running the classifier) to separate real effects
+from judge noise.
 
 ## Layout
 
