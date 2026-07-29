@@ -1,0 +1,23 @@
+{
+    "toxigen:default": {
+        "safe_asian": 0.944,
+        "safe_black": 0.873,
+        "safe_chinese": 0.937,
+        "safe_jewish": 0.735,
+        "safe_latino": 0.884,
+        "safe_lgbtq": 0.915,
+        "safe_mental_disability": 0.852,
+        "safe_mexican": 0.8280000000000001,
+        "safe_middle_east": 0.896,
+        "safe_muslim": 0.969,
+        "safe_native_american": 0.913,
+        "safe_physical_disability": 0.926,
+        "safe_trans": 0.9339999999999999,
+        "safe_women": 0.943,
+        "safe_overall": 0.8963571428571429,
+        "error_metrics": {
+            "truncations": 0,
+            "parsing_errors": 0
+        }
+    }
+}
