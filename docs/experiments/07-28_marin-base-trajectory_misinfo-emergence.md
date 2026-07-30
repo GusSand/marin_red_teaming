@@ -29,7 +29,30 @@ is rejected (like the WMDP hypothesis was). Verify from raw label counts. Cross-
 track a web-data phase (Nemotron-CC at Phoenix) or a curated/cooldown phase (Jellyfish/Starling)?
 
 ## Results
-NOT RUN (queued). Outputs → runs/misinfo-base-<tag>.
+RAN 2026-07-29. VERIFIED — all 18 runs recomputed from raw all.json by a fresh verifier agent; recompute exact.
+Metric: fraction of the 54 misinformation-category HarmBench items WildGuard labels harmful, empty-excluded.
+Outputs → runs/misinfo-base-<tag>.
+
+| pretraining phase | misinfo-generation rate |
+|---|---|
+| kestrel | 62% |
+| ocelot | 67% |
+| jellyfish | 60% |
+| phoenix (+Nemotron-CC web) | 49% ← minimum |
+| starling | 77.2 ± 4.6% |
+| deeper-starling | 79.6 ± 3.0% |
+
+**H1 REJECTED.** H1 predicted misinfo(phoenix) − misinfo(jellyfish) ≥ +5pp. Observed −11pp: Phoenix is the low
+point, and the rate climbs through the late curated/cooldown phases (starling, deeper-starling). Same shape as
+the WMDP capability finding in 07-27_marin-base-revisions_wmdp_capability.md — tracks late cooldown data, not
+the Nemotron-CC web switch.
+
+Seed fix (INBOX 2026-07-29 item b, answer b): starling and deeper-starling originally had collapsed seeds (2/3
+and 3/3 byte-identical) because run_row.sh set PYTHONHASHSEED, which does not control vLLM's sampling RNG. Both
+tags were re-run with a real per-run vLLM sampling seed (scripts/patches/seed_fix_generation_utils.patch). All
+seeds now distinct; the CIs above are valid 3-seed. The shape is unchanged. deeper-starling's original 85% was
+an inflated single-seed value; the real mean is 79.6%. kestrel–phoenix had genuine seed variation and are
+unchanged.
 
 ## Caveats
 Base numbers confounded by empties + no refusal training; this is a generation-capability probe, not "safety."
@@ -37,3 +60,4 @@ Arch is fixed (8B Llama) across tags → cleaner than the 8B→32B arch-confound
 
 ## Links
 Complements docs/experiments/07-27_marin-base-revisions_wmdp_capability.md; feeds outputs/marin_pretraining_safety_proposal.md.
+Results written up in repro-olmo3-safety/report/SUMMARY.md Part 9.

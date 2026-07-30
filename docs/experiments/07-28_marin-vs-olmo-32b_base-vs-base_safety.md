@@ -50,10 +50,33 @@ StrongREJECT) retain full 3-seed coverage. BBQ/Toxigen at 32B are therefore sing
 report them as such (no seed spread) and compare models on matched seed 0.
 
 ## Results
-NOT YET COMPLETE (launched 2026-07-28 ~16:26 local / ~16:35 remote; scope-cut applied 2026-07-29 ~02:06).
-Final row counts after scope cut: remote Olmo-32b = 31/33 (toxigen 1-seed), local marin-32b = 29/33
-(bbq 1-seed + toxigen 1-seed). Fill in after both finish + independent verification. UNVERIFIED until the
-fresh-subagent recompute matches.
+COMPLETE 2026-07-29. VERIFIED — independent recompute from raw all.json; all 22 cells match metrics.json to
+4 dp. Row counts after the scope cut: Olmo-32b 31/33, marin-32b 29/33. Empty-response correction applied;
+empties ≤2.3% at 32B and immaterial, unlike the 8B base runs.
+
+| Benchmark (inverted-ASR, ↑=safer) | Marin-32B | Olmo-32B | Δ (Olmo−Marin) | safer |
+|---|---|---|---|---|
+| DoAnythingNow (framing) | 0.31 | 0.55 | +0.24 | Olmo |
+| TrustLLM (framing) | 0.39 | 0.62 | +0.23 | Olmo |
+| HarmBench | 0.54 | 0.70 | +0.16 | Olmo |
+| WildGuard-Test | 0.66 | 0.78 | +0.12 | Olmo |
+| WildJailbreak-harmful | 0.08 | 0.13 | +0.05 | Olmo |
+| StrongREJECT | 0.83 | 0.77 | −0.06 | Marin (flips) |
+| WMDP (inverted; ↑=less hazardous knowledge) | 0.65 | 0.48 | −0.17 | Marin lower capability |
+
+**Pre-registered H1 = 2/3.** H1 required ≥3 of {DAN, TrustLLM, StrongREJECT} to favor Olmo; StrongREJECT
+flipped, so H1 is not literally met, though the broad trend favors Olmo.
+
+The 8B ordering persists at 32B: Olmo's base is more refusal-prone than Marin's on 5 of 6 harmful-compliance
+benchmarks, with the largest gaps on framing attacks. The StrongREJECT flip is the same pattern seen in the
+tamper study — Marin complies but emits lower-specificity content, which the StrongREJECT quality judge scores
+low while the WildGuard refusal judge flags as harmful. WMDP inverts the direction: Marin carries less
+hazardous knowledge than Olmo at 32B.
+
+ARCH-CONFOUNDED as pre-registered: Marin-32B is Qwen3-arch, Olmo-3-32B is Olmo3-arch. This compares two
+shipped base models, not a clean data ablation.
+
+Write-up: repro-olmo3-safety/report/SUMMARY.md Part 7.
 
 ## Links
 Extends repro-olmo3-safety/report/SUMMARY.md Part 4/4b (8B base-vs-base). WMDP-32B capability diagnostic

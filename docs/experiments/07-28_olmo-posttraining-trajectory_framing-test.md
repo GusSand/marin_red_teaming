@@ -32,7 +32,25 @@ Plot DAN-refusal and HarmBench-misinfo-refusal vs stage (SFT/DPO/final). Report 
 whether H1's numeric thresholds hold. Verify each headline from raw all.json label counts (content-safe).
 
 ## Results
-NOT RUN (queued after 32B). Outputs → runs/2026-07-28-olmo-{sft,dpo,final}-*.
+RAN 2026-07-28/29. VERIFIED — all 18 runs recompute exactly from raw all.json.
+Outputs → runs/2026-07-28-olmo-{sft,dpo,final}-*. Reseeded 3-seed mean ± std.
+
+| inverted-ASR % (↑=safer) | SFT | DPO | final |
+|---|---|---|---|
+| DAN (framing refusal) | 87.3 ± 2.3 | 81.6 ± 3.5 | 73.4 ± 1.8 |
+| HarmBench misinfo (content refusal) | 67.3 ± 8.6 | 88.9 ± 1.5 | 86.4 ± 5.7 |
+
+**H1 REJECTED.** H1 predicted framing-detection (DAN) is installed before content-refusal. The opposite holds.
+Content/misinformation refusal is essentially complete by the DPO stage (67.3 → 88.9), while framing-attack
+robustness erodes monotonically across SFT → DPO → final (87.3 → 81.6 → 73.4).
+
+Seed fix (INBOX 2026-07-29 item b): the original run had byte-identical seeds on SFT-HarmBench, which
+understated that CI. Reseeded with the fixed sampler (scripts/patches/seed_fix_generation_utils.patch); all
+cells now have 3 distinct seeds. Reseeded point estimates match the originals within ~1–3pp, so the
+H1-rejected finding is unchanged. Sanity check: final ≈ the separately-measured Olmo-3-7B-Instruct baseline
+within ~1.5pt.
+
+Write-up: repro-olmo3-safety/report/SUMMARY.md Part 8.
 
 ## Links
 Ties to report/harmbench_gap_analysis.md (the framing hypothesis) + SUMMARY Part 3.

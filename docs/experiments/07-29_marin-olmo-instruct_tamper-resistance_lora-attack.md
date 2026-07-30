@@ -49,7 +49,31 @@ certainly a broken attack (LoRA not applied, wrong loss mask, adapter not loaded
 verify the attack actually changed the weights (compare step-0 vs step-80 generations differ), before believing it.
 
 ## Results
-NOT RUN (queued after Study A on the local GPU). Outputs → runs/2026-07-29-tamper-<model>-step<N>-*.
+RAN 2026-07-29. VERIFIED — all 24 cells recompute exactly; WildGuard labels independently GPU-revalidated by
+re-running the classifier (30/30 agreement at step 0 and step 80).
+Outputs → runs/2026-07-29-tamper-<model>-step<N>-*.
+
+| HarmBench ASR (↑=less safe) | step 0 | step 5 | step 10 | step 20+ |
+|---|---|---|---|---|
+| Olmo-3-7B-Instruct | 5.6% | 10.9% | 93.4% | 99.1% |
+| Marin-8B-Instruct | 15.6% | 30.3% | 97.8% | 99.1% |
+
+**Neither open model is tamper-resistant.** Safety collapses from single-digit / low ASR to ~99% by step 10 —
+a few dozen optimizer steps on ~100 public AdvBench examples. Step-0 matches the untouched instruct baselines,
+which validates the LoRA merge. The 0.009 floor at step 80 is 3/320 genuinely-refused items; outputs are
+non-degenerate.
+
+This closes the project's main measurement gap. Every other study here measures default behavior; this one
+measures whether that behavior survives an adversary with the weights. It does not, which is why the
+default-behavior numbers elsewhere are a gap map rather than a robustness claim.
+
+Reporting note (INBOX 2026-07-29): StrongREJECT moves the opposite way under this attack. That is not
+tamper-resistance — the attack yields short, low-specificity text that the StrongREJECT quality judge scores
+near zero. HarmBench/WildGuard is the correct headline; StrongREJECT carries a length-collapse caveat only.
+
+Safety handling as pre-registered: attacked weights deleted, only ASR curves retained.
+
+Write-up: repro-olmo3-safety/report/SUMMARY.md Part 10.
 
 ## Links
 Closes the measurement gap flagged in outputs/marin_pretraining_safety_proposal.md and SUMMARY. Refs:

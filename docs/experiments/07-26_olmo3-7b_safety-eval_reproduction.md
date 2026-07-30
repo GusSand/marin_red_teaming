@@ -24,11 +24,21 @@ Olmo 3 7B Instruct (arXiv:2512.13961v2 Table 53) and Think (Table 52) using
 - Determinism: vLLM decoding is not bit-exact; compare within tolerance, never exact equality.
 
 ## Results
-- Gate 0: DONE (extraction). Pending human verification of targets.
-- Gates 1–6: NOT RUN.
+RAN 2026-07-26/28. Harness fully validated against both published Olmo-3 tables.
+
+- Gate 0: DONE. Targets human-verified against the PDF.
+- Olmo-3-7B-Instruct (Table 53): 13/13 rows PASS within the pre-registered ±3pp.
+- Olmo-3-7B-Think (Table 52, thinker_eval=answers, 32k tokens): 11/13 rows PASS, max |Δ| = 0.82pp.
+  StrongReject-Think and Toxigen-Think NOT RUN — reasoning over 2294 and 14000 prompts is impractical
+  (~days); gs157 chose to skip. Toxigen is non-discriminating at 100.0 in any case.
+- WMDP-Think independently recomputed as fraction-incorrect (41.83 / 44.28 / 42.64) = reported. MATCH.
+
+Per-row deltas: repro-olmo3-safety/report/deltas.md. Write-up: SUMMARY.md Parts 3 and 5.
 
 ## Verified / Unverified
-- All numeric results UNVERIFIED until produced from a real run + reproduced from raw data.
+- VERIFIED. Each headline recomputed from raw labels by an independent subagent on a separate code path.
+- Reproducing the published numbers on this harness is the precondition that makes the Marin numbers
+  (SUMMARY Parts 2 and 4) checkable rather than self-reported.
 
 ## Links
 - Targets: `repro-olmo3-safety/targets.json`

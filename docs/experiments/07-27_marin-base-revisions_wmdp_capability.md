@@ -36,7 +36,9 @@ pretraining-safety proposal (outputs/marin_pretraining_safety_proposal.md).
 - Cross-check one revision's WMDP-bio against a published Marin/DCLM number if available.
 
 ## Results
-NOT RUN (staged to launch after Olmo-Think). Outputs → runs/wmdp-base-<tag>/.
+RAN 2026-07-27 on the remote A100. VERIFIED. Outputs → runs/wmdp-base-<tag>/.
+Full table and read-out in the "Results (2026-07-27) — VERIFIED" section below; 32B numbers in
+"Scale extension (2026-07-27)" below.
 
 ## Links
 - Proposal: outputs/marin_pretraining_safety_proposal.md
