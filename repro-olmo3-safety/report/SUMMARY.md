@@ -1,4 +1,4 @@
-# Olmo 3 7B safety reproduction + Marin 8B red-team — Consolidated Summary
+# Marin 8B red-team — Consolidated Summary
 
 Status as of 2026-07-26 22:xx UTC. Living document — base & Think sections appended as runs complete.
 Harness: [`allenai/safety-eval`](https://github.com/allenai/safety-eval) @060cc903 (pinned), vLLM 0.11.0, transformers 4.57.1, one A100 80GB,

@@ -55,6 +55,13 @@ Logs go to `logs/<jobid>_<short-name>.log`. Never overwrite prior results.
   `allenai/Olmo-3-7B-Instruct-{SFT,DPO,Instruct}` × {`do_anything_now:default`,`harmbench:default`}
   × 3 seeds (18 rows), hf chat template. Does NOT auto-shut-down the box (shutdown is manual after
   verification). See `docs/experiments/07-28_olmo-posttraining-trajectory_framing-test.md`.
+- `studyB_reseed.sh` — Study B RESEED (INBOX seed-method → b): re-runs Olmo `{SFT,DPO,Instruct}` ×
+  {`do_anything_now:default`,`harmbench:default`} × 3 seeds with the fixed per-run vLLM sampling seed
+  (`run_row.sh` now exports `SAFETYEVAL_SAMPLING_SEED`), so the previously byte-identical cells get valid
+  3-seed CIs. Download-run-delete per checkpoint (local disk tight); writes new `-reseed` label prefixes
+  so the original buggy-CI runs are preserved for before/after. Updated SUMMARY Part 8.
+- `studyB_reseed_rest.sh` — remainder of the above (DPO + final only; SFT's 6 rows already completed).
+  Same seed-fixed protocol.
 
 ### 32B compute topology (2026-07-28/29)
 32B base-vs-base ran one model per A100 80GB (bf16 fits): `marin-32b-base` (Qwen3 arch, fp32 weights

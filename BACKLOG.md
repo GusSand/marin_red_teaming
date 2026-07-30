@@ -487,3 +487,37 @@ Risks/notes: repo has **NO explicit license** → check / ask gs157 before redis
 (Hydra + accelerate + PEFT + vLLM) is compatible with ours; tested on H100, we run A100 (fine). Compute:
 attack+eval per model ≈ our tamper run (~hours). Refs: outputs/refs_safety_pretraining.md (Safety Gap +
 refusal-ablation entries).
+
+---
+
+## QUEUED 2026-07-30 (from gs157) — evaluate GRAM (modular pretraining access control) as the pretraining DEFENSE
+Motivation: Roland et al., **Modular Pretraining Enables Access Control** (GRAM, ICML 2026 Spotlight ·
+arXiv:2607.08077 · code https://github.com/agencyenterprise/modular-pretraining). Pretraining-time gradient
+routing quarantines dual-use capability into small removable auxiliary modules → one training run, many
+capability profiles, delete a module to drop a capability. This is the concrete **pretraining defense** our
+report keeps pointing at (README "Where a real fix has to live" / "What's next" #2-3), and it graduates the
+project from MEASURING the problem (repro / gap-map / tamper curves / Safety Gap Toolkit) to BUILDING+BREAKING
+a fix. Sits next to Deep Ignorance in refs: "train it but quarantine it" vs "don't train on it."
+
+**Sequencing: this is the phase AFTER the Safety Gap Toolkit task above.** Bigger scope + compute. Do not start
+before that lands.
+
+Reality check (settled before this session queued it):
+- **Not applicable to Marin-8B post-hoc.** GRAM isolates capability DURING pretraining → can't retrofit an
+  8B released checkpoint. This becomes a from-scratch small-model project (their runs: 26M→5B; on our single
+  A100, ~50M-800M is realistic over days, 5B is not).
+- **License = none on repo (all-rights-reserved by default)** → INBOX item before we adapt/redistribute their
+  code; otherwise reimplement gradient routing from the paper. No checkpoints released → train from scratch.
+- **They already ship an adversarial "elicited-forget" metric** + RMU/MaxEnt/ASCENT + DEMix/LoRA baselines, so
+  "run a tamper attack on it" is NOT novel by itself.
+
+Where our angle is actually ours (candidate scoped experiment — PRE-REGISTER before running):
+1. [ ] **Independent tamper adversary.** Reproduce a small GRAM module-deletion model, then attack it with OUR
+   Part-10 protocol (LoRA affirmative-prefix + WildGuard/HarmBench), a *different* adversary than their in-house
+   elicited-forget metric. Question: does module-deletion survive a cheap fine-tuning attack, or collapse back
+   to ~99% like refusal did? (CLAUDE.md independent-path principle.)
+2. [ ] **Head-to-head vs data filtering under OUR gaps.** GRAM claims to beat filtering under sparse labels;
+   our biggest gap (misinformation) is a general ability, not deletable knowledge. Test whether GRAM/filtering
+   help at all on a misinfo-style capability vs the discrete dual-use ones (chem-bio/cyber).
+Pre-reqs before any GPU: (a) INBOX license question; (b) decide reimplement-vs-adapt; (c) pick scale that fits
+one A100. Refs: outputs/refs_safety_pretraining.md (GRAM entry).

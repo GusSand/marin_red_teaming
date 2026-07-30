@@ -7,6 +7,23 @@
   **ICLR 2026** (peer-reviewed); 50 citations as of 2026-07-27; open models/data/code on HF + GitHub.
   Standing + counterpoints (Phantom Transfer 2602.04899; biorisk-eval 2510.27629): see
   outputs/deep_ignorance_reception.md — established but explicitly defence-in-depth, not settled.
+- **Modular Pretraining Enables Access Control (GRAM — Gradient-Routed Auxiliary Modules).**
+  Roland, Cubuktepe, Martinez, Servaes, Pepper, Vaiana, de Lucena, Rosenblatt (AE Studio); Foote (Independent);
+  Anil, Cloud (Anthropic). **ICML 2026 Spotlight.** arXiv:2607.08077 · OpenReview yIubI9l3IT ·
+  code https://github.com/agencyenterprise/modular-pretraining · data https://huggingface.co/datasets/AE-data/dual-use-papers ·
+  blogs https://ae.studio/research/modular-pretraining-access-control + https://www.anthropic.com/research/off-switch-dual-use .
+  Pretraining-TIME access control: route gradients from dual-use data into small removable auxiliary MLP modules
+  so ONE training run yields many capability profiles — delete a module at inference to drop that capability while
+  keeping general performance. Matches data-filtering on capability removal, BEATS it under sparse/partial labels,
+  and composes across modules better than LoRA. Scales 50M→5B (capability gap widens with scale). The
+  "train it but quarantine it" complement to Deep Ignorance's "don't train on it at all."
+  **Caveats for us:** (1) NO LICENSE file on the repo → defaults to all-rights-reserved; we can read/learn but
+  cannot redistribute adapted code without permission — check with authors or reimplement gradient routing from
+  the paper. (2) No checkpoints released (`*.pth`/`*.safetensors` git-ignored) → train from scratch. (3) Repo
+  ALREADY ships an adversarial-finetuning "elicited-forget" metric + unlearning baselines (RMU/MaxEnt/ASCENT) +
+  DEMix/LoRA comparisons; authors call tamper-resistance preliminary and note capabilities can be elicited back.
+  Relevance: the concrete pretraining DEFENSE our report keeps pointing at (moves us from measuring the problem
+  to building+breaking a fix); candidate "phase after the Safety Gap Toolkit." Follow-up: BACKLOG "evaluate GRAM".
 - **The WMDP Benchmark: Measuring and Reducing Malicious Use with Unlearning.** Li et al., ICML 2024.
   arXiv:2403.03218. 3,668 MC proxy questions (bio/chem/cyber). Introduces RMU (Representation Misdirection
   for Unlearning): perturbs activations on hazardous data, preserves general capability; near-random WMDP
