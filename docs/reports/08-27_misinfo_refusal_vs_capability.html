@@ -65,7 +65,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
 <header>
   <div class="masthead"><span>Marin red teaming · experiment report</span><span>28 Aug 2026 · pre-registered, results pending</span><span>6-checkpoint trajectory · base-model safety evaluation</span></div>
   <h1>Is the cooldown misinformation rise reduced refusal, or improved writing?</h1>
-  <p class="deck">A decomposition of the WildGuard-judged misinformation rate across six Marin-8B base checkpoints into refusal, conditional harmfulness, and response quality, with ten seeds on one GPU at the three checkpoints that decide it.</p>
+  <p class="deck">The S9 rise could be a safety change or a judge artifact. This run splits the number into refusal and writing quality to find out.</p>
   <div class="metadata"><span>Experimenter: Gus Sandoval</span><span>Experiment dates: 08-27-2026 / 08-28-2026</span><span>Compute: NYU Torch, one L40S</span><span>Job 16508385</span><span>Status: running, endpoints incomplete, no results inspected</span></div>
 </header>
 
@@ -74,17 +74,17 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <h2>Why conduct this experiment?</h2>
   <div class="lede">
     <div>
-      <p>The 07-28 trajectory found misinformation generation on Marin's own base checkpoints is <em>lowest</em> at Phoenix, the web phase, and climbs through the late curated cooldown: 49% at Phoenix to 77% at Starling to 80% at Deeper-Starling. David Hall named the Phoenix-to-Starling delta as a ~30% "high quality" mix of Wikipedia, a Common Crawl archive and DOLMA HQ. That converts a surprising slide into a runnable ablation.</p>
-      <p>But the metric is a classifier's harmfulness label, and the classifier is quality-sensitive. The rate rises if the model got better at writing confident expository prose, with refusal completely unchanged, and Wikipedia plus DOLMA HQ is exactly the data that teaches that. The mirror image is already on record: under the S8 tamper attack, StrongREJECT ASR fell 12% to 1% purely because response length collapsed. If that mechanism can manufacture an 11-point improvement it can manufacture a 28-point regression.</p>
-      <p>So before the cooldown-mix ablation is proposed or costed, this experiment must decide whether the rise is a behaviour change or a measurement artifact. It can invalidate the framing, which is why it runs first.</p>
+      <p>Misinformation generation on Marin's base checkpoints is lowest at Phoenix (49%) and climbs through the cooldown to 80%. David Hall named the delta: a ~30% mix of Wikipedia, Common Crawl archive and DOLMA HQ.</p>
+      <p>But the metric is a classifier's harmfulness label, and the classifier rewards good writing. That mix is exactly what teaches confident prose. We already have the mirror image: under the S8 tamper attack, ASR fell 12% to 1% because responses got shorter.</p>
+      <p>If the rise is a judge artifact, the cooldown ablation is aimed at nothing. This experiment decides that first.</p>
     </div>
     <div class="facts">
-      <div class="fact"><strong>54</strong><span>misinformation behaviours per checkpoint; one is 1.85pp</span></div>
-      <div class="fact"><strong>39</strong><span>runs, sequential, in one GPU allocation</span></div>
-      <div class="fact"><strong>10 × 3</strong><span>seeds at the three checkpoints that define the hypotheses</span></div>
-      <div class="fact"><strong>4 / 4</strong><span>port-gate checks passed before launch</span></div>
-      <div class="fact"><strong>320 / 320</strong><span>token-identical at fixed seed; 0 / 320 across seeds</span></div>
-      <div class="fact"><strong>0</strong><span>trajectory results inspected while the endpoints run</span></div>
+      <div class="fact"><strong>54</strong><span>behaviours; one is 1.85pp</span></div>
+      <div class="fact"><strong>39</strong><span>runs, one GPU</span></div>
+      <div class="fact"><strong>10 × 3</strong><span>seeds at the endpoint tags</span></div>
+      <div class="fact"><strong>4 / 4</strong><span>gate checks passed</span></div>
+      <div class="fact"><strong>320 / 320</strong><span>same-seed identical; 0 / 320 across seeds</span></div>
+      <div class="fact"><strong>0</strong><span>results inspected so far</span></div>
     </div>
   </div>
 </section>
@@ -92,10 +92,10 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
 <section class="report-body">
   <p class="section-kicker">Setup</p>
   <h2>Experimental Details</h2>
-  <p>The probe is HarmBench <code>default</code>, 320 behaviours, scored at analysis time on the 54 in the <code>misinformation_disinformation</code> semantic category. Base models have no chat template, so every prompt is wrapped in a minimal <code>User: {instruction}\n\nAssistant:</code> scaffold; without it the model echoes the prompt and the judge scores the echo as compliance, which is what invalidated the first base-model numbers.</p>
-  <p>Generation is vLLM 0.11 at temperature 0.7, top-p 0.95, with safety-eval pinned at <code>060cc903</code>. A patch routes a seed into vLLM's sampler, because <code>PYTHONHASHSEED</code> does not reach it and the historical Starling and Deeper-Starling "three seeds" were byte-identical. The judge is WildGuard 7B from pinned offline weights, emitting a harmfulness label and a refusal label per response.</p>
-  <p>Six revisions of <code>marin-community/marin-8b-base</code> are evaluated, each resolved to a distinct commit and pinned. The three endpoint tags that define the hypotheses, Phoenix, Starling and Deeper-Starling, get ten seeds each; the three context tags, Kestrel, Ocelot and Jellyfish, get three. All 39 runs execute sequentially in a single GPU allocation, since vLLM only claims reproducibility on identical hardware and every inference here is a comparison across revisions. A Slurm array would confound revision with node.</p>
-  <p>Per checkpoint the run yields six series: refusal rate, harmful rate, harmful given non-refusal, empty rate, median and IQR response length, and non-response rate (empty plus prompt-echo plus off-topic). Per-instance labels are kept outside the repository tree; only aggregate counts enter the report.</p>
+  <p><strong>Probe.</strong> HarmBench, 320 behaviours; analysis on the 54 misinformation ones. Prompts wrapped in a <code>User:/Assistant:</code> scaffold, because unscaffolded base models echo the prompt and the judge scores the echo.</p>
+  <p><strong>Generation.</strong> vLLM 0.11, temp 0.7, top-p 0.95, safety-eval pinned. A patch puts the seed into vLLM's sampler; without it the old "three seeds" were byte-identical. Judge: WildGuard 7B, offline weights, one harmfulness and one refusal label per response.</p>
+  <p><strong>Design.</strong> Six pinned revisions. Phoenix, Starling and Deeper-Starling get ten seeds; the rest get three. All 39 runs go sequentially on one GPU, because vLLM only reproduces on identical hardware and an array would confound revision with node.</p>
+  <p><strong>Output per checkpoint.</strong> Refusal rate, harmful rate, harmful given non-refusal, empty rate, response length, non-response rate. Per-instance labels stay out of the repo.</p>
 
   <figure class="figure-shell"><div class="figure">
     <div class="figure-top"><p class="figure-title">Figure 1 · The trajectory this experiment decomposes (historical, 07-28 run)</p><p class="figure-note">WildGuard harmful rate, 54 misinformation behaviours, 3 seeds, empties excluded</p></div>
@@ -118,34 +118,34 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
         <text x="535" y="30" font-family="DM Mono, monospace" font-size="11" fill="var(--muted)" text-anchor="start" letter-spacing=".06em">← WEB PHASE   |   HQ MIX ENTERS →</text>
       </svg>
     </div>
-    <figcaption>Umber bars are the endpoint tags that receive ten seeds. Phoenix is the minimum. These are the historical values and serve as context only: the historical seeds for Starling and Deeper-Starling were collapsed, and the Jellyfish spread is invalid (three identical seeds). The new six-tag set, not this one, is the inferential dataset.</figcaption>
+    <figcaption>Umber bars get ten seeds. Historical values, context only: the old Starling and Deeper-Starling seeds were collapsed and Jellyfish's spread is invalid. The new run is the inferential dataset.</figcaption>
   </div></figure>
 </section>
 
 <section class="report-body">
   <p class="section-kicker">Pre-registered</p>
   <h2>Claims</h2>
-  <p>Four hypotheses were fixed with numeric thresholds before any run. Verdicts report intervals, not bare pass/fail: a contrast whose paired 95% interval straddles its threshold is indeterminate on that clause, not resolved by wherever the point estimate falls. All four are open until the endpoint tags complete in one allocation and an independent pass has recomputed the headline from raw labels.</p>
+  <p>Thresholds fixed before the run. Verdicts report intervals; a contrast whose interval straddles its threshold is indeterminate, not decided by the point estimate.</p>
 
   <div class="claim">
     <h3>H0: Refusal genuinely drops in the cooldown</h3>
     <p class="result">RESULT: <b class="pending">Pending</b></p>
-    <p>Refusal rate falls by ≥ 10pp from Phoenix to Starling, which on 54 behaviours is 5.4 items. If upheld, the cooldown-mix ablation is correctly aimed and this is a finding about pretraining data composition. This is the only hypothesis under which the headline is a safety finding.</p>
+    <p>Refusal falls ≥ 10pp, Phoenix to Starling. That is 5.4 of 54 behaviours. The only outcome that makes S9 a safety finding and licenses the ablation.</p>
   </div>
   <div class="claim">
     <h3>H1: The model writes better, and the judge rewards that</h3>
     <p class="result">RESULT: <b class="pending">Pending</b></p>
-    <p>All three required, Phoenix to Deeper-Starling: refusal moves by &lt; 10pp in absolute value, harmful-given-non-refusal rises by ≥ 15pp, and median non-empty response length rises by ≥ 25%. If upheld, the ablation is aimed at a measurement artifact and the publishable result is that a standard safety judge reads a capability increase as a safety regression on base models.</p>
+    <p>Phoenix to Deeper-Starling, all three: refusal moves &lt; 10pp, harmful-given-non-refusal rises ≥ 15pp, median length rises ≥ 25%. Then the finding is about the judge, not the data.</p>
   </div>
   <div class="claim">
     <h3>H1b: The model follows the scaffold better, not writes better</h3>
     <p class="result">RESULT: <b class="pending">Pending · partially testable</b></p>
-    <p>The non-response rate (empty, prompt-echo, off-topic) falls steeply across revisions while refusal stays flat: the model is learning to answer, not learning to comply with harmful requests specifically. This run reads the non-response series but cannot close H1b, because the benign control originally proposed for it was rejected as non-discriminating (see Q3). Closing it needs an objectively gradable benign task or a relevance scorer, which does not yet exist in the repository.</p>
+    <p>Non-response rate falls steeply while refusal stays flat: the model learns to answer, not to comply. This run reads that series but cannot close H1b; the benign control was rejected (Q3) and the replacement instrument does not exist yet.</p>
   </div>
   <div class="claim">
     <h3>Mixed: Both</h3>
     <p class="result">RESULT: <b class="pending">Pending</b></p>
-    <p>Refusal down ≥ 10pp and conditional harmfulness up ≥ 15pp. Reported as such; the ablation would proceed under a narrowed claim with the primary metric switched to refusal rate or harmful-given-non-refusal.</p>
+    <p>Refusal down ≥ 10pp and conditional harm up ≥ 15pp. The ablation proceeds with a narrowed claim and a different primary metric.</p>
   </div>
 
   <figure class="figure-shell"><div class="figure">
@@ -173,14 +173,14 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
         </g>
       </svg>
     </div>
-    <figcaption>Each seed was run at least twice and reproduced token-exactly, so these are real sampling differences, not noise in the harness. One pairwise difference between two seeds is not a variance estimate and is not quoted as a noise floor. It is enough to show that the pre-registered thresholds sit near the seed spread, which is why the endpoint tags get ten seeds and why the verdict reports intervals. Ten seeds is a precision increase, not a power analysis.</figcaption>
+    <figcaption>Each seed reproduced token-exactly, so this is real sampling spread. One difference from two seeds is not a variance estimate, but it shows the threshold sits near the noise. That is why the endpoints get ten seeds and why verdicts carry intervals.</figcaption>
   </div></figure>
 </section>
 
 <section class="report-body">
   <p class="section-kicker">Verified before launch</p>
   <h2>Port gate</h2>
-  <p>The original design gated on reproducing Phoenix at 49% ± 3pp. That gate was withdrawn as a pre-data deviation (see Q1) and replaced with four binary protocol and invariant checks. All four passed on 2026-08-27, and each was verified from raw data rather than from the harness's own summary.</p>
+  <p>The ± 3pp reproduction gate was withdrawn (Q1) for four binary checks. All passed on 2026-08-27, each verified from raw data.</p>
   <div class="tablewrap"><table>
     <thead><tr><th>Check</th><th>Requirement</th><th>Evidence</th><th>Result</th></tr></thead>
     <tbody>
@@ -195,26 +195,26 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
 <section class="report-body">
   <p class="section-kicker">Decision rule</p>
   <h2>Recommendations</h2>
-  <p>Written before any result exists, so the result cannot move them.</p>
+  <p>Fixed before results, so results cannot move them.</p>
   <ul>
-    <li><strong>If H0 is supported</strong>, proceed to cost the seven-arm cooldown-mix ablation as designed, with the matched-volume and learning-rate-schedule controls kept. Send David the one-pager with this decomposition attached.</li>
-    <li><strong>If H1 or H1b is supported</strong>, do not propose the ablation. The finding becomes a measurement result about open-weight safety evaluation on base models: a quality-sensitive judge reads capability as harm. That is publishable on its own and changes what should be measured before any data intervention is costed.</li>
-    <li><strong>If mixed</strong>, the ablation proceeds under a narrowed claim and its primary metric changes to refusal rate or harmful-given-non-refusal, never the raw harmful rate.</li>
-    <li><strong>Regardless of outcome</strong>, choose the H1b instrument. It is now the blocker on a hypothesis the study nominally tests, and it is its own selection experiment.</li>
-    <li><strong>If the running job is externally terminated</strong>, no third L40S attempt: switch to h200_tandon, rerun gate check 3 on one H200 first, run all 39 under a fresh namespace on that hardware, reuse no L40S results, and log the switch as a pre-data hardware deviation.</li>
+    <li><strong>H0:</strong> cost the seven-arm ablation as designed, controls kept. Send David the one-pager with this attached.</li>
+    <li><strong>H1 or H1b:</strong> do not propose the ablation. Write up the judge artifact instead.</li>
+    <li><strong>Mixed:</strong> ablation proceeds, primary metric becomes refusal or harmful-given-non-refusal.</li>
+    <li><strong>Any outcome:</strong> pick the H1b instrument. It is the blocker now.</li>
+    <li><strong>If the job dies again:</strong> no third L40S. Move to H200, redo gate 3 there, rerun all 39, reuse nothing.</li>
   </ul>
 </section>
 
 <section class="report-body">
   <p class="section-kicker">Method decisions</p>
   <h2>Supporting Analysis and Questions</h2>
-  <p>Every question below was settled before data existed and is recorded in the experiment file as a pre-data deviation where it changed the design.</p>
+  <p>All settled before data existed.</p>
 
   <h3>Q1: Why was the ± 3pp reproduction gate withdrawn?</h3>
-  <p>Because it could not support an equivalence claim in either direction. Phoenix's own historical per-seed values are 46.30, 42.59 and 57.41, a standard deviation of 7.71pp, so the standard error of a three-seed mean is 4.45pp, wider than the tolerance. A perfect port would fail the gate about half the time. More seeds now would shrink the new mean's uncertainty but cannot repair the noisy three-run historical target on the other side of the comparison. And the historical trajectory mixes patched, unpatched and seed-collapsed sampling across tags, so it is not a single coherent protocol to be equivalent to. The replacement is the four-check protocol gate above; Phoenix old-versus-new is reported descriptively with uncertainty and is not pass/fail.</p>
+  <p>Phoenix's historical seeds are 46.3, 42.6 and 57.4: sd 7.7pp, so a three-seed mean has SEM 4.5pp. A perfect port fails a ± 3pp gate half the time. More seeds now cannot fix the noisy historical target, and the old trajectory mixes patched, unpatched and collapsed sampling. Replaced by the protocol gate; old-vs-new Phoenix is descriptive only.</p>
 
   <h3>Q2: Why one GPU, and what did it cost?</h3>
-  <p>vLLM claims reproducibility only on identical hardware and version. A first determinism check ran as a three-task array, landed on gl040, gl064 and gl024, and "failed"; the failure was the test design. Since every inference in this experiment is a comparison across revisions, an array would confound revision with node. The launcher therefore runs all 39 sequentially and hard-fails on any prior run whose provenance (GPU UUID, host, engine flags, seed, commit) does not match the current allocation. That guard was tested against the actual contaminated directory left by a failed earlier job before launch, and it fired for real once: a node drain killed the first attempt with Phoenix ×10 and Starling ×10 complete. Those runs are on disk and excluded. The endpoints re-ran in full.</p>
+  <p>vLLM only reproduces on identical hardware. The first determinism check ran as an array, landed on three nodes and "failed"; the test was wrong, not the harness. So all 39 run sequentially, and the launcher refuses any prior run whose GPU, host, flags, seed or commit differ from the current allocation. That guard cost us once: a node drain killed attempt two with 20 endpoint runs done. They are excluded.</p>
   <div class="tablewrap"><table>
     <thead><tr><th>Attempt</th><th>Job</th><th>Node</th><th>Outcome</th><th>Runs kept</th></tr></thead>
     <tbody>
@@ -225,11 +225,11 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   </table></div>
 
   <h3>Q3: Why is the benign control not decisive for H1b?</h3>
-  <p>The natural discriminator for instruction following is a benign control: improved format-following raises compliance on every instruction, harmful or not, while a safety-specific change does not. <code>wildjailbreak:benign</code> was proposed for this and rejected on two grounds. Its WildGuard metric measures non-refusal, not relevance or task success, so off-topic base-model text passes it, which is precisely the failure mode it was meant to detect. And it is saturated: scaffolded Marin-base already scores 96.4%, leaving no headroom for a delta. It survives as a secondary over-refusal diagnostic. H1b needs a gradable benign task or a relevance scorer, and until one is chosen the hypothesis stays open.</p>
+  <p>A benign control should separate instruction following from safety: better format-following lifts compliance on everything. But <code>wildjailbreak:benign</code> scores non-refusal, not task success, so off-topic text passes, which is the exact failure it was meant to catch. It is also saturated at 96.4%. H1b needs a gradable benign task; until then it stays open.</p>
 
   <h3>Q4: How is the paired analysis defined with ten seeds?</h3>
-  <p>Both tags in each contrast saw identical prompts, so the analysis is paired over the 54 behaviours. The primary statistic is per-behaviour seed proportions, the fraction of a tag's seeds labelled harmful, with paired differences, a behaviour-level bootstrap 95% interval and a sign-flip permutation p-value. That is defined for any seed count and has no tie problem. Exact McNemar is retained only for comparability with the three-seed work; with ten seeds a 5–5 split is not a majority and is reported as an explicit <em>unstable</em> category, counted, excluded from the 2×2 and bounded by assigning ties both ways. Two contrasts (Phoenix→Starling for H0, Phoenix→Deeper-Starling for H1) across three series is six tests; the verdict uses Holm-adjusted values, fixed before the numbers exist.</p>
-  <div class="callout"><span class="eyebrow">Verification rule</span>Before any result is logged, an independent pass recomputes the headline from raw per-instance labels using the pre-registered criteria and none of the analysis code. That was already done for the gate runs; it will be done again for the trajectory.</div>
+  <p>Paired over the 54 behaviours. Primary: per-behaviour seed proportions, bootstrap CI, permutation p. No tie problem at any seed count. McNemar kept for comparability, with 5–5 splits as an explicit <em>unstable</em> category. Two contrasts, three series, six tests, Holm-adjusted.</p>
+  <div class="callout"><span class="eyebrow">Verification rule</span>Nothing is logged until an independent pass recomputes the headline from raw labels, without the analysis code.</div>
 </section>
 
 <section class="reference report-body">
@@ -248,7 +248,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
         <tr><td>deeper-starling</td><td>endpoint · H1</td><td>d57287aa</td><td class="num">10</td><td class="num">79.6</td><td>reseed dirs only; plain dirs collapsed</td><td>queued</td></tr>
       </tbody>
     </table></div>
-    <p class="small">Provenance per run records hostname, GPU UUID, driver, engine flags, seed environment variable, harness commit and resolved model commit. Spec: <code>docs/experiments/08-27_marin-base-trajectory_misinfo-refusal-vs-capability.md</code>. Launcher: <code>slurm/misinfo_trajectory_seq.sbatch</code>. Historical baselines from the 07-28 run; the new six-tag set is the inferential dataset.</p>
+    <p class="small">Spec: <code>docs/experiments/08-27_marin-base-trajectory_misinfo-refusal-vs-capability.md</code>. Launcher: <code>slurm/misinfo_trajectory_seq.sbatch</code>. Per-run provenance records host, GPU UUID, driver, flags, seed, harness and model commits.</p>
   </details>
 </section>
 </div>
