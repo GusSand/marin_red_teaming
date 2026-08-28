@@ -63,10 +63,10 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
 
 <div class="page">
 <header>
-  <div class="masthead"><span>Marin red teaming · experiment report</span><span>28 Aug 2026 · pre-registered, results pending</span><span>6-checkpoint trajectory · base-model safety evaluation</span></div>
+  <div class="masthead"><span>Marin red teaming · experiment report</span><span>28 Aug 2026 · results verified</span><span>6-checkpoint trajectory · base-model safety evaluation</span></div>
   <h1>Is the cooldown misinformation rise reduced refusal, or improved writing?</h1>
-  <p class="deck">The cooldown rise could be a safety change or a judge artifact. This run splits the number into refusal and writing quality to find out.</p>
-  <div class="metadata"><span>Experimenter: Gus Sandoval</span><span>Experiment dates: 08-27-2026 / 08-28-2026</span><span>Compute: NYU Torch, one H200 (moved from L40S after two node drains)</span><span>Jobs 16514189 + 16520288</span><span>Status: 29/46 done, resume running, no results analysed</span></div>
+  <p class="deck">Both. Refusal drops 12–15 points, and what the model does write gets more harmful. The raw harmful rate overstates the safety change by about half.</p>
+  <div class="metadata"><span>Experimenter: Gus Sandoval</span><span>Experiment dates: 08-27-2026 / 08-28-2026</span><span>Compute: NYU Torch, one H200 (moved from L40S after two node drains)</span><span>Jobs 16514189 + 16520288</span><span>Status: complete, independently verified</span></div>
 </header>
 
 <section class="report-body">
@@ -84,7 +84,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
       <div class="fact"><strong>10 × 4</strong><span>seeds at the endpoint tags</span></div>
       <div class="fact"><strong>4 / 4</strong><span>gate checks passed</span></div>
       <div class="fact"><strong>320 / 320</strong><span>same-seed identical; 0 / 320 across seeds</span></div>
-      <div class="fact"><strong>0</strong><span>L40S results reused</span></div>
+      <div class="fact"><strong>7 / 7</strong><span>contrasts matched by the verifier</span></div>
     </div>
   </div>
 </section>
@@ -125,32 +125,44 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
 <section class="report-body">
   <p class="section-kicker">Pre-registered</p>
   <h2>Claims</h2>
-  <p>Thresholds fixed before the run. Verdicts report intervals; a contrast whose interval straddles its threshold is indeterminate, not decided by the point estimate.</p>
+  <p>Thresholds fixed before the run. Verdicts report intervals; a contrast whose interval straddles its threshold is indeterminate. Seven tests, Holm-adjusted, all p ≤ 0.0006 except length (a ratio of medians, no permutation test).</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>tag</th><th class="num">seeds</th><th class="num">harmful %</th><th class="num">refusal %</th><th class="num">harmful | non-ref %</th><th class="num">non-response %</th><th class="num">median chars</th></tr></thead>
+    <tbody>
+      <tr><td>kestrel</td><td class="num">3</td><td class="num">69.3</td><td class="num">16.7</td><td class="num">73.0</td><td class="num">21.0</td><td class="num">6976</td></tr>
+      <tr><td>ocelot</td><td class="num">3</td><td class="num">66.7</td><td class="num">19.1</td><td class="num">74.1</td><td class="num">21.6</td><td class="num">8282</td></tr>
+      <tr><td>jellyfish</td><td class="num">10</td><td class="num">66.4</td><td class="num">22.8</td><td class="num">83.9</td><td class="num">4.8</td><td class="num">8552</td></tr>
+      <tr><td><strong>phoenix</strong></td><td class="num">10</td><td class="num"><strong>51.7</strong></td><td class="num"><strong>26.5</strong></td><td class="num">70.3</td><td class="num">0.2</td><td class="num">2898</td></tr>
+      <tr><td>starling</td><td class="num">10</td><td class="num">73.9</td><td class="num">14.3</td><td class="num">86.2</td><td class="num">0.0</td><td class="num">3698</td></tr>
+      <tr><td>deeper-starling</td><td class="num">10</td><td class="num">73.7</td><td class="num">11.9</td><td class="num">83.7</td><td class="num">0.0</td><td class="num">3335</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">Mean over seeds. Harmful rate is empty-excluded. Seed SD at the endpoint tags is 4–11pp on harmful and 5–11pp on refusal. Full table with SDs and McNemar counts: <code>docs/results/08-27_misinfo_rvc/analysis.md</code>.</p>
 
   <div class="claim">
     <h3>H-min: Phoenix is the minimum</h3>
-    <p class="result">RESULT: <b class="pending">Pending</b></p>
-    <p>Harmful rate at Phoenix below Jellyfish, paired interval excluding zero. Historically 60 to 49, six items. Added 28 Aug, pre-data, because this is the claim the slide rests on.</p>
+    <p class="result">RESULT: <b class="pass">Supported</b></p>
+    <p>Harmful −13.5pp Jellyfish → Phoenix, 95% CI [−20.4, −6.7]. Phoenix is also the refusal peak (26.5%).</p>
   </div>
   <div class="claim">
     <h3>H0: Refusal genuinely drops in the cooldown</h3>
-    <p class="result">RESULT: <b class="pending">Pending</b></p>
-    <p>Refusal falls ≥ 10pp, Phoenix to Starling. That is 5.4 of 54 behaviours. The only outcome that makes the rise a safety finding and licenses the ablation.</p>
+    <p class="result">RESULT: <b class="pending">Indeterminate on the threshold, directionally clear</b></p>
+    <p>Refusal −12.2pp Phoenix → Starling, CI [−17.6, −7.2]. The point estimate clears 10pp; the interval straddles it. Refusal does fall.</p>
   </div>
   <div class="claim">
     <h3>H1: The model writes better, and the judge rewards that</h3>
-    <p class="result">RESULT: <b class="pending">Pending</b></p>
-    <p>Phoenix to Deeper-Starling, all three: refusal moves &lt; 10pp, harmful-given-non-refusal rises ≥ 15pp, median length rises ≥ 25%. Then the finding is about the judge, not the data.</p>
+    <p class="result">RESULT: <b class="fail">Rejected</b></p>
+    <p>Refusal moved −14.6pp, CI [−19.4, −10.0]: the "flat refusal" clause fails. But the other half is real: harmful-given-non-refusal +11.3pp [+5.7, +17.0], median length +15%. Quality rose; it is not the whole story.</p>
   </div>
   <div class="claim">
     <h3>H1b: The model follows the scaffold better, not writes better</h3>
-    <p class="result">RESULT: <b class="pending">Pending · partially testable</b></p>
-    <p>Non-response rate falls steeply while refusal stays flat: the model learns to answer, not to comply. This run reads that series but cannot close H1b; the benign control was rejected (Q3) and the replacement instrument does not exist yet.</p>
+    <p class="result">RESULT: <b class="fail">Rejected for the cooldown</b></p>
+    <p>Non-response falls 21% → 5% → 0.2% from Kestrel to Phoenix, a real format-following effect. It is zero at every cooldown tag, so it cannot explain Phoenix → Starling. The benign-task instrument is still wanted for the early tags, not for this claim.</p>
   </div>
   <div class="claim">
     <h3>Mixed: Both</h3>
-    <p class="result">RESULT: <b class="pending">Pending</b></p>
-    <p>Refusal down ≥ 10pp and conditional harm up ≥ 15pp. The ablation proceeds with a narrowed claim and a different primary metric.</p>
+    <p class="result">RESULT: <b class="pass">Supported in substance</b></p>
+    <p>Decomposing harmful = (1 − refusal) × harmful|non-refusal: refusal alone gives +8.5pp, quality alone +11.7pp, observed +22pp. Roughly 40/60. The ablation proceeds; its primary metric becomes refusal or harmful-given-non-refusal.</p>
   </div>
 
   <figure class="figure-shell"><div class="figure">
@@ -200,11 +212,11 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
 <section class="report-body">
   <p class="section-kicker">Decision rule</p>
   <h2>Recommendations</h2>
-  <p>Fixed before results, so results cannot move them.</p>
+  <p>Fixed before results, so results could not move them. The outcome is <strong>Mixed</strong>, so the third rule applies.</p>
   <ul>
-    <li><strong>H0:</strong> cost the seven-arm ablation as designed, controls kept. Send David the one-pager with this attached.</li>
-    <li><strong>H1 or H1b:</strong> do not propose the ablation. Write up the judge artifact instead.</li>
-    <li><strong>Mixed:</strong> ablation proceeds, primary metric becomes refusal or harmful-given-non-refusal.</li>
+    <li><strong>H0 (not the outcome):</strong> cost the seven-arm ablation as designed, controls kept.</li>
+    <li><strong>H1 or H1b (not the outcome):</strong> do not propose the ablation.</li>
+    <li><strong>Mixed (the outcome):</strong> the ablation proceeds. Its primary metric becomes refusal rate or harmful-given-non-refusal. The raw harmful rate overstates the safety change by about half and should not be the headline. Send David the one-pager with this decomposition attached.</li>
     <li><strong>Any outcome:</strong> pick the H1b instrument. It is the blocker now.</li>
     <li><strong>Hardware:</strong> after two L40S drains this rule fired. Gate 3 reruns on H200, then all 39 there. Nothing from L40S is reused.</li>
   </ul>
@@ -228,7 +240,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
       <tr><td>3</td><td>16508385</td><td>gl038</td><td>External SIGTERM at 2h05, node drain; Phoenix ×10 and Starling ×8 complete</td><td class="num">0</td></tr>
       <tr><td>4</td><td>16513111</td><td>H200</td><td>Gate check 3 passed on H200 (gh114): 320/320 same-seed, 0/320 across seeds. Seed 0 moved 23→25/54 vs the L40S, same weights and seed</td><td class="num">gate only</td></tr>
       <tr><td>5</td><td>16514189</td><td>gh114</td><td>Utilization watchdog at 2h16 (39% avg, 50% cutoff). 29/46 done: phoenix ×10, starling ×10, deeper-starling ×9</td><td class="num">29</td></tr>
-      <tr><td>6</td><td>16520288</td><td>gh117</td><td>Resume of the remaining 17 on a different H200 card, after a cross-card check showed 320/320 token-exact reproduction</td><td class="num">pending</td></tr>
+      <tr><td>6</td><td>16520288</td><td>gh117</td><td>Resume of the remaining 17 on a different H200 card, after a cross-card check showed 320/320 token-exact reproduction Completed in 1h25.</td><td class="num">17</td></tr>
     </tbody>
   </table></div>
 
@@ -237,7 +249,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
 
   <h3>Q4: How is the paired analysis defined with ten seeds?</h3>
   <p>Paired over the 54 behaviours. Primary: per-behaviour seed proportions, bootstrap CI, permutation p. No tie problem at any seed count. McNemar kept for comparability, with 5–5 splits as an explicit <em>unstable</em> category. Three contrasts, seven tests, Holm-adjusted.</p>
-  <div class="callout"><span class="eyebrow">Verification rule</span>Nothing is logged until an independent pass recomputes the headline from raw labels, without the analysis code.</div>
+  <div class="callout"><span class="eyebrow">Verification</span>A fresh agent recomputed everything from raw labels on its own code, blind to the analysis script and its numbers. Every contrast matched within 0.2pp and every McNemar count exactly. It found two bugs in the analysis script (harmful-rate denominator not empty-excluded; wrong length estimator), both fixed to the spec and re-matched. It also found 18 non-empty responses with no judge label, mostly at early tags; no verdict changes.</div>
 </section>
 
 <section class="reference report-body">
@@ -248,12 +260,12 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
     <div class="tablewrap"><table class="grid-table">
       <thead><tr><th>Revision</th><th>Role</th><th>Commit</th><th class="num">Seeds</th><th>Historical rate</th><th>Historical baseline usable?</th><th>Status</th></tr></thead>
       <tbody>
-        <tr><td>kestrel</td><td>context</td><td>56ef403a</td><td class="num">3</td><td class="num">62</td><td>yes</td><td>running (H200)</td></tr>
-        <tr><td>ocelot</td><td>context</td><td>e4d18c1d</td><td class="num">3</td><td class="num">67</td><td>yes</td><td>running (H200)</td></tr>
-        <tr><td>jellyfish</td><td>endpoint · H-min</td><td>c92465e4</td><td class="num">10</td><td class="num">60</td><td>no: three identical seeds, no reseed</td><td>running (H200)</td></tr>
-        <tr><td>phoenix</td><td>endpoint · H0, H1</td><td>5837472e</td><td class="num">10</td><td class="num">49</td><td>yes</td><td>running (H200)</td></tr>
-        <tr><td>starling</td><td>endpoint · H0</td><td>66279e71</td><td class="num">10</td><td class="num">77.2</td><td>reseed dirs only; plain dirs collapsed</td><td>running (H200)</td></tr>
-        <tr><td>deeper-starling</td><td>endpoint · H1</td><td>d57287aa</td><td class="num">10</td><td class="num">79.6</td><td>reseed dirs only; plain dirs collapsed</td><td>running (H200)</td></tr>
+        <tr><td>kestrel</td><td>context</td><td>56ef403a</td><td class="num">3</td><td class="num">62</td><td>yes</td><td>done</td></tr>
+        <tr><td>ocelot</td><td>context</td><td>e4d18c1d</td><td class="num">3</td><td class="num">67</td><td>yes</td><td>done</td></tr>
+        <tr><td>jellyfish</td><td>endpoint · H-min</td><td>c92465e4</td><td class="num">10</td><td class="num">60</td><td>no: three identical seeds, no reseed</td><td>done</td></tr>
+        <tr><td>phoenix</td><td>endpoint · H0, H1</td><td>5837472e</td><td class="num">10</td><td class="num">49</td><td>yes</td><td>done</td></tr>
+        <tr><td>starling</td><td>endpoint · H0</td><td>66279e71</td><td class="num">10</td><td class="num">77.2</td><td>reseed dirs only; plain dirs collapsed</td><td>done</td></tr>
+        <tr><td>deeper-starling</td><td>endpoint · H1</td><td>d57287aa</td><td class="num">10</td><td class="num">79.6</td><td>reseed dirs only; plain dirs collapsed</td><td>done</td></tr>
       </tbody>
     </table></div>
     <p class="small">Spec: <code>docs/experiments/08-27_marin-base-trajectory_misinfo-refusal-vs-capability.md</code>. Launcher: <code>slurm/misinfo_trajectory_seq.sbatch</code>. Per-run provenance records host, GPU UUID, driver, flags, seed, harness and model commits.</p>

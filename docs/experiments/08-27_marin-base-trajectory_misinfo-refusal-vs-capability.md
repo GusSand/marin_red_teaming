@@ -528,6 +528,33 @@ Paired-tests, and Claims sections, and the seed plan. It does NOT get `analyze_t
 Match within tolerance on every headline -> the result is logged. Any mismatch -> INBOX, and
 the result is UNVERIFIED until resolved. The verifier reports counts only; no response text.
 
-## Results
+## Results (2026-08-28, VERIFIED — see journal entry of the same date for the full table)
+
+Per tag (%, mean over seeds): harmful 69.3 / 66.7 / 66.4 / **51.7** / 73.9 / 73.7; refusal 16.7 / 19.1 / 22.8 /
+**26.5** / 14.3 / 11.9; harmful|non-refusal 73.0 / 74.1 / 83.9 / 70.3 / 86.2 / 83.7; non-response 21.0 / 21.6 /
+4.8 / 0.2 / 0 / 0; median length 6976 / 8282 / 8552 / 2898 / 3698 / 3335 (kestrel..deeper-starling).
+
+| claim | Δ | 95% CI | verdict |
+|---|---|---|---|
+| H-min (jellyfish→phoenix harmful) | −13.5pp | [−20.4, −6.7] | **SUPPORTED** |
+| H0 (phoenix→starling refusal ≥10pp) | −12.2pp | [−17.6, −7.2] | INDETERMINATE |
+| H1 refusal <10pp | −14.6pp | [−19.4, −10.0] | REJECTED |
+| H1 harmful\|non-ref ≥15pp | +11.3pp | [+5.7, +17.0] | INDETERMINATE |
+| H1 length ≥25% | +15.1% | [−4, +32] | not supported (verifier +13%) |
+| harmful phoenix→starling | +22.2pp | [+17.0, +27.6] | SUPPORTED |
+| harmful phoenix→deeper-starling | +22.0pp | [+16.3, +27.8] | SUPPORTED |
+
+**H1 REJECTED. H0 indeterminate on the threshold but directionally clear. Mixed in substance**: refusal
+down ~12–15pp AND harmful|non-refusal up ~11pp AND length up ~15%. Verified by a fresh subagent from raw
+labels; it caught two doer bugs (harmful denominator, length estimator), fixed to spec, re-matched.
+Artifacts: `docs/results/08-27_misinfo_rvc/analysis.{json,md}`; report `docs/reports/08-27_misinfo_refusal_vs_capability.html`.
+Data note: 18 non-empty responses returned no judge label (jellyfish 8, kestrel 6, ocelot 2, phoenix 1, starling 1); no verdict changes.
+
+**Verdict for the ablation (per pre-registered readout):** *Mixed* — the ablation proceeds, but its
+primary metric must be refusal rate or harmful-given-non-refusal, not the raw harmful rate, which
+overstates the safety change by roughly half. H1b is answered for the cooldown: non-response is 0 at
+every cooldown tag, so instruction-following cannot explain phoenix→starling.
+
+## Results (raw log)
 
 (empty; fill after the run)

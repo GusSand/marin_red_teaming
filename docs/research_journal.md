@@ -519,3 +519,31 @@ phoenix seed 0 on three L40S cards (gl052/gl002/gl038) 320/320 token-exact; on t
 320/320 token-exact, 25/54 both. Rule now: same GPU model + driver + engine flags + harness sha + model sha + seed.
 gs157 approved keeping the 29 runs on that condition. Resume job 16520288 (17 runs, gh117, cap 1h50). All future
 jobs under 2h. No trajectory result inspected.
+
+## 2026-08-28 — Misinformation rise: refusal vs capability decomposition — COMPLETE, VERIFIED
+Research question: is the Phoenix→Starling/Deeper-Starling rise in WildGuard-judged misinformation a refusal drop or a judge
+artifact (better writing / instruction following)? Spec: docs/experiments/08-27_marin-base-trajectory_misinfo-refusal-vs-capability.md.
+Method: marin-8b-base at 6 pinned revisions, HarmBench misinfo subset (54), base scaffold v2, vLLM 0.11 temp 0.7/top-p 0.95,
+seed patch, WildGuard judge offline. 46 runs on H200 (gh114+gh117, same driver, token-exact cross-card verified):
+jellyfish/phoenix/starling/deeper-starling x10 seeds, kestrel/ocelot x3. Jobs 16514189 + 16520288. Analysis:
+scripts/analyze_trajectory.py -> docs/results/08-27_misinfo_rvc/. Verified by a fresh subagent from raw all.json on its own
+code: every contrast CI within 0.2pp, McNemar counts exact; it caught two doer bugs (harmful denominator not empty-excluded;
+length estimator) which were fixed to the spec and re-matched.
+Results (mean over seeds, %): harmful kestrel 69.3 / ocelot 66.7 / jellyfish 66.4 / phoenix 51.7 / starling 73.9 / deeper 73.7.
+Refusal 16.7 / 19.1 / 22.8 / 26.5 / 14.3 / 11.9. Harmful|non-refusal 73.0 / 74.1 / 83.9 / 70.3 / 86.2 / 83.7.
+Non-response (empty+echo) 21.0 / 21.6 / 4.8 / 0.2 / 0.0 / 0.0. Median length 6976 / 8282 / 8552 / 2898 / 3698 / 3335 chars.
+Contrasts (paired over 54, bootstrap 95% CI, Holm-adjusted permutation p all <=0.0006 except length n/a):
+  H-min jellyfish->phoenix harmful -13.5pp [-20.4,-6.7] SUPPORTED.
+  H0 phoenix->starling refusal -12.2pp [-17.6,-7.2]: point past 10pp, CI straddles -> INDETERMINATE.
+  H1 phoenix->deeper-starling: refusal -14.6pp [-19.4,-10.0] (clause "<10pp" REJECTED); harmful|non-ref +11.3pp [+5.7,+17.0]
+  (clause ">=15pp" INDETERMINATE); pooled median length +15.1% [-4,+32] (verifier +13%; clause ">=25%" not supported). H1 REJECTED.
+  Harmful phoenix->starling +22.2pp [+17.0,+27.6]; ->deeper-starling +22.0pp [+16.3,+27.8]. Starling and deeper-starling do not separate.
+  Unstable (5-5) behaviors at phoenix: 9 on harmful. Flip overlap: 8 of the 10 starling-gained behaviors also gained at deeper-starling.
+Data notes: 71 judge labels None (53 blank responses + 18 non-empty unlabelled: jellyfish 8, kestrel 6, ocelot 2, phoenix 1,
+starling 1); treated as not-harmful/not-refusal; no verdict changes. Kestrel/ocelot seed 2 had 20/18 empties (drives their SD).
+Interpretation (mine): neither H0 nor H1 cleanly. Refusal genuinely drops ~12-15pp (7-8 items) AND compliant output gets more
+harmful (+11pp) and somewhat longer (+15%). Decomposing harmful=(1-refusal)*harmful|non-ref: refusal alone ~+8.5pp, quality
+alone ~+11.7pp, observed +22pp. Roughly 40/60. The cooldown ablation is aimed at something real, but the raw harmful rate
+overstates the safety change by about half; primary metric should be refusal or harmful|non-refusal. H1b (instruction
+following): non-response falls 21% -> 0.2% kestrel->phoenix and is 0 at every cooldown tag, so it cannot explain the rise.
+Phoenix is the harmful MINIMUM and the refusal PEAK.
