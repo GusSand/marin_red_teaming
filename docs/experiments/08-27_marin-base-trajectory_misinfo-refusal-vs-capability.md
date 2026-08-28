@@ -300,6 +300,19 @@ terminated, there is no third L40S attempt.** The procedure is then:
 4. **Reuse no L40S results**, for endpoint or context tags.
 5. Record the switch as a **pre-data hardware deviation** in this file.
 
+**[TRIGGERED 2026-08-28 11:01 EDT.]** Job 16508385 (gl038) was externally terminated at 2h05 with
+Phoenix x10 and Starling x8 complete; Deeper-Starling had not started. Same shape as 16500928:
+`CANCELLED by 0`, SIGTERM, node now draining, `PreemptMode=OFF` so not preemption. **Hardware
+deviation applied, pre-data**: the study moves to `h200_tandon`. Gate check 3 reruns first as
+`slurm/determinism_check_h200.sbatch` (namespace `2026-08-28-determinism-h200`). Only after it
+passes at all three levels does the trajectory relaunch, under a fresh namespace, all 39 runs on
+that one H200. **No L40S result enters the study.** The 18 traj3 runs and the 20 traj2 runs stay on
+disk and are excluded.
+
+Disclosure: the per-seed RESULT lines of the killed L40S jobs were seen while diagnosing the
+termination. They were not analysed and do not inform any decision here; the H200 run is the
+inferential dataset.
+
 ## Measurements
 
 All content-free aggregate counts. Per tag, per seed, then aggregated:
