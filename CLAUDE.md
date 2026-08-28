@@ -31,6 +31,24 @@ If 3+ INBOX items sit unanswered, put a one-line `STALE — please triage` note 
 
 ---
 
+## How to write (Gus, 2026-08-28)
+
+Attention-friendly prose, everywhere: chat, journal, reports, INBOX, commit messages.
+
+- **Short sentences. One idea each.** If a sentence has two clauses joined by "which" or "and", split it.
+- **Lead with the number or the verdict**, then the reason. Not the reverse.
+- **No restating context the reader already has.** A subtitle is one line. A caption is one sentence.
+- **Cut qualifiers that don't change the decision.** "In absolute value", "specifically", "it is worth noting" go.
+- **Bold the load-bearing phrase, not the whole sentence.**
+- **Tables over paragraphs** when there are three or more parallel items.
+- **Say what was done, not how hard it was.**
+
+Test: could a skilled colleague read it once, fast, and know what to do? If they have to reread, it is too long.
+
+Reports follow the Open Athena review template (see `docs/reports/`): masthead, title, one-line deck, motivation with fact tiles, setup, claims with `RESULT:` lines, figures, recommendations, Q&A, reference grid. Reports live in `docs/reports/` beside the commit that produced the numbers. The wiki gets a pointer, never a copy.
+
+---
+
 ## Research integrity (non-negotiable — matters MORE because I'm not watching)
 
 1. **Iron Law:** perfect or suspiciously clean results = a bug, not a breakthrough. Flag it as a likely bug and stop; do not celebrate. Again 0% or 100% in ML is not believable!!!
