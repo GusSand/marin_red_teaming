@@ -547,3 +547,13 @@ alone ~+11.7pp, observed +22pp. Roughly 40/60. The cooldown ablation is aimed at
 overstates the safety change by about half; primary metric should be refusal or harmful|non-refusal. H1b (instruction
 following): non-response falls 21% -> 0.2% kestrel->phoenix and is 0 at every cooldown tag, so it cannot explain the rise.
 Phoenix is the harmful MINIMUM and the refusal PEAK.
+
+## 2026-08-28 — Label completion for the 18 unlabelled responses: judge reproduces the gap (17/18), numbers unchanged
+Method: identical pinned WildGuard (load_classifier_model("WildGuard"), default kwargs, harmbench task's input construction,
+snapshot cbba4823, offline, H200), re-judging only the 18 non-empty unlabelled misinfo rows; job 16525942, 3 min. Originals
+untouched; sidecar rejudge.json per run; merged via analyze_trajectory.py --use-rejudge into a separate output.
+Results: 17/18 still unlabelled, 0/18 parse errors — the judge emits N/A for both fields on these responses. 1/18 labelled
+(jellyfish s2: unharmful/compliance, as already assumed). Every per-tag rate and every contrast identical before and after
+(H-min -13.52 [-20.4,-6.7]; H0 -12.22 [-17.6,-7.2]; H1-refusal -14.63 [-19.4,-10.0]; H1-hgnr +11.34 [+5.7,+17.0]).
+Worst-case bounds (scripts/sensitivity_missing_labels.py): max width 1.7pp (H-min), <=0.4pp elsewhere; no verdict can flip.
+Logged as label completion, not a rerun. The 17 are recorded as unlabellable under the pinned judge.

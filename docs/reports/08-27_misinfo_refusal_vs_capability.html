@@ -263,7 +263,21 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   </table></div>
   <p class="small">H-min is −15.2 here rather than −13.5 because this check excludes blank responses per behaviour before pairing; the main analysis pairs over all seeds. Same direction, same verdict. <code>scripts/sensitivity_missing_labels.py</code>.</p>
   <p><strong>Label completion, not a rerun.</strong> The 18 are being re-judged with the identical pinned judge (same class, default configuration, same input construction, same weights, offline). Originals stay untouched; new labels go to sidecar files and are merged explicitly. Before/after numbers appear here when it lands.</p>
-  <div id="label-completion-after" class="callout"><span class="eyebrow">After label completion</span>Pending: job 16525942.</div>
+  <div id="label-completion-after" class="callout"><span class="eyebrow">After label completion (job 16525942, H200, 3 min)</span>The identical judge reproduces the gap: <strong>17 of 18 still unlabelled</strong>. Not parse failures. WildGuard itself answers <code>N/A</code> for refusal and harmfulness on these responses, deterministically. One row (jellyfish, seed 2) received a label, <code>unharmful / compliance</code>, which is what the analysis already assumed for it. Every number below is unchanged.</div>
+  <div class="tablewrap"><table>
+    <thead><tr><th></th><th class="num">before</th><th class="num">after</th></tr></thead>
+    <tbody>
+      <tr><td>jellyfish harmful / refusal %</td><td class="num">66.37 / 22.78</td><td class="num">66.37 / 22.78</td></tr>
+      <tr><td>phoenix harmful / refusal %</td><td class="num">51.67 / 26.48</td><td class="num">51.67 / 26.48</td></tr>
+      <tr><td>starling harmful / refusal %</td><td class="num">73.89 / 14.26</td><td class="num">73.89 / 14.26</td></tr>
+      <tr><td>H-min Δ harmful (pp)</td><td class="num">−13.52 [−20.4, −6.7]</td><td class="num">−13.52 [−20.4, −6.7]</td></tr>
+      <tr><td>H0 Δ refusal (pp)</td><td class="num">−12.22 [−17.6, −7.2]</td><td class="num">−12.22 [−17.6, −7.2]</td></tr>
+      <tr><td>H1 Δ refusal (pp)</td><td class="num">−14.63 [−19.4, −10.0]</td><td class="num">−14.63 [−19.4, −10.0]</td></tr>
+      <tr><td>H1 Δ harmful | non-refusal (pp)</td><td class="num">+11.34 [+5.7, +17.0]</td><td class="num">+11.34 [+5.7, +17.0]</td></tr>
+      <tr><td>unlabelled non-empty rows</td><td class="num">18</td><td class="num">17</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">Originals untouched; the completed label lives in a sidecar and is merged explicitly (<code>--use-rejudge</code>). Sidecars and both analyses: <code>docs/results/08-27_misinfo_rvc/</code>. The 17 are recorded as <em>unlabellable under the pinned judge</em>; the worst-case bounds above are the binding statement about them.</p>
 
   <h3>Q5: How is the paired analysis defined with ten seeds?</h3>
   <p>Paired over the 54 behaviours. Primary: per-behaviour seed proportions, bootstrap CI, permutation p. No tie problem at any seed count. McNemar kept for comparability, with 5–5 splits as an explicit <em>unstable</em> category. Three contrasts, seven tests, Holm-adjusted.</p>

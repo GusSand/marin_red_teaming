@@ -548,7 +548,7 @@ Per tag (%, mean over seeds): harmful 69.3 / 66.7 / 66.4 / **51.7** / 73.9 / 73.
 down ~12–15pp AND harmful|non-refusal up ~11pp AND length up ~15%. Verified by a fresh subagent from raw
 labels; it caught two doer bugs (harmful denominator, length estimator), fixed to spec, re-matched.
 Artifacts: `docs/results/08-27_misinfo_rvc/analysis.{json,md}`; report `docs/reports/08-27_misinfo_refusal_vs_capability.html`.
-Data note: 18 non-empty responses returned no judge label (jellyfish 8, kestrel 6, ocelot 2, phoenix 1, starling 1); no verdict changes.
+Data note: 18 non-empty responses returned no judge label (jellyfish 8, kestrel 6, ocelot 2, phoenix 1, starling 1); no verdict changes. **Label completion 2026-08-28 (gs157):** re-judged with the identical pinned judge; 17/18 still N/A from the judge itself (not parse errors), 1 labelled as already assumed; all numbers unchanged; worst-case bounds max 1.7pp wide. Recorded as unlabellable under the pinned judge. `docs/results/08-27_misinfo_rvc/after_label_completion/`.
 
 **Verdict for the ablation (per pre-registered readout):** *Mixed* — the ablation proceeds, but its
 primary metric must be refusal rate or harmful-given-non-refusal, not the raw harmful rate, which
