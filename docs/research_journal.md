@@ -492,3 +492,13 @@ was recorded FAILED by Slurm, and the `=== end ===` summary line was never writt
 occurrences in the 16496404 log despite all five runs completing). Job 16496404 was in fact a success.
 Fixed to an if-block with `|| true` plus an explicit `exit $_rc`; verified locally on both the success
 path (rc=0, `end OK`) and the failure path (rc=1, `end FAILED rc=1`).
+
+## 2026-08-28 — Trajectory study: two L40S drains, hardware moved to H200, Jellyfish promoted to endpoint (NO RESULTS)
+Method changes only, all pre-data. Jobs 16500928 (gl002, 2h20) and 16508385 (gl038, 2h05) were both
+externally terminated by node drains (`CANCELLED by 0`, SIGTERM, `PreemptMode=OFF`). Per gs157's standing
+instruction there is no third L40S attempt: gate check 3 resubmitted on `h200_tandon` (job 16513111), the
+trajectory relaunches on that H200 under a fresh namespace after it passes. No L40S run enters the study.
+Disclosure: the per-seed RESULT lines of the killed jobs were seen while diagnosing; not analysed, not used.
+Jellyfish promoted to a fourth 10-seed endpoint tag (gs157) so that "Phoenix is the minimum" is a paired,
+same-allocation contrast; pre-registered as H-min. Design is now 46 runs: 4 endpoints x 10 + 2 context x 3.
+Report page (Open Athena template, pre-registered state): docs/reports/08-27_misinfo_refusal_vs_capability.html.
