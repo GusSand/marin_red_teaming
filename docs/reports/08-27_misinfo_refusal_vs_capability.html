@@ -66,7 +66,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <div class="masthead"><span>Marin red teaming · experiment report</span><span>28 Aug 2026 · pre-registered, results pending</span><span>6-checkpoint trajectory · base-model safety evaluation</span></div>
   <h1>Is the cooldown misinformation rise reduced refusal, or improved writing?</h1>
   <p class="deck">The cooldown rise could be a safety change or a judge artifact. This run splits the number into refusal and writing quality to find out.</p>
-  <div class="metadata"><span>Experimenter: Gus Sandoval</span><span>Experiment dates: 08-27-2026 / 08-28-2026</span><span>Compute: NYU Torch, one H200 (moved from L40S after two node drains)</span><span>Gate job 16513111</span><span>Status: re-gating on H200, no results analysed</span></div>
+  <div class="metadata"><span>Experimenter: Gus Sandoval</span><span>Experiment dates: 08-27-2026 / 08-28-2026</span><span>Compute: NYU Torch, one H200 (moved from L40S after two node drains)</span><span>Job 16514189</span><span>Status: running on H200, gate 3 re-passed there, no results analysed</span></div>
 </header>
 
 <section class="report-body">
@@ -226,7 +226,8 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
       <tr><td>1</td><td>16500537</td><td>—</td><td>Cancelled at 3 min: launcher would have adopted a prior run with incompatible provenance</td><td class="num">0</td></tr>
       <tr><td>2</td><td>16500928</td><td>gl002</td><td>External SIGTERM at 2h20, node drain; Phoenix ×10 and Starling ×10 complete, Deeper-Starling not started</td><td class="num">0</td></tr>
       <tr><td>3</td><td>16508385</td><td>gl038</td><td>External SIGTERM at 2h05, node drain; Phoenix ×10 and Starling ×8 complete</td><td class="num">0</td></tr>
-      <tr><td>4</td><td>16513111</td><td>H200</td><td>Gate check 3 rerun on H200 first; 46-run trajectory follows on the same hardware, fresh namespace</td><td class="num">pending</td></tr>
+      <tr><td>4</td><td>16513111</td><td>H200</td><td>Gate check 3 passed on H200 (gh114): 320/320 same-seed, 0/320 across seeds. Seed 0 moved 23→25/54 vs the L40S, same weights and seed</td><td class="num">gate only</td></tr>
+      <tr><td>5</td><td>16514189</td><td>gh114</td><td>46-run trajectory, same GPU as the gate, fresh namespace</td><td class="num">pending</td></tr>
     </tbody>
   </table></div>
 
@@ -246,12 +247,12 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
     <div class="tablewrap"><table class="grid-table">
       <thead><tr><th>Revision</th><th>Role</th><th>Commit</th><th class="num">Seeds</th><th>Historical rate</th><th>Historical baseline usable?</th><th>Status</th></tr></thead>
       <tbody>
-        <tr><td>kestrel</td><td>context</td><td>56ef403a</td><td class="num">3</td><td class="num">62</td><td>yes</td><td>queued (H200)</td></tr>
-        <tr><td>ocelot</td><td>context</td><td>e4d18c1d</td><td class="num">3</td><td class="num">67</td><td>yes</td><td>queued (H200)</td></tr>
-        <tr><td>jellyfish</td><td>endpoint · H-min</td><td>c92465e4</td><td class="num">10</td><td class="num">60</td><td>no: three identical seeds, no reseed</td><td>queued (H200)</td></tr>
-        <tr><td>phoenix</td><td>endpoint · H0, H1</td><td>5837472e</td><td class="num">10</td><td class="num">49</td><td>yes</td><td>queued (H200)</td></tr>
-        <tr><td>starling</td><td>endpoint · H0</td><td>66279e71</td><td class="num">10</td><td class="num">77.2</td><td>reseed dirs only; plain dirs collapsed</td><td>queued (H200)</td></tr>
-        <tr><td>deeper-starling</td><td>endpoint · H1</td><td>d57287aa</td><td class="num">10</td><td class="num">79.6</td><td>reseed dirs only; plain dirs collapsed</td><td>queued (H200)</td></tr>
+        <tr><td>kestrel</td><td>context</td><td>56ef403a</td><td class="num">3</td><td class="num">62</td><td>yes</td><td>running (H200)</td></tr>
+        <tr><td>ocelot</td><td>context</td><td>e4d18c1d</td><td class="num">3</td><td class="num">67</td><td>yes</td><td>running (H200)</td></tr>
+        <tr><td>jellyfish</td><td>endpoint · H-min</td><td>c92465e4</td><td class="num">10</td><td class="num">60</td><td>no: three identical seeds, no reseed</td><td>running (H200)</td></tr>
+        <tr><td>phoenix</td><td>endpoint · H0, H1</td><td>5837472e</td><td class="num">10</td><td class="num">49</td><td>yes</td><td>running (H200)</td></tr>
+        <tr><td>starling</td><td>endpoint · H0</td><td>66279e71</td><td class="num">10</td><td class="num">77.2</td><td>reseed dirs only; plain dirs collapsed</td><td>running (H200)</td></tr>
+        <tr><td>deeper-starling</td><td>endpoint · H1</td><td>d57287aa</td><td class="num">10</td><td class="num">79.6</td><td>reseed dirs only; plain dirs collapsed</td><td>running (H200)</td></tr>
       </tbody>
     </table></div>
     <p class="small">Spec: <code>docs/experiments/08-27_marin-base-trajectory_misinfo-refusal-vs-capability.md</code>. Launcher: <code>slurm/misinfo_trajectory_seq.sbatch</code>. Per-run provenance records host, GPU UUID, driver, flags, seed, harness and model commits.</p>

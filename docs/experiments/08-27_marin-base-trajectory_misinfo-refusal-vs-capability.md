@@ -314,6 +314,21 @@ Disclosure: the per-seed RESULT lines of the killed L40S jobs were seen while di
 termination. They were not analysed and do not inform any decision here; the H200 run is the
 inferential dataset.
 
+**[GATE CHECK 3 ON H200: PASSED 2026-08-28, job 16513111.]** One job, one GPU (gh114,
+`GPU-6ca7be8d-e268-9b19-eff8-92cb9874621c`, H200), `VLLM_ENABLE_V1_MULTIPROCESSING=0`, seed 0 x3
+then seed 1 x2. Same-seed: 320/320 token-identical, labels identical. Different-seed: 0/320
+token-identical, 257/319 harmfulness labels agree, 248/319 refusal labels agree. Seed 0 = 25/54
+(46.30%) x3, seed 1 = 33/54 (61.11%) x2. Note: one seed-1 item lacks a harmfulness label
+(denominator 319); it is not in the misinformation subset and does not affect the rate.
+
+**Hardware effect at fixed seed, recorded for the record:** seed 0 gave 23/54 on the L40S and
+25/54 on the H200; seed 1 gave 33/54 on both. Same weights, same seed, different silicon, two
+items apart. This is what vLLM's hardware-specific reproducibility claim looks like in practice
+and is the concrete reason no L40S run may be mixed into an H200 contrast.
+
+The trajectory (job 16514189, namespace `2026-08-28-traj4-h200`) was chained on the gate job
+and started on the **same GPU** (`GPU-6ca7be8d`) at 11:45 EDT. 46 runs at ~5 min each.
+
 ## Measurements
 
 All content-free aggregate counts. Per tag, per seed, then aggregated:

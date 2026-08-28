@@ -502,3 +502,12 @@ Disclosure: the per-seed RESULT lines of the killed jobs were seen while diagnos
 Jellyfish promoted to a fourth 10-seed endpoint tag (gs157) so that "Phoenix is the minimum" is a paired,
 same-allocation contrast; pre-registered as H-min. Design is now 46 runs: 4 endpoints x 10 + 2 context x 3.
 Report page (Open Athena template, pre-registered state): docs/reports/08-27_misinfo_refusal_vs_capability.html.
+
+## 2026-08-28 — Gate check 3 on H200: PASSED. Trajectory running on the same GPU.
+Job 16513111, gh114, H200 GPU-6ca7be8d, VLLM_ENABLE_V1_MULTIPROCESSING=0, seed 0 x3 + seed 1 x2, sequential.
+Results: same-seed 320/320 token-identical and label-identical; different-seed 0/320 identical, 80.6% / 77.7%
+label agreement (harm / refusal). Misinfo subset: seed 0 = 25/54 x3, seed 1 = 33/54 x2. Hardware effect at fixed
+seed vs L40S: seed 0 23/54 -> 25/54, seed 1 33/54 -> 33/54. Interpretation (mine): gate passes; the two-item seed-0
+shift across silicon is the concrete case for never mixing hardware inside a contrast.
+Trajectory job 16514189 (46 runs, namespace 2026-08-28-traj4-h200) chained on the gate and started on the same GPU
+at 11:45 EDT. No trajectory result inspected.
