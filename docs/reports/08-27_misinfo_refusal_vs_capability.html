@@ -65,7 +65,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
 <header>
   <div class="masthead"><span>Marin red teaming · experiment report</span><span>28 Aug 2026 · pre-registered, results pending</span><span>6-checkpoint trajectory · base-model safety evaluation</span></div>
   <h1>Is the cooldown misinformation rise reduced refusal, or improved writing?</h1>
-  <p class="deck">The S9 rise could be a safety change or a judge artifact. This run splits the number into refusal and writing quality to find out.</p>
+  <p class="deck">The cooldown rise could be a safety change or a judge artifact. This run splits the number into refusal and writing quality to find out.</p>
   <div class="metadata"><span>Experimenter: Gus Sandoval</span><span>Experiment dates: 08-27-2026 / 08-28-2026</span><span>Compute: NYU Torch, one L40S</span><span>Job 16508385</span><span>Status: running, endpoints incomplete, no results inspected</span></div>
 </header>
 
@@ -75,7 +75,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <div class="lede">
     <div>
       <p>Misinformation generation on Marin's base checkpoints is lowest at Phoenix (49%) and climbs through the cooldown to 80%. David Hall named the delta: a ~30% mix of Wikipedia, Common Crawl archive and DOLMA HQ.</p>
-      <p>But the metric is a classifier's harmfulness label, and the classifier rewards good writing. That mix is exactly what teaches confident prose. We already have the mirror image: under the S8 tamper attack, ASR fell 12% to 1% because responses got shorter.</p>
+      <p>But the metric is a classifier's harmfulness label, and the classifier rewards good writing. That mix is exactly what teaches confident prose. We already have the mirror image: under the LoRA tamper attack, ASR fell 12% to 1% because responses got shorter.</p>
       <p>If the rise is a judge artifact, the cooldown ablation is aimed at nothing. This experiment decides that first.</p>
     </div>
     <div class="facts">
@@ -130,7 +130,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <div class="claim">
     <h3>H0: Refusal genuinely drops in the cooldown</h3>
     <p class="result">RESULT: <b class="pending">Pending</b></p>
-    <p>Refusal falls ≥ 10pp, Phoenix to Starling. That is 5.4 of 54 behaviours. The only outcome that makes S9 a safety finding and licenses the ablation.</p>
+    <p>Refusal falls ≥ 10pp, Phoenix to Starling. That is 5.4 of 54 behaviours. The only outcome that makes the rise a safety finding and licenses the ablation.</p>
   </div>
   <div class="claim">
     <h3>H1: The model writes better, and the judge rewards that</h3>
