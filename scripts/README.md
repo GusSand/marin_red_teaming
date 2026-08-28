@@ -83,3 +83,27 @@ to local `repro-olmo3-safety/runs/` before the remote is shut down (fresh-instan
 - `../slurm/misinfo_refusal_vs_capability.sbatch` — 18-task array (6 revisions x 3 seeds)
   for `docs/experiments/08-27_marin-base-trajectory_misinfo-refusal-vs-capability.md`.
   Run `--array=9,10,11` (phoenix) alone first as the port gate.
+
+### 2026-08-28 additions (trajectory study on Torch)
+
+- `../slurm/misinfo_trajectory_seq.sbatch` — **the inferential launcher.** 46 runs sequential on
+  one GPU model: jellyfish/phoenix/starling/deeper-starling x 10 seeds, kestrel/ocelot x 3.
+  Provenance-gated resume (GPU model, driver, engine flags, harness sha, model sha, seed; hard
+  fail on mismatch). Walltime capped 1h50 because the cluster utilization watchdog kills
+  sub-50% jobs at 2h. Namespace via `MARIN_RUN_PREFIX`. Supersedes the array script above.
+- `../slurm/determinism_check.sbatch`, `determinism_check_h200.sbatch`,
+  `determinism_check_h200_crossgpu.sbatch` — gate check 3: seed 0 x3 + seed 1 x2 sequentially on
+  one GPU (L40S, H200), and a one-run cross-card check on a second H200.
+- `compare_determinism.py` — three-level comparison (exact response hash, WildGuard labels,
+  54-item rate) across run dirs. Warns when runs span more than one GPU.
+- `prefetch_revisions.py` — pulls the six base revisions into the workspace cache and pins their
+  commits to `docs/resolved_revisions.json`; fails if two tags collapse to one commit.
+- `analyze_trajectory.py` — **the analysis path.** Reads per-instance labels from the out-of-tree
+  label dir, computes the pre-registered series (refusal, harmful, harmful|non-refusal, empty,
+  length, non-response), the three paired contrasts with bootstrap CI + sign-flip permutation p +
+  Wilcoxon, McNemar for comparability with `unstable` 5-5 splits, Holm across seven tests, flip
+  lists, verdicts against the pre-registered thresholds. Aggregate counts only. Does not import
+  the generation path. Run in the safety-eval venv (needs numpy/scipy):
+  `python scripts/analyze_trajectory.py --labels $SCRATCH/marin-misinfo-labels --prefix 2026-08-28-traj4-h200 --out docs/results/08-27_misinfo_rvc`
+- `log_lib.sh` — shared logging: `progress.log`, phases, heartbeat with GPU %, signal-aware EXIT
+  trap (TERM/INT -> rc 143). The heartbeat's `gpu=0 %` lines were the utilization warning nobody read.
