@@ -66,7 +66,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <div class="masthead"><span>Marin red teaming · experiment report</span><span>28 Aug 2026 · pre-registered, results pending</span><span>6-checkpoint trajectory · base-model safety evaluation</span></div>
   <h1>Is the cooldown misinformation rise reduced refusal, or improved writing?</h1>
   <p class="deck">The cooldown rise could be a safety change or a judge artifact. This run splits the number into refusal and writing quality to find out.</p>
-  <div class="metadata"><span>Experimenter: Gus Sandoval</span><span>Experiment dates: 08-27-2026 / 08-28-2026</span><span>Compute: NYU Torch, one L40S</span><span>Job 16508385</span><span>Status: running, endpoints incomplete, no results inspected</span></div>
+  <div class="metadata"><span>Experimenter: Gus Sandoval</span><span>Experiment dates: 08-27-2026 / 08-28-2026</span><span>Compute: NYU Torch, one H200 (moved from L40S after two node drains)</span><span>Gate job 16513111</span><span>Status: re-gating on H200, no results analysed</span></div>
 </header>
 
 <section class="report-body">
@@ -80,11 +80,11 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
     </div>
     <div class="facts">
       <div class="fact"><strong>54</strong><span>behaviours; one is 1.85pp</span></div>
-      <div class="fact"><strong>39</strong><span>runs, one GPU</span></div>
+      <div class="fact"><strong>39</strong><span>runs, one GPU, one allocation</span></div>
       <div class="fact"><strong>10 × 3</strong><span>seeds at the endpoint tags</span></div>
       <div class="fact"><strong>4 / 4</strong><span>gate checks passed</span></div>
       <div class="fact"><strong>320 / 320</strong><span>same-seed identical; 0 / 320 across seeds</span></div>
-      <div class="fact"><strong>0</strong><span>results inspected so far</span></div>
+      <div class="fact"><strong>0</strong><span>L40S results reused</span></div>
     </div>
   </div>
 </section>
@@ -201,7 +201,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
     <li><strong>H1 or H1b:</strong> do not propose the ablation. Write up the judge artifact instead.</li>
     <li><strong>Mixed:</strong> ablation proceeds, primary metric becomes refusal or harmful-given-non-refusal.</li>
     <li><strong>Any outcome:</strong> pick the H1b instrument. It is the blocker now.</li>
-    <li><strong>If the job dies again:</strong> no third L40S. Move to H200, redo gate 3 there, rerun all 39, reuse nothing.</li>
+    <li><strong>Hardware:</strong> after two L40S drains this rule fired. Gate 3 reruns on H200, then all 39 there. Nothing from L40S is reused.</li>
   </ul>
 </section>
 
@@ -214,13 +214,14 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <p>Phoenix's historical seeds are 46.3, 42.6 and 57.4: sd 7.7pp, so a three-seed mean has SEM 4.5pp. A perfect port fails a ± 3pp gate half the time. More seeds now cannot fix the noisy historical target, and the old trajectory mixes patched, unpatched and collapsed sampling. Replaced by the protocol gate; old-vs-new Phoenix is descriptive only.</p>
 
   <h3>Q2: Why one GPU, and what did it cost?</h3>
-  <p>vLLM only reproduces on identical hardware. The first determinism check ran as an array, landed on three nodes and "failed"; the test was wrong, not the harness. So all 39 run sequentially, and the launcher refuses any prior run whose GPU, host, flags, seed or commit differ from the current allocation. That guard cost us once: a node drain killed attempt two with 20 endpoint runs done. They are excluded.</p>
+  <p>vLLM only reproduces on identical hardware. The first determinism check ran as an array, landed on three nodes and "failed"; the test was wrong, not the harness. So all 39 run sequentially, and the launcher refuses any prior run whose GPU, host, flags, seed or commit differ from the current allocation. Node drains then killed attempts two and three at ~2h each, 38 endpoint runs in total. All excluded. Per the standing rule, no third L40S attempt: the study re-gates on an H200 and reruns there.</p>
   <div class="tablewrap"><table>
     <thead><tr><th>Attempt</th><th>Job</th><th>Node</th><th>Outcome</th><th>Runs kept</th></tr></thead>
     <tbody>
       <tr><td>1</td><td>16500537</td><td>—</td><td>Cancelled at 3 min: launcher would have adopted a prior run with incompatible provenance</td><td class="num">0</td></tr>
       <tr><td>2</td><td>16500928</td><td>gl002</td><td>External SIGTERM at 2h20, node drain; Phoenix ×10 and Starling ×10 complete, Deeper-Starling not started</td><td class="num">0</td></tr>
-      <tr><td>3</td><td>16508385</td><td>gl038</td><td>Running, fresh namespace, all endpoints in this allocation</td><td class="num">pending</td></tr>
+      <tr><td>3</td><td>16508385</td><td>gl038</td><td>External SIGTERM at 2h05, node drain; Phoenix ×10 and Starling ×8 complete</td><td class="num">0</td></tr>
+      <tr><td>4</td><td>16513111</td><td>H200</td><td>Gate check 3 rerun on H200 first; trajectory follows on the same hardware, fresh namespace</td><td class="num">pending</td></tr>
     </tbody>
   </table></div>
 
@@ -240,12 +241,12 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
     <div class="tablewrap"><table class="grid-table">
       <thead><tr><th>Revision</th><th>Role</th><th>Commit</th><th class="num">Seeds</th><th>Historical rate</th><th>Historical baseline usable?</th><th>Status</th></tr></thead>
       <tbody>
-        <tr><td>kestrel</td><td>context</td><td>56ef403a</td><td class="num">3</td><td class="num">62</td><td>yes</td><td>queued</td></tr>
-        <tr><td>ocelot</td><td>context</td><td>e4d18c1d</td><td class="num">3</td><td class="num">67</td><td>yes</td><td>queued</td></tr>
-        <tr><td>jellyfish</td><td>context</td><td>c92465e4</td><td class="num">3</td><td class="num">60</td><td>no: three identical seeds, no reseed</td><td>queued</td></tr>
-        <tr><td>phoenix</td><td>endpoint · H0, H1</td><td>5837472e</td><td class="num">10</td><td class="num">49</td><td>yes</td><td>running</td></tr>
-        <tr><td>starling</td><td>endpoint · H0</td><td>66279e71</td><td class="num">10</td><td class="num">77.2</td><td>reseed dirs only; plain dirs collapsed</td><td>running</td></tr>
-        <tr><td>deeper-starling</td><td>endpoint · H1</td><td>d57287aa</td><td class="num">10</td><td class="num">79.6</td><td>reseed dirs only; plain dirs collapsed</td><td>queued</td></tr>
+        <tr><td>kestrel</td><td>context</td><td>56ef403a</td><td class="num">3</td><td class="num">62</td><td>yes</td><td>queued (H200)</td></tr>
+        <tr><td>ocelot</td><td>context</td><td>e4d18c1d</td><td class="num">3</td><td class="num">67</td><td>yes</td><td>queued (H200)</td></tr>
+        <tr><td>jellyfish</td><td>context</td><td>c92465e4</td><td class="num">3</td><td class="num">60</td><td>no: three identical seeds, no reseed</td><td>queued (H200)</td></tr>
+        <tr><td>phoenix</td><td>endpoint · H0, H1</td><td>5837472e</td><td class="num">10</td><td class="num">49</td><td>yes</td><td>queued (H200)</td></tr>
+        <tr><td>starling</td><td>endpoint · H0</td><td>66279e71</td><td class="num">10</td><td class="num">77.2</td><td>reseed dirs only; plain dirs collapsed</td><td>queued (H200)</td></tr>
+        <tr><td>deeper-starling</td><td>endpoint · H1</td><td>d57287aa</td><td class="num">10</td><td class="num">79.6</td><td>reseed dirs only; plain dirs collapsed</td><td>queued (H200)</td></tr>
       </tbody>
     </table></div>
     <p class="small">Spec: <code>docs/experiments/08-27_marin-base-trajectory_misinfo-refusal-vs-capability.md</code>. Launcher: <code>slurm/misinfo_trajectory_seq.sbatch</code>. Per-run provenance records host, GPU UUID, driver, flags, seed, harness and model commits.</p>
