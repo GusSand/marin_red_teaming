@@ -521,3 +521,66 @@ Where our angle is actually ours (candidate scoped experiment — PRE-REGISTER b
    help at all on a misinfo-style capability vs the discrete dual-use ones (chem-bio/cyber).
 Pre-reqs before any GPU: (a) INBOX license question; (b) decide reimplement-vs-adapt; (c) pick scale that fits
 one A100. Refs: outputs/refs_safety_pretraining.md (GRAM entry).
+
+---
+
+## QUEUED 2026-08-27 (from gs157) — resolve the cooldown misinformation finding: refusal or capability, then the mix ablation
+**This one jumps the queue.** It is cheap (~1.5h on the local A100), it gates a live external conversation,
+and step 1 can invalidate a result we are otherwise about to propose an expensive experiment on. Do it
+before the Safety Gap Toolkit and GRAM items above.
+
+Motivation: the David Hall (Marin/Levanter) deep dive on 2026-08-27. Of the whole deck he flagged the base
+pretraining trajectory as the most surprising finding: misinformation generation is *lowest* at the Phoenix
+web phase (49%) and climbs through the late curated cooldown to 77.2 / 79.6 (see
+`docs/experiments/07-28_marin-base-trajectory_misinfo-emergence.md`, H1 rejected by 16pp the wrong way).
+Web data looks better on safety than the curated mix. **He then named the delta we could not see:
+Phoenix → Starling introduces a ~30% "high quality" mix of Wikipedia, a Common Crawl archive, and DOLMA HQ.**
+
+### Step 1 — PRE-REGISTERED, spec already written, run this first
+`docs/experiments/08-27_marin-base-trajectory_misinfo-refusal-vs-capability.md`
+
+The confound: our metric is the fraction WildGuard labels `response_harmfulness = harmful`, which rises if
+the model got **better at writing** persuasive misinformation with refusal behaviour unchanged. Wikipedia
+and DOLMA HQ are exactly the data that teaches confident expository prose. We already have the mirror image
+of this failure mode in-house: StrongREJECT ASR fell 12% → 1% under the tamper attack purely because median
+response length collapsed ~1075 → ~116 chars.
+
+1. [ ] Regenerate 6 tags x harmbench(320) x 3 seeds, reusing the 07-28 `command.txt` verbatim.
+       **Pre-download each revision** (no `--revision` flag; it silently evaluates `main`).
+2. [ ] Gate: **protocol/invariant checks, not a level match** (INBOX option (d), pre-data deviation).
+       Harness+package+template identity; six distinct resolved SHAs; same-seed reproduces and
+       different-seed diverges on Torch; one clean end-to-end phoenix run with judge labels and
+       metric direction checked. Phoenix old-vs-new is descriptive with uncertainty, NOT pass/fail.
+3. [ ] Report five series per tag: refusal rate, harmful rate (empty-excluded), harmful-given-non-refusal,
+       empty rate, median/IQR response length.
+4. [ ] Paired phoenix-vs-starling test on the same behaviors: discordant counts + **exact McNemar**
+       (not the uncorrected chi-square).
+5. [ ] Flip list: which `BehaviorID`s change, with SemanticCategory and a hand-assigned topic tag.
+
+Reality check (settled before queueing):
+- **The 07-28 `all.json` labels are gone.** They are gitignored (`repro-olmo3-safety/runs/**/all.json`) and
+  the paperspace box is down; only `metrics.json` survives, which stores harmfulness ASR only. That is the
+  whole reason this is a rerun rather than an analysis. Keep the labels this time, **outside the repo**.
+- **The refusal label may be degenerate on base completions** (no refusal training). Report its raw
+  distribution first. If it is flat zero across all six tags, say so; series 1 is then unfalsifiable and the
+  length / conditional-harm series carry the argument. Iron Law applies: a false 0.0% has happened here before.
+- Checkpoints are ~16GB each in bf16. Pull and delete sequentially; do not hold six on disk.
+
+### Step 2 — gated on step 1's verdict, needs Marin's cluster, NOT ours
+Seven-arm cooldown replay from a fixed Phoenix branch point: full mix (positive control), minus-Wikipedia,
+minus-CC-archive, minus-DOLMA-HQ, **random-30%-removed (matched volume)**, no-HQ, and **old-data-with-
+Starling's-LR-schedule (schedule control, because cooldown changes the LR as well as the data)**. Full design,
+preregistered decision rule and falsifier live in the vault at
+`~/Documents/obsidian_global/wiki/projects/Marin Cooldown Misinformation Ablation.md`.
+
+Do not cost or propose this until step 1 returns. If step 1 supports the capability reading, this ablation is
+aimed at the wrong thing and the finding becomes a measurement result about quality-sensitive judges instead.
+
+Cheap intermediate steps that need no cluster, if step 1 leaves the data hypothesis alive: read the flip list
+for topical clustering; corpus forensics on the three public HQ components (search for **genre**, authoritative
+expository register and persuasive-essay form, not for false claims); and a mechanistic diff of the phoenix and
+starling public weights using the refusal-direction apparatus from the safety-decay repo.
+
+Refs: `docs/experiments/07-28_marin-base-trajectory_misinfo-emergence.md`,
+`docs/experiments/07-27_marin-base-revisions_wmdp_capability.md` (same late-cooldown shape),
+vault `[[Marin Deep Dive Outcome]]`.

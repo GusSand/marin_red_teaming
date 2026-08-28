@@ -3,7 +3,10 @@
 # HarmBench seed 0 already done (Gate 2, run r1). Runs the remaining 11 sequentially.
 # Each run_row.sh call writes its own provenance/metrics and refuses to overwrite.
 set -uo pipefail
-cd /home/paperspace/marin
+
+# Torch port 2026-08-27: override with MARIN_RT_ROOT.
+MARIN_ROOT="${MARIN_RT_ROOT:-${SCRATCH:-/scratch/gs157}/marin-red-teaming}"
+cd $MARIN_ROOT
 MODEL=allenai/Olmo-3-7B-Instruct
 DRIVERLOG=logs/gate3_driver.log
 echo "[$(date -Is)] Gate 3 start" > "$DRIVERLOG"

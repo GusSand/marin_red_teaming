@@ -5,13 +5,20 @@ unsafe->harmful, and compare to WildGuard's response_harmfulness label. Report a
 + disagreements by category. No human/LLM-agent reads harmful content (LG is a classifier). Uses vLLM.
 Usage: python scripts/grade_audit_llamaguard.py   (runs both marin-instruct + olmo-instruct)
 """
+
+# Torch port 2026-08-27: override with MARIN_RT_ROOT.
+import os as _os
+_MARIN_ROOT = _os.environ.get("MARIN_RT_ROOT",
+                              _os.path.join(_os.environ.get("SCRATCH", "/scratch/gs157"),
+                                            "marin-red-teaming"))
 import json, os
 os.environ.setdefault("OPENAI_API_KEY", "sk-unused")
 from collections import defaultdict
 from vllm import LLM, SamplingParams
 from transformers import AutoTokenizer
 
-RUNS = "/home/paperspace/marin/repro-olmo3-safety/runs"
+
+RUNS = _MARIN_ROOT + "/repro-olmo3-safety/runs"
 LG = "meta-llama/Llama-Guard-3-8B"
 tok = AutoTokenizer.from_pretrained(LG)
 llm = LLM(model=LG, tokenizer_mode="auto", max_model_len=8192, gpu_memory_utilization=0.90)

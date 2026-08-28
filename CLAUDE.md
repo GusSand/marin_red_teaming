@@ -82,8 +82,79 @@ Model training and inference run on the GPU, not inline in your session.
 **Log discipline (so I can reconstruct the night):**
 - Every job writes to a known path: `logs/<jobid>_<short-name>.log`.
 - Every job gets one line in the journal: jobid, config file, partition, status, key metric or error.
-- Compute: **local A100 80GB**, background processes. Slurm partition/account/QoS/
-  walltime — N/A for now (Slurm deferred; fill in if we move to the NYU cluster).
+- Compute: **NYU Torch** as of 2026-08-27. See the Compute section below. The old
+  paperspace A100 80GB is gone; anything that still hardcodes `/home/paperspace` is broken.
+
+---
+
+## Compute — NYU Torch (added 2026-08-27)
+
+Cluster access, SSH and etiquette: @~/github/hpc/CLAUDE.md. Read it before touching
+anything remote. Short version: SSH keys do not work on Torch, auth is a Duo device-code
+flow only Gus can complete, and you ride his warm shared connection. Check it with
+`ssh -o BatchMode=yes -o ConnectTimeout=6 torch true` before any remote work, and if that
+fails, ask rather than retrying.
+
+**Slurm: Tandon first, always.** Account `torch_pr_173_tandon_advanced` (fairshare 1.0),
+verified 2026-08-27 against `sacctmgr show assoc user=gs157`, which lists exactly
+`torch_pr_173_tandon_advanced`, `torch_pr_173_general` and `users`. Note `gs157` is the
+**login user**, not a Slurm account; do not pass it to `--account`.
+For this project's 8B generation plus a 7B judge, `partition=l40s_public` (48GB L40S; plain
+`l40s` is invalid for this account, and no `l40s_tandon` exists, so L40S runs use the public
+partition with the tandon account). If vLLM OOMs, or for anything at 32B, move to
+**`h200_tandon`** first, which is the 112-GPU group pool, rather than `h200_public`, which is
+a 24-GPU pool shared by every public user. `torch_pr_173_general` and public-pool partitions
+are fallbacks when tandon stalls, not defaults. QoS=normal, walltime cap 48h.
+
+**GPU-hours need no approval, any size.** Still log the estimate in the experiment file
+before submitting.
+
+**Remote workspace**: `/scratch/gs157/marin-red-teaming` (created 2026-08-27), with the venv at
+`env/`, the HF cache at `hf_cache/`, the vendored safety-eval checkout at `safety-eval/`, run
+artifacts at `runs/`, and job logs at `logs/`. Per-instance labels go to the sibling
+`/scratch/gs157/marin-misinfo-labels/`, deliberately outside the repo tree.
+
+Scratch quota is **5TB, 18% used**, and it is **not backed up and is flushed**. Anything that
+must survive belongs in the repo or `$ARCHIVE`. `$HOME` is only 50GB, which is why `HF_HOME`
+must point into scratch; the preflight fails if it is unset.
+
+### Preflight rule
+
+Submit GPU jobs only via `bash scripts/submit.sh slurm/<file>.sbatch`. It runs
+`scripts/dry_run_check.py` and refuses to sbatch unless that prints `DRY RUN OK`. A minute of
+CPU beats a queue wait plus a dead GPU job. Extend the check whenever a new failure class
+appears; the ones it already covers are the ones that have actually bitten this project.
+
+### Comparing runs: pin the hardware (added 2026-08-27, learned the hard way)
+
+**Any comparison between runs must hold the GPU fixed.** vLLM only claims reproducibility on
+identical hardware and version. A Slurm *array* scatters tasks across nodes, so an array is the
+wrong tool for a reproducibility or determinism test: use one job that loops sequentially on one
+allocated GPU.
+
+This is not hypothetical. On 2026-08-27 a determinism check ran as a 3-task array, landed on
+gl040 / gl064 / gl024, and "failed". The failure was the test design, not the harness.
+
+Rules that follow:
+- **Determinism, seed and reproducibility tests: one job, one GPU, sequential runs.** Never an array.
+- **Provenance must record hostname, GPU UUID, driver version, engine flags and the seed env var.**
+  A reproducibility claim that cannot name the GPU it ran on is not checkable. `run_row.sh` does
+  this now.
+- **Set `VLLM_ENABLE_V1_MULTIPROCESSING=0`** for any run whose reproducibility matters; it is
+  vLLM's documented first step for reproducible offline V1 inference.
+- **Trajectory/production runs may still use arrays** (different checkpoints are meant to differ),
+  but any *same-configuration* comparison drawn from them is confounded by hardware and must say so.
+- **Convert percentage-point differences to item counts before calling anything an effect.** On the
+  54-item misinformation subset one item is 1.85pp, so "3.7pp" is two classifications.
+- **Token-exact equality is the harshest test and the least informative alone.** Always compare
+  labels and the reported rate alongside it.
+
+### Never-dos on Torch
+
+- No compute on login nodes. sbatch only, and never interactive `srun`: it blocks and hangs you.
+- Never edit files directly on Torch. **This repo is the source of truth**; rsync up.
+- Do not attempt ssh auth yourself. The Duo flow is Gus-only.
+- Large transfers go through `torch-dtn`, not the login node.
 
 ---
 

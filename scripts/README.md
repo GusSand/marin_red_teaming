@@ -68,3 +68,18 @@ Logs go to `logs/<jobid>_<short-name>.log`. Never overwrite prior results.
 = 122G on disk) on the LOCAL box; `Olmo-3-1125-32B` (Olmo3 arch, 61G) on a REMOTE Paperspace A100
 reached via `ssh -i ~/.ssh/marin_worker paperspace@184.105.215.102`. Remote results are rsynced back
 to local `repro-olmo3-safety/runs/` before the remote is shut down (fresh-instance storage is ephemeral).
+
+## Torch port (added 2026-08-27)
+
+- `submit.sh` — the only sanctioned way to submit a GPU job on NYU Torch. Runs
+  `dry_run_check.py` and refuses to `sbatch` unless it prints `DRY RUN OK`. Enforces
+  sbatch-options-before-the-file, because args after the file go to the script silently.
+  Ported from `safety-decay/scripts/submit.sh`.
+- `dry_run_check.py` — preflight. Checks imports, GPU visibility, the pinned safety-eval
+  SHA, **that the seed patch is applied**, `OPENAI_API_KEY` (safety-eval builds a client at
+  import even for local judges), the base scaffold, that no script still hardcodes
+  `/home/paperspace`, `HF_HOME`, and free scratch. Extend it whenever a new failure class
+  costs a GPU job.
+- `../slurm/misinfo_refusal_vs_capability.sbatch` — 18-task array (6 revisions x 3 seeds)
+  for `docs/experiments/08-27_marin-base-trajectory_misinfo-refusal-vs-capability.md`.
+  Run `--array=9,10,11` (phoenix) alone first as the port gate.

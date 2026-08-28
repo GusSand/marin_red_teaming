@@ -5,7 +5,10 @@
 # INSTRUCT models => hf chat template (do NOT set TEMPLATE). Does NOT shut down the box
 # (shutdown is done manually after verifying Study B completed).
 set -uo pipefail
-cd /home/paperspace/marin
+
+# Torch port 2026-08-27: override with MARIN_RT_ROOT.
+MARIN_ROOT="${MARIN_RT_ROOT:-${SCRATCH:-/scratch/gs157}/marin-red-teaming}"
+cd $MARIN_ROOT
 unset TEMPLATE   # ensure run_row uses the model's own chat template (hf), not a base scaffold
 DL=logs/2026-07-29-olmo-posttraining-studyB_driver.log
 TOX=repro-olmo3-safety/runs/2026-07-28-olmo-32b-base-toxigen-r1/metrics.json

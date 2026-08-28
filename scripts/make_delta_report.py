@@ -6,9 +6,16 @@ Metrics in metrics.json are fractions (0-1); published targets are on a 0-100 sc
 
 Usage: python scripts/make_delta_report.py            # writes report/deltas.md
 """
+
+# Torch port 2026-08-27: override with MARIN_RT_ROOT.
+import os as _os
+_MARIN_ROOT = _os.environ.get("MARIN_RT_ROOT",
+                              _os.path.join(_os.environ.get("SCRATCH", "/scratch/gs157"),
+                                            "marin-red-teaming"))
 import json, os, glob, statistics as st
 
-ROOT = "/home/paperspace/marin/repro-olmo3-safety"
+
+ROOT = _MARIN_ROOT + "/repro-olmo3-safety"
 TARGETS = json.load(open(f"{ROOT}/targets.json"))
 
 # report-row -> (targets.json row key, metrics.json headline field). BBQ expands to 3 rows.

@@ -7,7 +7,10 @@
 #   scripts/run_suite.sh allenai/Olmo-3-7B-Instruct main 2026-07-26-instruct \
 #     "wildjailbreak:harmful wildjailbreak:benign trustllm_jailbreaktrigger:default bbq:default strongreject:logprobs toxigen:default wmdp:default"
 set -uo pipefail
-cd /home/paperspace/marin
+
+# Torch port 2026-08-27: override with MARIN_RT_ROOT.
+MARIN_ROOT="${MARIN_RT_ROOT:-${SCRATCH:-/scratch/gs157}/marin-red-teaming}"
+cd $MARIN_ROOT
 MODEL="${1:?model}"; REV="${2:?revision}"; PREFIX="${3:?label prefix}"; CONFIGS="${4:?space-separated folder:config list}"
 DRIVERLOG="logs/${PREFIX}_suite_driver.log"
 echo "[$(date -Is)] suite start model=$MODEL prefix=$PREFIX" > "$DRIVERLOG"

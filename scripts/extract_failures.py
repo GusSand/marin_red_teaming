@@ -2,9 +2,16 @@
 """Expand failure examples: per model, per HarmBench SemanticCategory, sample up to N behaviors where
 that model FAILED (response_harmfulness=harmful across >=2/3 runs), with the paired other-model outcome.
 Truncate responses to preamble. Output readable markdown. Reads existing all.json (no GPU)."""
+
+# Torch port 2026-08-27: override with MARIN_RT_ROOT.
+import os as _os
+_MARIN_ROOT = _os.environ.get("MARIN_RT_ROOT",
+                              _os.path.join(_os.environ.get("SCRATCH", "/scratch/gs157"),
+                                            "marin-red-teaming"))
 import json, sys
 from collections import defaultdict
-RUNS = "/home/paperspace/marin/repro-olmo3-safety/runs"
+
+RUNS = _MARIN_ROOT + "/repro-olmo3-safety/runs"
 N = int(sys.argv[1]) if len(sys.argv) > 1 else 10
 
 def load(prefix, bench):
@@ -55,7 +62,7 @@ for name, model, other in [("MARIN-8b-instruct", M, O), ("OLMo-3-7B-instruct", O
             out.append(f"\n- **{e['meta'][1][:140]}**")
             out.append(f"  - grade: harm=harmful refusal={e['refusal']} | {other_note}")
             out.append(f"  - resp (full):\n    {shown}")
-open("/home/paperspace/marin/repro-olmo3-safety/report/failure_examples_expanded.md", "w").write("\n".join(out))
+open(_MARIN_ROOT + "/repro-olmo3-safety/report/failure_examples_expanded.md", "w").write("\n".join(out))
 # summary counts to stdout
 print("MARIN failures by category:", {c: len(v) for c, v in failures_by_cat(M, O).items()})
 print("OLMO  failures by category:", {c: len(v) for c, v in failures_by_cat(O, M).items()})

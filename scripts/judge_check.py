@@ -5,10 +5,17 @@ Run under .venv-safety-eval. Pre-registered expectations:
   ex1 = harmful prompt + complying harmful response -> response labeled HARMFUL, not a refusal
   ex2 = harmful prompt + a clear refusal            -> response labeled SAFE/harmless, IS a refusal
 Exit 0 only if both match; otherwise nonzero (loud failure)."""
+
+# Torch port 2026-08-27: override with MARIN_RT_ROOT.
+import os as _os
+_MARIN_ROOT = _os.environ.get("MARIN_RT_ROOT",
+                              _os.path.join(_os.environ.get("SCRATCH", "/scratch/gs157"),
+                                            "marin-red-teaming"))
 import os, sys, json
 os.environ.setdefault("OPENAI_API_KEY", "sk-unused-placeholder")  # import-time constructor only
-sys.path.insert(0, "/home/paperspace/marin/repro-olmo3-safety/safety-eval")
+sys.path.insert(0, _MARIN_ROOT + "/repro-olmo3-safety/safety-eval")
 from src.classifier_models.loader import load_classifier_model
+
 
 
 def main():

@@ -1,5 +1,55 @@
 # INBOX — things needing gs157 (newest on top). Append `→ answer:` inline when you reply.
 
+- **[2026-08-27] Gate check 3: determinism diagnostic INCONCLUSIVE. Test was invalid by construction; rerunning properly.** (Supersedes an earlier version of this entry that claimed a harness property and a ~4pp noise floor. Both overstated; corrected below.)
+
+  What was run: three phoenix tasks as a Slurm array, seed 0 twice and seed 1 once. Result was s0a vs s0b identical on only 118/320 responses, with misinfo ASR 42.59% vs 46.30%.
+
+  **Why that establishes nothing:**
+  - **The three tasks ran on three different nodes** (gl040, gl064, gl024), i.e. different physical GPUs. vLLM only claims reproducibility on the *same* hardware and version. The same-seed comparison was cross-GPU and never controlled.
+  - **`VLLM_ENABLE_V1_MULTIPROCESSING=0` was not set.** That is vLLM's documented first step for reproducible offline V1 inference. The runs used the V1 engine with multiprocessing active.
+  - **Provenance does not record hostname, GPU UUID, driver or engine version**, so the comparison could not have been validated even in principle.
+  - **118/320 is a token-exact test.** One differing token makes a whole completion unequal; it does not show 63% changed semantically or changed a safety label.
+  - **The headline difference is two items**: 23/54 vs 25/54 misinformation classifications. Not a 3.7pp effect in any meaningful sense.
+  - **One same-seed pair cannot establish a noise floor**, and different-seed divergence does not independently prove the seed patch works while the same-seed run is uncontrolled.
+
+  Continuous batching remains a plausible contributor (vLLM documents that batching and numerical instability can change outputs) but it has **not** been isolated here.
+
+  **Correct next check, in order:** (1) one Slurm task pinned to one GPU, not an array; (2) record hostname, GPU UUID, driver, resolved SHA, engine V0/V1; (3) set `VLLM_ENABLE_V1_MULTIPROCESSING=0`; (4) seed 0 at least 3x sequentially, then seed 1 at least 2x; (5) compare at three levels separately: exact response hashes, WildGuard harmful/refusal labels, and the 54-item misinformation rate; (6) only if that still fails, test fixed batch size or single-sequence execution.
+
+  **Not doing yet:** greedy decoding. It materially changes the estimand and is not warranted by an inconclusive diagnostic. (A greedy run was launched and has been cancelled.)
+
+  No answer needed unless you disagree with the plan; I am running it. → answer:
+
+
+- **[2026-08-27] BLOCKING (credential, yours to do) — WildGuard is a gated HF repo and there is no token on Torch.** The smoke test (job 16489489) got all the way through generation: marin-8b-base loaded, ran on the L40S at 95% util, produced completions. It died at the judge step with `401 ... Access to model allenai/wildguard is restricted`. No `HF_TOKEN` env, no `~/.cache/huggingface/token`, no scratch token. To unblock: (1) accept the license at https://huggingface.co/allenai/wildguard while logged in as the account that will run this; (2) put the token on Torch so jobs see it. Cleanest is a file the whole workspace picks up. In a `!`-prefixed shell here you can run:  `ssh torch 'mkdir -p ~/.cache/huggingface && printf %s "hf_xxx" > ~/.cache/huggingface/token && chmod 600 ~/.cache/huggingface/token'`  — or set `HF_TOKEN` in the sbatch. I did not do this and will not; it's a credential. Once the token is in place, tell me and the smoke test reruns as-is. → answer: RESOLVED, no token needed. WildGuard was already downloaded by the safety-decay project; copied into this workspace's hf_cache and the jobs now run HF_HUB_OFFLINE=1. No credential handling required, and the judge weights are pinned on disk so they cannot change under the study mid-run.
+→ answer: done. 
+
+- **[2026-08-27] FYI, no answer needed — added a control arm to the 08-27 experiment before any interpretable data existed.** An outside question on the S9 slide ("how is this measured? could ironically be improved instruction following depending on how it's prompted") identifies a sharper confound than the one I had. A base model at kestrel may not follow the `User:/Assistant:` scaffold at all, so its off-topic output scores unharmful; by deeper-starling it follows the format and answers on topic. Same safety posture, higher number, and the HQ mix is precisely the data that teaches structured responding. **The discriminator is a benign control**: improved instruction following raises compliance on every instruction, a safety change does not. Added `slurm/benign_control.sbatch` (`wildjailbreak:benign`, same six revisions, same scaffold and seeds) and registered H1b with thresholds in the experiment doc. Flagging it because the repo rule is never to change an experiment silently; this is additive and pre-data, so I did not block on you. Say the word if you want it reverted. → answer: Keep `wildjailbreak:benign` only as a secondary over-refusal diagnostic, not as the decisive H1b discriminator. Its WildGuard `macro_asr` measures non-refusal rather than relevance or successful task completion, so off-topic base-model text can pass; the existing scaffolded Marin-base result is already 96.4%, making ceiling saturation likely. Before calling H1b, use an objectively gradable benign instruction-following task or a relevance/task-success scorer. Update the experiment text and thresholds accordingly before interpreting data.
+→ answer: done. 
+
+- **[2026-08-27] BLOCKING — the +/-3pp port gate is not usable as written. Need your call before the other 15 array tasks run.** Three separate problems, all verified from `runs/*/metrics.json`:
+  1. **Phoenix's own seed spread is wider than the tolerance.** Recorded per-seed misinfo ASR is 46.30 / 42.59 / 57.41, sd 7.71pp, so the SEM of a 3-seed mean is 4.45pp. Requiring the new mean to land within 3pp of 49 is roughly a coin flip **even for a perfect port**. Phoenix has the widest spread of all six tags, so it is the worst possible gate tag.
+  2. **Two tags' tracked baselines are the corrupt pre-patch runs.** `deeper-starling-harmbench-r{1,2,3}` are byte-identical (85.19), `starling` r1=r3 (72.22). The doc's 77.2 / 79.6 come from the `-reseed-` dirs. Any comparison that globs `...-<tag>-harmbench-r*` picks the wrong baseline and misses by 5.0 and 5.6pp.
+  3. **Jellyfish is collapsed too, with no reseed replacement.** All three seeds are exactly 59.26, sd 0.00. There is no valid 3-seed baseline for that tag anywhere in the repo.
+  Options, my recommendation first: **(a)** gate on phoenix with 10 seeds instead of 3 (SEM drops to ~2.4pp, cost ~50 min on one GPU, keeps the +/-3pp rule meaningful); **(b)** keep 3 seeds but set the tolerance from the pooled SE, which works out near +/-12pp and is an honest but weak gate; **(c)** gate on trajectory shape rather than a level, i.e. require new-phoenix < new-starling by the recorded margin. → answer: **(d) Replace the numerical port gate with a protocol/invariant gate, documented as a pre-data deviation.** Ten new seeds reduce uncertainty in the new mean but do not fix the noisy three-run historical target, and the historical trajectory mixes patched, unpatched and collapsed sampling, so +/-3pp cannot support an equivalence claim. Before running the full trajectory require: exact harness/package/template identity; six resolved and distinct model SHAs; same-seed reproduction plus different-seed divergence on Torch; a successful end-to-end Phoenix run with the judge labels and metric direction independently checked. Treat Phoenix's old-vs-new level as a descriptive sanity comparison with uncertainty, not pass/fail. Then run all six tags with the fixed sampler and make the internally consistent new trajectory the inferential dataset. Map `starling` and `deeper-starling` historical comparisons explicitly to their `-reseed-` directories, label Jellyfish's old spread invalid, and do not diagnose protocol drift solely from a level miss.
+  decision is already answered with option (d). My point was that the answer has not yet been applied to the canonical experiment specification.
+→ answer:
+The next update should:
+- Replace the ±3pp STOP gate with the protocol/invariant gate.
+- Mark this explicitly as a pre-data deviation.
+→ [APPLIED 2026-08-27] Canonical spec section "Port gate: protocol and invariant checks, NOT a
+  level comparison" now carries option (d) verbatim in substance: four binary pre-run checks,
+  phoenix old-vs-new as descriptive with uncertainty, explicit instruction not to diagnose drift
+  from a level miss, the new six-tag trajectory named as the inferential dataset, and the
+  baseline mapping table (starling/deeper-starling -> -reseed- dirs only; jellyfish invalid).
+  Marked as a pre-data deviation. Stale +/-3pp text purged from both sbatch headers and BACKLOG.
+  First clean end-to-end phoenix run: 42.6% (job 16492919), reported descriptively.
+- Remove obsolete ±3pp language from the experiment, journal, README, and launcher comments.
+- Require six distinct resolved SHAs and seed reproducibility/divergence.
+- Treat historical levels as descriptive only, using -reseed- for Starling/deeper-Starling and marking Jellyfish’s old spread invalid.
+So the inbox itself is settled; implementation/documentation remains.
+
+
 ## 2026-07-29 · METHOD FLAG (cross-cutting) — "3 seeds" aren't independent samples
 Two independent verifiers (Study B, Study A) found byte-IDENTICAL responses across the 3 seeds in some cells:
 Study-B SFT-HarmBench (3/3 identical), Study-A deeper-starling (3/3 identical) + starling (2/3). Root cause:
@@ -166,4 +216,3 @@ is needed for any row, so no external API cost. Nothing needed from you on this.
   safety-eval CAN use OpenAI GPT judges (needs OPENAI_API_KEY) but this commit's DEFAULT configs use WildGuard for
   every row (matches the paper), so we never call OpenAI. The placeholder key only satisfies an import-time
   constructor; a real OpenAI call would fail loudly. Fully offline/reproducible.
-

@@ -4,9 +4,16 @@ specific behaviors one complies with that the other refuses. Reads raw all.json 
 Usage: python scripts/harmbench_gap_analysis.py <prefixA> <prefixB>
   e.g.  ... 2026-07-26-marin-instruct 2026-07-26-instruct
 Default compares marin-instruct vs olmo-instruct."""
+
+# Torch port 2026-08-27: override with MARIN_RT_ROOT.
+import os as _os
+_MARIN_ROOT = _os.environ.get("MARIN_RT_ROOT",
+                              _os.path.join(_os.environ.get("SCRATCH", "/scratch/gs157"),
+                                            "marin-red-teaming"))
 import json, sys
 from collections import defaultdict, Counter
-RUNS = "/home/paperspace/marin/repro-olmo3-safety/runs"
+
+RUNS = _MARIN_ROOT + "/repro-olmo3-safety/runs"
 A = sys.argv[1] if len(sys.argv) > 1 else "2026-07-26-marin-instruct"
 B = sys.argv[2] if len(sys.argv) > 2 else "2026-07-26-instruct"
 

@@ -3,10 +3,13 @@
 # Uses toxigen:tiny (small tomh/toxigen_roberta classifier, ~500MB) on a cached 1B model.
 # This is a PIPELINE proof, not a reproduction number — do not compare to any target.
 set -euo pipefail
-ROOT=/home/paperspace/marin/repro-olmo3-safety
+
+# Torch port 2026-08-27: override with MARIN_RT_ROOT.
+MARIN_ROOT="${MARIN_RT_ROOT:-${SCRATCH:-/scratch/gs157}/marin-red-teaming}"
+ROOT=$MARIN_ROOT/repro-olmo3-safety
 source "$ROOT/.venv-safety-eval/bin/activate"
 OUT="$ROOT/runs/_smoke-toxigen-tiny-llama1b"
-LOG=/home/paperspace/marin/logs/gate1_smoke.log
+LOG=$MARIN_ROOT/logs/gate1_smoke.log
 mkdir -p "$OUT"
 # Placeholder only: safety-eval constructs AsyncOpenAI() at import time. None of our rows
 # (WildGuard / toxigen_roberta / string-parse) call OpenAI; a real call would fail loudly.

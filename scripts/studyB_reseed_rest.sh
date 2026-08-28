@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # Study B reseed REMAINDER: DPO + final only (SFT's 6 rows already completed). Seed-fixed.
 set -uo pipefail
-cd /home/paperspace/marin
+
+# Torch port 2026-08-27: override with MARIN_RT_ROOT.
+MARIN_ROOT="${MARIN_RT_ROOT:-${SCRATCH:-/scratch/gs157}/marin-red-teaming}"
+cd $MARIN_ROOT
 unset TEMPLATE
 DL=logs/2026-07-29-studyB-reseed_driver.log
 source repro-olmo3-safety/.venv-safety-eval/bin/activate

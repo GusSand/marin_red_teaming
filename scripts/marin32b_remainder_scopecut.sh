@@ -4,8 +4,11 @@
 #   strongreject:logprobs x3 seeds, wmdp x3 seeds, toxigen x1 seed (scope-cut giant).
 # BBQ kept at 1 seed (bbq r1, already running). Documented deviation from 3-seed pre-reg.
 set -uo pipefail
-cd /home/paperspace/marin
-export TEMPLATE=/home/paperspace/marin/repro-olmo3-safety/config/base_template_v2.txt
+
+# Torch port 2026-08-27: override with MARIN_RT_ROOT.
+MARIN_ROOT="${MARIN_RT_ROOT:-${SCRATCH:-/scratch/gs157}/marin-red-teaming}"
+cd $MARIN_ROOT
+export TEMPLATE=$MARIN_ROOT/repro-olmo3-safety/config/base_template_v2.txt
 DRIVERLOG=logs/2026-07-28-marin-32b-base-remainder_driver.log
 BBQ1=repro-olmo3-safety/runs/2026-07-28-marin-32b-base-bbq-r1/metrics.json
 

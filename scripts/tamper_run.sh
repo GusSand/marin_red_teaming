@@ -9,15 +9,18 @@
 # merge->eval(harmbench+strongreject)->DELETE merged weights. Adapters DELETED at the end.
 # Only the ASR provenance in runs/ survives (content-safe). Nothing harmful committed.
 set -uo pipefail
-cd /home/paperspace/marin
+
+# Torch port 2026-08-27: override with MARIN_RT_ROOT.
+MARIN_ROOT="${MARIN_RT_ROOT:-${SCRATCH:-/scratch/gs157}/marin-red-teaming}"
+cd $MARIN_ROOT
 MODEL="${1:?model repo}"; NAME="${2:?short name}"; NPAIRS="${3:-100}"; LR="${4:-2e-4}"
 STEPS=(0 5 10 20 40 80)
 
-ROOT=/home/paperspace/marin/repro-olmo3-safety
+ROOT=$MARIN_ROOT/repro-olmo3-safety
 VENV="$ROOT/.venv-safety-eval"
 WORK="$ROOT/tamper_work/$NAME"          # adapters + transient merged models (gitignored, deleted)
 ADIR="$WORK/adapters"
-DL="/home/paperspace/marin/logs/2026-07-29-tamper-${NAME}_driver.log"
+DL="$MARIN_ROOT/logs/2026-07-29-tamper-${NAME}_driver.log"
 ADV="$ROOT/data/advbench_harmful_behaviors.csv"
 mkdir -p "$ADIR"
 source "$VENV/bin/activate"

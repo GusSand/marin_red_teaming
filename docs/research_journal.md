@@ -4,6 +4,176 @@ One entry per experiment. TLDR level. No goalpost-moving.
 
 ---
 
+## 2026-08-27 22:45 — RESUME HERE (state handoff)
+
+**Running right now:** Slurm job **16496404** on Torch, `slurm/determinism_check.sbatch`. One job,
+one GPU, five sequential phoenix runs (seed 0 x3, seed 1 x2), `VLLM_ENABLE_V1_MULTIPROCESSING=0`.
+~50 min. It continues regardless of any local session ending.
+
+**When it finishes**, from `/scratch/gs157/marin-red-teaming`:
+
+    L=/scratch/gs157/marin-misinfo-labels
+    R=repro-olmo3-safety/runs
+    repro-olmo3-safety/.venv-safety-eval/bin/python scripts/compare_determinism.py \
+      s0a=$R/2026-08-27-determinism-phoenix-s0a \
+      s0b=$R/2026-08-27-determinism-phoenix-s0b \
+      s0c=$R/2026-08-27-determinism-phoenix-s0c \
+      s1a=$R/2026-08-27-determinism-phoenix-s1a \
+      s1b=$R/2026-08-27-determinism-phoenix-s1b
+
+Read it at all three levels. Do not call a percentage-point spread an effect without converting
+to item counts (1 item = 1.85pp on the 54-item subset).
+
+**Port gate status** (protocol/invariant gate, INBOX option (d), not a level match):
+1. harness/package/template identity — PASS, asserted by preflight
+2. six distinct resolved SHAs — NOT DONE, only phoenix is cached; run `scripts/prefetch_revisions.py`
+3. same-seed reproduces / diff-seed diverges on fixed hardware — IN FLIGHT (job 16496404)
+4. clean end-to-end phoenix — PASS (job 16492919, 42.6%), independent label/direction check outstanding
+
+**Not started:** the analysis code. No five-series computation, no empty-excluded reproduction,
+no exact McNemar, no flip list, no verdict. This is the largest remaining gap.
+
+**Open in INBOX:** the determinism diagnostic entry (no answer needed unless Gus disagrees with
+the protocol). Everything else is answered.
+
+**Everything is uncommitted.** `git status` is dirty across scripts/, slurm/, docs/, CLAUDE.md,
+BACKLOG.md, INBOX.md. Nothing has been committed or pushed; that was never requested.
+
+## 2026-08-27 — Determinism diagnostic INCONCLUSIVE; first attempt was invalid (job 16495478)
+
+**Correction.** An earlier version of this entry claimed same-seed runs "do not reproduce", called
+it "a property of the harness", and inferred a ~4pp noise floor. All three claims were
+overstated. The test could not support them.
+
+**What was run.** Three phoenix tasks as a Slurm ARRAY, seed 0 twice and seed 1 once. Result:
+s0a vs s0b identical on 118/320 responses; misinfo ASR 42.59% vs 46.30%.
+
+**Why it establishes nothing.**
+- **The three tasks ran on three different nodes**: gl040, gl064, gl024. vLLM only claims
+  reproducibility on the *same* hardware and version. The same-seed comparison was cross-GPU.
+- **`VLLM_ENABLE_V1_MULTIPROCESSING=0` was not set**, which is vLLM's documented first step for
+  reproducible offline V1 inference. Runs used the V1 engine with multiprocessing active.
+- **Provenance recorded no hostname, GPU UUID, driver or engine flags**, so the comparison could
+  not have been validated even in principle.
+- **118/320 is token-exact**: one changed token makes a whole completion unequal. It does not
+  show that 63% changed semantically or changed a safety label.
+- **The headline difference is two items**: 23/54 vs 25/54. Reporting it as "3.7pp" made two
+  classifications sound like an effect.
+- **One same-seed pair cannot establish a noise floor.** And different-seed divergence does not
+  independently prove the seed patch works while the same-seed arm is uncontrolled.
+
+Continuous batching remains a plausible contributor (vLLM documents that batching and numerical
+instability can change outputs) but it was **not isolated**.
+
+**Correct protocol, now implemented** in `slurm/determinism_check.sbatch` +
+`scripts/compare_determinism.py`: one job on ONE GPU (deliberately not an array), five runs
+sequentially (seed 0 x3, seed 1 x2), `VLLM_ENABLE_V1_MULTIPROCESSING=0`, provenance recording
+hostname / GPU UUID / driver / engine flags / seed env, and comparison at three levels
+separately: exact response hash, WildGuard harmful and refusal labels, and the 54-item rate in
+ITEM COUNTS. Greedy decoding was launched and cancelled: it materially changes the estimand and
+is not warranted by an inconclusive diagnostic.
+
+**Lesson recorded in CLAUDE.md**: any run-to-run comparison must be pinned to one GPU, and
+provenance must carry the hardware identity that makes the comparison checkable.
+
+## 2026-08-27 — Torch port + refusal-vs-capability gate submitted (job 16488571)
+
+**Method.** Ported this repo from the retired paperspace A100 to NYU Torch. Workspace
+`/scratch/gs157/marin-red-teaming`. 15 shell + 6 python scripts had `/home/paperspace/marin`
+hardcoded (32 occurrences); all now read `MARIN_RT_ROOT`, defaulting to `$SCRATCH/marin-red-teaming`.
+safety-eval re-cloned at pinned `060cc903`, seed patch re-applied and verified. New
+`scripts/submit.sh` + `scripts/dry_run_check.py` (preflight gate, ported from safety-decay) and
+`slurm/misinfo_refusal_vs_capability.sbatch`.
+
+**Three things that would have silently corrupted the run, caught before submitting:**
+- **transformers resolved to 5.16.1**; the 07-28/07-29 runs were produced on **4.57.1**
+  (`runs/*/provenance.json`). Major-version drift in tokenizer/generation behaviour on a study
+  whose premise is protocol identity. Pinned to 4.57.1, logged in `docs/decisions.md`.
+- **The sbatch did not export `TEMPLATE`.** `run_row.sh` defaults it to `hf`, which for a base
+  model means no scaffold at all, reintroducing the prompt-echo confound. Now exported and
+  hard-checked, matching the original `command.txt`.
+- **Seeds were 1/2/3**, the originals were 0/1/2. Corrected; the reproduction gate compares
+  against those runs directly.
+
+Env parity now exact: torch 2.8.0+cu128, cuda 12.8, vllm 0.11.0, transformers 4.57.1,
+safety-eval 060cc903. GPU differs by necessity: A100-SXM4-80GB then, L40S 48GB now.
+
+**Job log.** All on partition l40s_public, account torch_pr_173_tandon_advanced. Port gate is
+phoenix only (`--array=9,10,11`, seeds 0/1/2); it must recompute to 49% +/- 3pp before the other
+five tags run. Pre-registration:
+`docs/experiments/08-27_marin-base-trajectory_misinfo-refusal-vs-capability.md`.
+
+| jobid | config | purpose | status | outcome |
+|---|---|---|---|---|
+| 16488571 | misinfo_refusal_vs_capability.sbatch --array=9,10,11 | port gate, attempt 1 | FAILED <1min | `ModuleNotFoundError: fire`, and `env_error: No module named 'torch'` in provenance. Venv unusable inside a job. |
+| 16488589 | diag.sbatch | diagnose the above | COMPLETED | **Root cause: Torch is heterogeneous.** Login node `/usr/bin/python3` = 3.12.13; l40s compute node = **3.9.21**. A stock venv symlinks `bin/python3 -> /usr/bin/python3`, so the same venv ran 3.12 on login and 3.9 in the job, where nothing under `lib/python3.12/site-packages` is importable. |
+| 16488597 | diag2.sbatch | is python3.12 present on compute nodes? | COMPLETED | Yes, `/usr/bin/python3.12` (3.12.14). Fix = repoint `bin/python3` at an absolute versioned path. Also found a user-built standalone CPython 3.12.14 at `/scratch/gs157/secure-code-steering/pythons/`. |
+| 16488625 | misinfo_refusal_vs_capability.sbatch --array=9,10,11 | port gate, attempt 2 | FAILED at ~5min, cancelled at 19min | Env now correct in-job (transformers 4.57.1, torch 2.8.0+cu128, vllm 0.11.0, L40S). vLLM died: `Engine core initialization failed`, root cause `fatal error: Python.h: No such file or directory` while Triton/inductor compiled `cuda_utils.c`. **No Python dev headers anywhere on the cluster's system python.** |
+
+**Two process failures of mine worth recording.** (a) `run_row.sh` appends to `logs/<name>.log`, so
+attempt 2's log still held attempt 1's `fire` traceback; I nearly diagnosed the wrong error. Run
+dirs are refused on re-run but logs are not, which is an asymmetry worth fixing. (b) After the
+vLLM crash the array tasks stayed in RUNNING for ~14 more minutes rather than exiting, so a dead
+job was holding GPUs. Cancelled manually. Worth a timeout or a liveness check.
+
+**Fix in progress.** Rebuild the venv on the standalone CPython 3.12.14, which ships
+`include/python3.12/Python.h`, copied into this workspace so it does not depend on another
+project's scratch directory (scratch is flushed). `setup_safety_eval.sh` and the preflight are
+updated so neither failure class can recur silently.
+
+**Design change, pre-data (2026-08-27).** An outside question on the S9 slide sharpened the
+confound: not "the model writes better" but "the model follows the scaffold better." At `kestrel`
+the base model may not follow `User:/Assistant:` at all, so its output scores unharmful; by
+`deeper-starling` it answers on topic. The HQ mix (Wikipedia, DOLMA HQ) is exactly what teaches
+structured responding, so this is the expected effect of that mix. **Discriminator: a benign
+control.** Improved instruction following lifts compliance on every instruction; a safety change
+does not. Added `slurm/benign_control.sbatch` (`wildjailbreak:benign`, 250 prompts, same six
+revisions/scaffold/seeds) and H1b with pre-registered thresholds. If delta-benign tracks
+delta-harmful, S9 is not a safety finding and the cooldown ablation is aimed at the wrong thing.
+
+**Job log, continued.**
+
+| jobid | config | purpose | status | outcome |
+|---|---|---|---|---|
+| 16488625 | (see above) | port gate attempt 2 | FAILED | Python.h missing; Triton could not compile its runtime C shim. |
+| 16489489 | misinfo...sbatch --array=9 | single-seed smoke test | FAILED at judge, 5:45 | **Generation succeeded** (marin-8b-base loaded, L40S at 95%/42.5GB, completions produced) -- the Python.h fix held. Died at the judge: `401, allenai/wildguard is a gated repo`. No HF token on Torch. |
+
+**Fixes since.** Repointed the venv at a standalone CPython 3.12.14 (copied into the workspace so
+it does not depend on another project's flushed scratch) whose `include/python3.12/Python.h` is
+present; the interpreter now resolves identically on login and compute nodes. Added a preflight
+`judge repo access` check so a missing HF token fails in one CPU-minute instead of five GPU-minutes.
+
+**Blocked on a credential.** allenai/wildguard is gated; Gus must accept the license and place a
+token on Torch (INBOX 2026-08-27). Generation and the whole harness otherwise run clean end to end.
+
+**PORT VALIDATED (job 16492919, 2026-08-27).** First clean end-to-end run on Torch: generation,
+judging, label preservation and reporting, 10:29 wall clock on one L40S.
+
+    phoenix seed 0: misinfo ASR = 42.6%   (micro ASR = 49.4%)
+
+Read descriptively per the protocol/invariant gate (INBOX option (d)), NOT as pass/fail. 42.6%
+falls inside phoenix's own historical per-seed range (42.59 / 46.30 / 57.41) and is essentially
+the historical seed-1 value. One new seed against a noisy 3-run historical mean supports no
+equivalence claim in either direction, which is exactly why the +/-3pp gate was withdrawn: under
+it this run would have read as a 6.4pp miss and triggered a false protocol-drift STOP.
+
+**Gate status:** check 1 (harness/package/template identity) asserted by preflight; check 2 (six
+distinct SHAs) pending the full prefetch; check 3 (same-seed reproduces, different-seed diverges
+on Torch) NOT yet run; check 4 (clean end-to-end phoenix with judge labels and metric direction
+checked) done for the run itself, with the independent label/direction check still outstanding.
+
+**Two more failures fixed to get here.** (a) Even with HF_HOME set, vLLM resolved the repo-id
+against the GLOBAL /scratch/gs157/.huggingface cache, which has no WildGuard, so generation
+succeeded and the judge died on a missing sentencepiece tokenizer (job 16492304). Fixed by
+pinning HF_HUB_CACHE/HUGGINGFACE_HUB_CACHE and passing an absolute snapshot path instead of a
+repo id. (b) The plain HF downloader stalled silently at 3.3/16GB with no timeout; hf_transfer
+is now enabled in the prefetch.
+
+**Results.** Phoenix single seed only. Full trajectory not yet run.
+
+**Incidental.** `/tmp` on the Torch login node is a 2GB tmpfs and pip's extraction of the 888MB
+torch wheel fills it. `setup_safety_eval.sh` now forces TMPDIR and PIP_CACHE_DIR onto scratch.
+
 ## 2026-07-26 — Gate 0: ground truth for Olmo 3 7B safety reproduction
 
 **Research question.** What are the exact published safety-benchmark values for

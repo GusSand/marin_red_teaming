@@ -4,7 +4,10 @@
 # LOCAL, download-run-delete per checkpoint (14G each; local disk tight). New '-reseed' prefixes
 # so the original (buggy-CI) runs are preserved for before/after comparison. hf chat template.
 set -uo pipefail
-cd /home/paperspace/marin
+
+# Torch port 2026-08-27: override with MARIN_RT_ROOT.
+MARIN_ROOT="${MARIN_RT_ROOT:-${SCRATCH:-/scratch/gs157}/marin-red-teaming}"
+cd $MARIN_ROOT
 unset TEMPLATE
 DL=logs/2026-07-29-studyB-reseed_driver.log
 MDIR_BASE=~/.cache/huggingface/hub/models--allenai--Olmo-3-7B-Instruct
