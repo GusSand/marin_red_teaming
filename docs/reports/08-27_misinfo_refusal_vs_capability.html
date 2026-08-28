@@ -217,6 +217,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
     <li><strong>H0 (not the outcome):</strong> cost the seven-arm ablation as designed, controls kept.</li>
     <li><strong>H1 or H1b (not the outcome):</strong> do not propose the ablation.</li>
     <li><strong>Mixed (the outcome):</strong> the ablation proceeds. Its primary metric becomes refusal rate or harmful-given-non-refusal. The raw harmful rate overstates the safety change by about half and should not be the headline. Send David the one-pager with this decomposition attached.</li>
+    <li><strong>Refocus (Gus, 28 Aug):</strong> Starling and Deeper-Starling do not separate, so the effect appears early and saturates. The ablation targets Phoenix → Starling: the Starling-equivalent token budget is the primary endpoint, intermediate checkpoints if affordable, Deeper-Starling kept only as a secondary persistence check. Seven mixture arms unchanged.</li>
     <li><strong>Any outcome:</strong> pick the H1b instrument. It is the blocker now.</li>
     <li><strong>Hardware:</strong> after two L40S drains this rule fired. Gate 3 reruns on H200, then all 39 there. Nothing from L40S is reused.</li>
   </ul>
@@ -247,7 +248,24 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <h3>Q3: Why is the benign control not decisive for H1b?</h3>
   <p>A benign control should separate instruction following from safety: better format-following lifts compliance on everything. But <code>wildjailbreak:benign</code> scores non-refusal, not task success, so off-topic text passes, which is the exact failure it was meant to catch. It is also saturated at 96.4%. H1b needs a gradable benign task; until then it stays open.</p>
 
-  <h3>Q4: How is the paired analysis defined with ten seeds?</h3>
+  <h3>Q4: What about the 18 responses the judge did not label?</h3>
+  <p>WildGuard returned no label for 71 rows in the misinformation subset: 53 blank responses (excluded by the spec) and 18 non-empty ones, concentrated early (jellyfish 8, kestrel 6, ocelot 2, phoenix 1, starling 1). Most are 6–11k characters; the judge's output failed to parse. The analysis treats them as not-harmful and non-refusal.</p>
+  <p><strong>Worst-case bounds.</strong> Every contrast recomputed with the 18 set all-harmful or all-unharmful, both sides, every corner:</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>contrast</th><th class="num">as analysed</th><th>worst-case range</th><th class="num">width</th><th>can a verdict flip?</th></tr></thead>
+    <tbody>
+      <tr><td>H-min jellyfish → phoenix, harmful</td><td class="num">−15.2</td><td>[−16.7, −15.0]</td><td class="num">1.7pp</td><td>no</td></tr>
+      <tr><td>H0 phoenix → starling, refusal</td><td class="num">−12.2</td><td>[−12.4, −12.0]</td><td class="num">0.4pp</td><td>no</td></tr>
+      <tr><td>H1 phoenix → deeper-starling, refusal</td><td class="num">−14.6</td><td>[−14.8, −14.6]</td><td class="num">0.2pp</td><td>no</td></tr>
+      <tr><td>H1 harmful | non-refusal</td><td class="num">+11.3</td><td>[+11.2, +11.3]</td><td class="num">0.1pp</td><td>no</td></tr>
+      <tr><td>harmful phoenix → starling</td><td class="num">+22.2</td><td>[+22.0, +22.4]</td><td class="num">0.4pp</td><td>no</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">H-min is −15.2 here rather than −13.5 because this check excludes blank responses per behaviour before pairing; the main analysis pairs over all seeds. Same direction, same verdict. <code>scripts/sensitivity_missing_labels.py</code>.</p>
+  <p><strong>Label completion, not a rerun.</strong> The 18 are being re-judged with the identical pinned judge (same class, default configuration, same input construction, same weights, offline). Originals stay untouched; new labels go to sidecar files and are merged explicitly. Before/after numbers appear here when it lands.</p>
+  <div id="label-completion-after" class="callout"><span class="eyebrow">After label completion</span>Pending: job 16525942.</div>
+
+  <h3>Q5: How is the paired analysis defined with ten seeds?</h3>
   <p>Paired over the 54 behaviours. Primary: per-behaviour seed proportions, bootstrap CI, permutation p. No tie problem at any seed count. McNemar kept for comparability, with 5–5 splits as an explicit <em>unstable</em> category. Three contrasts, seven tests, Holm-adjusted.</p>
   <div class="callout"><span class="eyebrow">Verification</span>A fresh agent recomputed everything from raw labels on its own code, blind to the analysis script and its numbers. Every contrast matched within 0.2pp and every McNemar count exactly. It found two bugs in the analysis script (harmful-rate denominator not empty-excluded; wrong length estimator), both fixed to the spec and re-matched. It also found 18 non-empty responses with no judge label, mostly at early tags; no verdict changes.</div>
 </section>

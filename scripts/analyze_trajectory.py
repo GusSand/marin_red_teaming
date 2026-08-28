@@ -60,13 +60,19 @@ def is_echo(behavior, response):
     return len(b) >= 0.8 * len(r) and b in r
 
 
-def load_run(path):
+def load_run(path, use_rejudge=False):
     raw = json.load(open(path))
+    completed = {}
+    if use_rejudge and (Path(path).parent / "rejudge.json").exists():
+        for it in json.load(open(Path(path).parent / "rejudge.json"))["rows"]:
+            completed[it["row_index"]] = it["rejudged"]
     rows = raw if isinstance(raw, list) else next(v for v in raw.values() if isinstance(v, list))
     out = {}
-    for r in rows:
+    for idx, r in enumerate(rows):
         if r.get("SemanticCategory") != MISINFO:
             continue
+        if idx in completed and completed[idx].get("response_harmfulness") is not None:
+            r = {**r, "response_harmfulness": completed[idx]["response_harmfulness"], "response_refusal": completed[idx]["response_refusal"], "_completed": True}
         resp = str(r.get("response") or "")
         out[r["BehaviorID"]] = {
             "harmful": r.get("response_harmfulness") == "harmful",
@@ -75,17 +81,18 @@ def load_run(path):
             "echo": is_echo(r.get("Behavior"), resp),
             "len": len(resp),
             "label_missing": r.get("response_harmfulness") is None,
+            "completed": bool(r.get("_completed")),
         }
     return out
 
 
-def load_tag(labels, prefix, tag, nseeds):
+def load_tag(labels, prefix, tag, nseeds, use_rejudge=False):
     seeds = {}
     for s in range(nseeds):
         p = Path(labels) / f"{prefix}-{tag}-harmbench-s{s}" / "all.json"
         if not p.exists():
             raise SystemExit(f"MISSING {p}")
-        seeds[s] = load_run(p)
+        seeds[s] = load_run(p, use_rejudge)
     ids = sorted(set.intersection(*[set(v) for v in seeds.values()]))
     return ids, seeds
 
@@ -208,6 +215,7 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--tags", default=",".join(TAGS))
     ap.add_argument("--seeds", default=None, help="override, e.g. phoenix=10,starling=10")
+    ap.add_argument("--use-rejudge", action="store_true", help="merge rejudge.json sidecars (label completion); originals untouched")
     a = ap.parse_args()
     tags = a.tags.split(",")
     seeds = dict(SEEDS)
@@ -219,12 +227,13 @@ def main():
 
     props, aggs, idsets = {}, {}, {}
     for t in tags:
-        ids, runs = load_tag(a.labels, a.prefix, t, seeds[t])
+        ids, runs = load_tag(a.labels, a.prefix, t, seeds[t], a.use_rejudge)
         props[t], aggs[t] = tag_table(ids, runs); idsets[t] = ids
         missing = sum(runs[s][i]["label_missing"] for s in runs for i in ids)
         missing_nonempty = sum(runs[s][i]["label_missing"] and not runs[s][i]["empty"] for s in runs for i in ids)
         aggs[t]["n_behaviors"] = len(ids); aggs[t]["labels_missing"] = int(missing)
         aggs[t]["labels_missing_nonempty"] = int(missing_nonempty)
+        aggs[t]["labels_completed_by_rejudge"] = int(sum(runs[s][i]["completed"] for s in runs for i in ids))
     common = sorted(set.intersection(*[set(v) for v in idsets.values()]))
     assert all(idsets[t] == common for t in tags), "behavior sets differ across tags"
 
@@ -268,7 +277,7 @@ def main():
         g0, g1 = set(fl["harm-H0"]["A_to_B_gained"]), set(fl["harm-H1"]["A_to_B_gained"])
         overlap = {"both": sorted(g0 & g1), "H0_only": sorted(g0 - g1), "H1_only": sorted(g1 - g0)}
 
-    report = {"prefix": a.prefix, "tags": tags, "seeds": {t: seeds[t] for t in tags}, "n_behaviors": len(common),
+    report = {"prefix": a.prefix, "label_completion_merged": bool(a.use_rejudge), "tags": tags, "seeds": {t: seeds[t] for t in tags}, "n_behaviors": len(common),
               "rng_seed": RNG_SEED, "bootstrap": B_BOOT, "permutations": B_PERM,
               "per_tag": aggs, "contrasts": results, "flip_overlap_H0_H1": overlap,
               "notes": ["non-response = empty + scaffold-aware echo; off-topic is NOT detected",
@@ -277,14 +286,14 @@ def main():
     (out / "analysis.json").write_text(json.dumps(report, indent=2))
 
     # markdown
-    L = [f"# Trajectory analysis: {a.prefix}", "", f"{len(common)} misinformation behaviors. Seeds: " +
+    L = [f"# Trajectory analysis: {a.prefix}" + (" (with label completion merged)" if a.use_rejudge else ""), "", f"{len(common)} misinformation behaviors. Seeds: " +
          ", ".join(f"{t}={seeds[t]}" for t in tags) + ".", "", "## Per tag", "",
          "| tag | seeds | harmful | refusal | harmful\\|non-ref | empty | non-resp | echo | len median [IQR] |", "|---|---|---|---|---|---|---|---|---|"]
     for t in tags:
         g = aggs[t]; f = lambda k: f"{100*g[k]['mean']:.1f}" + (f" ±{100*g[k]['seed_sd']:.1f}" if g[k]['seed_sd'] is not None else "")
         L.append(f"| {t} | {g['harmful']['n_seeds']} | {f('harmful')} | {f('refusal')} | {f('hgnr')} | {f('empty')} | {f('nonresp')} | {f('echo')} | {g['length']['median']:.0f} [{g['length']['iqr'][0]:.0f}, {g['length']['iqr'][1]:.0f}] |")
     L += ["", "(percent, mean over seeds ± seed SD; harmful rate is empty-excluded per the spec)", "",
-          "Judge labels missing (None): " + ", ".join(f"{t} {aggs[t]['labels_missing']} (non-empty {aggs[t]['labels_missing_nonempty']})" for t in tags), "", "## Contrasts", "",
+          "Judge labels missing (None): " + ", ".join(f"{t} {aggs[t]['labels_missing']} (non-empty {aggs[t]['labels_missing_nonempty']}, completed by re-judge {aggs[t]['labels_completed_by_rejudge']})" for t in tags), "", "## Contrasts", "",
           "| contrast | series | A → B | mean Δ (pp) | 95% CI | p perm | p Holm | verdict |", "|---|---|---|---|---|---|---|---|"]
     for r in results:
         unit = 100 if r["series"] != "length" else 100
