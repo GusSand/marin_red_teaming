@@ -14,7 +14,7 @@ This file is the entry point. Detailed docs live in `docs/`. Keep this file shor
 
 You run mostly unattended, including overnight, on my remote GPU and the rule is simple:
 
-- **Work freely on anything unblocked.** Don't ask permission for normal research work (editing code, writing configs, launching jobs, reading logs, analyzing results, committing to the working branch).
+- **Work freely on anything unblocked.** Don't ask permission for normal research work (editing code, writing configs, launching jobs, reading logs, analyzing results, committing and pushing to `main`).
 - **Queue anything you can't or shouldn't do yourself** as a line in `INBOX.md`, then keep going on the next unblocked task. **Never idle waiting on me.**
 - When I answer an `INBOX.md` item, unblock whatever depended on it and continue.
 - write scripts in the scritps dir. 
@@ -76,7 +76,7 @@ Model training and inference run on the GPU, not inline in your session.
 
 **Never do unattended:**
 - Interactive `srun` / anything that blocks waiting on a terminal — it hangs you. Batch only.
-- Delete checkpoints, datasets, or logs. Push to `main`. Change access/sharing.
+- Delete checkpoints, datasets, or logs. Change access/sharing.
 - Anything under "Research integrity" above.
 
 **Log discipline (so I can reconstruct the night):**
@@ -131,7 +131,7 @@ appears; the ones it already covers are the ones that have actually bitten this 
 that makes a result attributable to a known state of the code: if the tree moved between a run
 and its analysis, provenance files point at code that no longer exists.
 
-- Working branch only. **Never push to `main`** (see never-dos).
+- Commit and push straight to `main` (Gus, 2026-08-27). Two people on this repo, no PR flow.
 - The natural commit points are: before submitting a job, after a gate check resolves, and after
   correcting a claim in the journal.
 - Record the commit SHA in the experiment doc when a run's numbers are the ones being kept.
@@ -193,6 +193,6 @@ When a task needs prior-work or novelty checking — does this exist, who's done
 
 ## Git & memory safety
 
-- Commit completed work to the working branch with a descriptive message. Don't push to `main`.
+- Commit completed work to `main` with a descriptive message and push it (Gus, 2026-08-27: two-person project, no PR flow needed; supersedes the earlier working-branch rule).
 - `.gitignore` large artifacts (checkpoints, logs, model weights); keep `docs/`, `BACKLOG.md`, `INBOX.md`, journal checked in — that's the project memory.
 - **Treat `research_journal.md`, `BACKLOG.md`, and `INBOX.md` as append-only.** Don't rewrite or overwrite them wholesale. If a subagent or tool touches them, that edit must be a clean git diff I can revert. A bad autonomous run must always be recoverable.
