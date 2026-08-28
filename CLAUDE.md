@@ -125,6 +125,17 @@ Submit GPU jobs only via `bash scripts/submit.sh slurm/<file>.sbatch`. It runs
 CPU beats a queue wait plus a dead GPU job. Extend the check whenever a new failure class
 appears; the ones it already covers are the ones that have actually bitten this project.
 
+### Commit cadence (Gus, 2026-08-27)
+
+**Commit before starting any new experiment**, and often in general. A commit is the boundary
+that makes a result attributable to a known state of the code: if the tree moved between a run
+and its analysis, provenance files point at code that no longer exists.
+
+- Working branch only. **Never push to `main`** (see never-dos).
+- The natural commit points are: before submitting a job, after a gate check resolves, and after
+  correcting a claim in the journal.
+- Record the commit SHA in the experiment doc when a run's numbers are the ones being kept.
+
 ### Comparing runs: pin the hardware (added 2026-08-27, learned the hard way)
 
 **Any comparison between runs must hold the GPU fixed.** vLLM only claims reproducibility on
