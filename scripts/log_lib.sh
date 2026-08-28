@@ -61,8 +61,13 @@ log_die() { log FATAL "$*"; exit 1; }
 # Log the exit status of the script whatever happens. Call once, after log_init.
 # This is what makes a crashed or cancelled job visible in progress.log instead of
 # just vanishing from squeue.
+# A job killed by SIGTERM (node drain, preemption, scancel) previously logged "end OK", because
+# the signal killed the child and the trap ran with $?=0. Job 16500928 was drained off gl002 and
+# its log claimed success. Catch the signals explicitly so the log never disagrees with sacct.
 log_trap_exit() {
+    trap '_LOG_SIGNALLED=1' TERM INT
     trap '_rc=$?;
+          if [[ -n "${_LOG_SIGNALLED:-}" && $_rc -eq 0 ]]; then _rc=143; fi;
           if [[ -n "${_LOG_HB_PID:-}" ]]; then kill "$_LOG_HB_PID" 2>/dev/null || true; fi;
           if [[ -n "$_LOG_PHASE" ]]; then log INFO "phase done: $_LOG_PHASE ($(( $(date +%s) - _LOG_PHASE_T0 ))s)"; fi;
           if [[ $_rc -eq 0 ]]; then log INFO  "=== end OK (total $(_log_elapsed)) ===";

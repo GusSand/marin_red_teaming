@@ -44,7 +44,7 @@
 #SBATCH --mem=64G
 # DELIBERATELY NOT AN ARRAY -- see the header. All runs share one physical GPU.
 # 39 runs x ~400s ~= 4.4h; 16h leaves room for model loads and a slow node.
-#SBATCH --time=16:00:00
+#SBATCH --time=08:00:00
 # NOTE: logs/ is gitignored, so a fresh rsync of tracked files does not create it and
 # Slurm will fail to launch with no log to explain why. submit.sh mkdir -p's it.
 #SBATCH --output=logs/%x_%j.out
@@ -76,8 +76,18 @@ log_init "misinfo-traj"
 log_trap_exit
 
 # Fresh namespace. Must not collide with any earlier run family, in particular the
-# `marin-misinfo-rvc` dirs left by failed jobs. Bump this if the trajectory is ever re-run.
-RUN_PREFIX="2026-08-27-traj2"
+# `marin-misinfo-rvc` dirs left by failed jobs.
+#
+# BUMP THIS ON EVERY RELAUNCH. The rule that all endpoint seeds share one GPU allocation means
+# a drained or preempted job CANNOT be resumed into a new allocation -- the provenance guard
+# will hard-fail on the first completed run, by design. The correct recovery is a new namespace
+# and a full re-run of the endpoint tags, not a resume. (Job 16500928 was killed by a gl002
+# node drain at 2h20 with phoenix x10 and starling x10 already done; those runs are retained on
+# disk under 2026-08-27-traj2 but are NOT the endpoint dataset, because deeper-starling never
+# ran in that allocation.)
+#
+#   sbatch --export=ALL,MARIN_RUN_PREFIX=2026-08-28-traj3 ...
+RUN_PREFIX="${MARIN_RUN_PREFIX:-2026-08-27-traj2}"
 
 # CRITICAL: base models have no chat template. Without this scaffold the model echoes the
 # prompt back and WildGuard scores the echo as compliance -- the exact confound that made the
