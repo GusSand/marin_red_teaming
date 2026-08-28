@@ -66,7 +66,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <div class="masthead"><span>Marin red teaming · experiment report</span><span>28 Aug 2026 · pre-registered, results pending</span><span>6-checkpoint trajectory · base-model safety evaluation</span></div>
   <h1>Is the cooldown misinformation rise reduced refusal, or improved writing?</h1>
   <p class="deck">The cooldown rise could be a safety change or a judge artifact. This run splits the number into refusal and writing quality to find out.</p>
-  <div class="metadata"><span>Experimenter: Gus Sandoval</span><span>Experiment dates: 08-27-2026 / 08-28-2026</span><span>Compute: NYU Torch, one H200 (moved from L40S after two node drains)</span><span>Job 16514189</span><span>Status: running on H200, gate 3 re-passed there, no results analysed</span></div>
+  <div class="metadata"><span>Experimenter: Gus Sandoval</span><span>Experiment dates: 08-27-2026 / 08-28-2026</span><span>Compute: NYU Torch, one H200 (moved from L40S after two node drains)</span><span>Jobs 16514189 + 16520288</span><span>Status: 29/46 done, resume running, no results analysed</span></div>
 </header>
 
 <section class="report-body">
@@ -80,7 +80,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
     </div>
     <div class="facts">
       <div class="fact"><strong>54</strong><span>behaviours; one is 1.85pp</span></div>
-      <div class="fact"><strong>46</strong><span>runs, one GPU, one allocation</span></div>
+      <div class="fact"><strong>46</strong><span>runs, one GPU model, one driver</span></div>
       <div class="fact"><strong>10 × 4</strong><span>seeds at the endpoint tags</span></div>
       <div class="fact"><strong>4 / 4</strong><span>gate checks passed</span></div>
       <div class="fact"><strong>320 / 320</strong><span>same-seed identical; 0 / 320 across seeds</span></div>
@@ -94,7 +94,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <h2>Experimental Details</h2>
   <p><strong>Probe.</strong> HarmBench, 320 behaviours; analysis on the 54 misinformation ones. Prompts wrapped in a <code>User:/Assistant:</code> scaffold, because unscaffolded base models echo the prompt and the judge scores the echo.</p>
   <p><strong>Generation.</strong> vLLM 0.11, temp 0.7, top-p 0.95, safety-eval pinned. A patch puts the seed into vLLM's sampler; without it the old "three seeds" were byte-identical. Judge: WildGuard 7B, offline weights, one harmfulness and one refusal label per response.</p>
-  <p><strong>Design.</strong> Six pinned revisions. Jellyfish, Phoenix, Starling and Deeper-Starling get ten seeds; Kestrel and Ocelot get three. All 46 runs go sequentially on one GPU, because vLLM only reproduces on identical hardware and an array would confound revision with node.</p>
+  <p><strong>Design.</strong> Six pinned revisions. Jellyfish, Phoenix, Starling and Deeper-Starling get ten seeds; Kestrel and Ocelot get three. All 46 runs go sequentially on one GPU model with one driver; seed 0 reproduces token-exactly across cards of the same model, and an array across models would confound revision with hardware.</p>
   <p><strong>Output per checkpoint.</strong> Refusal rate, harmful rate, harmful given non-refusal, empty rate, response length, non-response rate. Per-instance labels stay out of the repo.</p>
 
   <figure class="figure-shell"><div class="figure">
@@ -219,7 +219,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <p>Phoenix's historical seeds are 46.3, 42.6 and 57.4: sd 7.7pp, so a three-seed mean has SEM 4.5pp. A perfect port fails a ± 3pp gate half the time. More seeds now cannot fix the noisy historical target, and the old trajectory mixes patched, unpatched and collapsed sampling. Replaced by the protocol gate; old-vs-new Phoenix is descriptive only.</p>
 
   <h3>Q2: Why one GPU, and what did it cost?</h3>
-  <p>vLLM only reproduces on identical hardware. The first determinism check ran as an array, landed on three nodes and "failed"; the test was wrong, not the harness. So all 39 run sequentially, and the launcher refuses any prior run whose GPU, host, flags, seed or commit differ from the current allocation. Node drains then killed attempts two and three at ~2h each, 38 endpoint runs in total. All excluded. Per the standing rule, no third L40S attempt: the study re-gates on an H200 and reruns there.</p>
+  <p>vLLM only reproduces on identical hardware. The first determinism check ran as an array, landed on three nodes and "failed"; the test was wrong, not the harness. So all 39 run sequentially, and the launcher refuses any prior run whose GPU, host, flags, seed or commit differ from the current allocation. Three jobs then died at ~2h. The cause was not drains but the cluster's GPU-utilization watchdog: this design averages 39% against a 50% cutoff. The L40S runs are excluded. On the H200, seed 0 reproduced token-exactly across two physical cards (and across three L40S cards), so the guard was relaxed from GPU UUID to GPU model + driver + flags + code + seed, documented pre-results. The 29 H200 runs are kept; the rest run in sub-2h jobs.</p>
   <div class="tablewrap"><table>
     <thead><tr><th>Attempt</th><th>Job</th><th>Node</th><th>Outcome</th><th>Runs kept</th></tr></thead>
     <tbody>
@@ -227,7 +227,8 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
       <tr><td>2</td><td>16500928</td><td>gl002</td><td>External SIGTERM at 2h20, node drain; Phoenix ×10 and Starling ×10 complete, Deeper-Starling not started</td><td class="num">0</td></tr>
       <tr><td>3</td><td>16508385</td><td>gl038</td><td>External SIGTERM at 2h05, node drain; Phoenix ×10 and Starling ×8 complete</td><td class="num">0</td></tr>
       <tr><td>4</td><td>16513111</td><td>H200</td><td>Gate check 3 passed on H200 (gh114): 320/320 same-seed, 0/320 across seeds. Seed 0 moved 23→25/54 vs the L40S, same weights and seed</td><td class="num">gate only</td></tr>
-      <tr><td>5</td><td>16514189</td><td>gh114</td><td>46-run trajectory, same GPU as the gate, fresh namespace</td><td class="num">pending</td></tr>
+      <tr><td>5</td><td>16514189</td><td>gh114</td><td>Utilization watchdog at 2h16 (39% avg, 50% cutoff). 29/46 done: phoenix ×10, starling ×10, deeper-starling ×9</td><td class="num">29</td></tr>
+      <tr><td>6</td><td>16520288</td><td>gh117</td><td>Resume of the remaining 17 on a different H200 card, after a cross-card check showed 320/320 token-exact reproduction</td><td class="num">pending</td></tr>
     </tbody>
   </table></div>
 

@@ -44,7 +44,6 @@
 # DELIBERATELY NOT AN ARRAY. All runs must execute sequentially on ONE GPU: vLLM only claims
 # reproducibility on identical hardware, and the previous attempt compared across three nodes.
 #SBATCH --time=00:40:00
-#SBATCH --nodelist=gh115
 # NOTE: logs/ is gitignored, so a fresh rsync of tracked files does not create it and
 # Slurm will fail to launch with no log to explain why. submit.sh mkdir -p's it.
 #SBATCH --output=logs/%x_%A_%a.out

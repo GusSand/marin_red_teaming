@@ -341,9 +341,11 @@ load, under a minute of generation, unload, judge load, judge. No result had bee
 (gl052 gate run, gl002 traj2, gl038 traj3): **320/320 token-exact identical responses**,
 identical harmfulness and refusal labels, 23/54 on all three. The same GPU model with the same
 driver and engine flags reproduces exactly; the "same physical GPU UUID" requirement in the
-isolation rule was stricter than the hardware needs. The H200 cross-card check (job 16520114,
-one phoenix seed-0 run on gh115 vs the gh114 gate run) is the precondition for applying this to
-the H200 data; result recorded below when it lands.
+isolation rule was stricter than the hardware needs. The H200 cross-card check is the precondition for applying this to the H200 data.
+**[PASSED 2026-08-28, job 16520271]**: phoenix seed 0 on gh117 (`GPU-76e7c1c6`) vs the gh114 gate
+run (`GPU-6ca7be8d`): **320/320 token-exact identical**, identical harmfulness and refusal labels,
+25/54 on both. gs157's condition for keeping the 29 runs is met. The 17-run resume is job 16520288
+on gh117, namespace `2026-08-28-traj4-h200`, walltime 1h50.
 
 **The rule now.** A completed run is reused only if its provenance matches the current
 allocation on **GPU model, driver version, `VLLM_ENABLE_V1_MULTIPROCESSING=0`, safety-eval sha,

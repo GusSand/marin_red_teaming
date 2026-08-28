@@ -511,3 +511,11 @@ seed vs L40S: seed 0 23/54 -> 25/54, seed 1 33/54 -> 33/54. Interpretation (mine
 shift across silicon is the concrete case for never mixing hardware inside a contrast.
 Trajectory job 16514189 (46 runs, namespace 2026-08-28-traj4-h200) chained on the gate and started on the same GPU
 at 11:45 EDT. No trajectory result inspected.
+
+## 2026-08-28 — Root cause of the three cancellations; hardware rule relaxed (pre-results); resume running
+Cause: the cluster GPU-utilization watchdog (cancel <50% avg util over 2h; this design averages ~39%). Not drains.
+Job 16514189 died at 29/46 on one H200 with no result analysed. Evidence for relaxing the same-physical-GPU rule:
+phoenix seed 0 on three L40S cards (gl052/gl002/gl038) 320/320 token-exact; on two H200 cards (gh114/gh117)
+320/320 token-exact, 25/54 both. Rule now: same GPU model + driver + engine flags + harness sha + model sha + seed.
+gs157 approved keeping the 29 runs on that condition. Resume job 16520288 (17 runs, gh117, cap 1h50). All future
+jobs under 2h. No trajectory result inspected.
