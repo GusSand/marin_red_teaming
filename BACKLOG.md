@@ -1,5 +1,8 @@
 # Task 1: reproduce Olmo 3 7B safety numbers
 
+- [ ] **wandb for job tracking (Gus, 2026-08-28: "leave it for next time").** Login node reaches api.wandb.ai; test from a compute node inside a job first (jobs run HF_HUB_OFFLINE=1, network unconfirmed). Needs an API key on Torch, which is Gus's to place. Log per-run RESULT lines, heartbeat GPU %, and terminal state. Motivation: three jobs were killed by the utilization watchdog before anyone noticed.
+- [ ] **Load-once multi-seed generation.** Sequential per-run design averages ~39% GPU util, below the 50% watchdog cutoff. Load each model once, generate all seeds in one vLLM session, judge once. Must be verified token-exact against the gate runs before it replaces run_row.sh.
+
 Agent brief for Claude Code. Read all of it before running anything.
 
 ## Objective
