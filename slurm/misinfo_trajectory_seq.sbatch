@@ -1,9 +1,14 @@
 #!/bin/bash
 # THE INFERENTIAL RUN for docs/experiments/08-27_marin-base-trajectory_misinfo-refusal-vs-capability.md
 #
-# 39 runs, executed SEQUENTIALLY inside ONE GPU allocation:
-#   endpoint tags (phoenix, starling, deeper-starling) x 10 seeds = 30
-#   context  tags (kestrel, ocelot, jellyfish)         x  3 seeds =  9
+# 46 runs, executed SEQUENTIALLY inside ONE GPU allocation:
+#   endpoint tags (jellyfish, phoenix, starling, deeper-starling) x 10 seeds = 40
+#   context  tags (kestrel, ocelot)                                x  3 seeds =  6
+#
+# Jellyfish promoted to an endpoint (gs157, 2026-08-28, pre-data): "Phoenix is the minimum" is
+# the headline claim of the trajectory and is a Jellyfish -> Phoenix contrast, so it needs the
+# same precision and the same allocation as the H0/H1 contrasts. Jellyfish also has no valid
+# historical baseline at all (three identical seeds).
 #
 # Seed plan (gs157, 2026-08-27, corrected option (c)). H1 compares phoenix -> deeper-starling
 # and H0 compares phoenix -> starling, so THREE tags carry the inference, not two. Those three
@@ -38,13 +43,13 @@
 #
 #SBATCH --job-name=marin-misinfo-traj
 #SBATCH --account=torch_pr_173_tandon_advanced
-#SBATCH --partition=l40s_public
+#SBATCH --partition=h200_tandon
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 # DELIBERATELY NOT AN ARRAY -- see the header. All runs share one physical GPU.
-# 39 runs x ~400s ~= 4.4h; 16h leaves room for model loads and a slow node.
-#SBATCH --time=08:00:00
+# 46 runs x ~400s ~= 5.1h on an L40S, less on an H200; 10h leaves room.
+#SBATCH --time=10:00:00
 # NOTE: logs/ is gitignored, so a fresh rsync of tracked files does not create it and
 # Slurm will fail to launch with no log to explain why. submit.sh mkdir -p's it.
 #SBATCH --output=logs/%x_%j.out
@@ -99,10 +104,11 @@ _HUB="$HF_HOME/hub/models--marin-community--marin-8b-base"
 LABEL_ROOT="${MARIN_LABELS_DIR:-${SCRATCH:-/scratch/gs157}/marin-misinfo-labels}"
 PYBIN="$ROOT/.venv-safety-eval/bin/python"
 
-# ENDPOINT tags define H1 (phoenix -> deeper-starling) and H0 (phoenix -> starling).
+# ENDPOINT tags define the three pre-registered contrasts: jellyfish -> phoenix (is Phoenix the
+# minimum), phoenix -> starling (H0), phoenix -> deeper-starling (H1).
 # CONTEXT tags fill in the trajectory shape and carry no threshold.
-ENDPOINT_TAGS=(phoenix starling deeper-starling)
-CONTEXT_TAGS=(kestrel ocelot jellyfish)
+ENDPOINT_TAGS=(phoenix starling deeper-starling jellyfish)
+CONTEXT_TAGS=(kestrel ocelot)
 ENDPOINT_SEEDS=(0 1 2 3 4 5 6 7 8 9)
 CONTEXT_SEEDS=(0 1 2)
 
@@ -243,4 +249,4 @@ for TAG in "${CONTEXT_TAGS[@]}"; do
     for SEED in "${CONTEXT_SEEDS[@]}"; do run_one "$TAG" "$SEED"; done
 done
 
-log INFO "all 39 runs complete on ONE gpu ($THIS_HOST, $THIS_GPU_UUID)"
+log INFO "all 46 runs complete on ONE gpu ($THIS_HOST, $THIS_GPU_UUID)"
