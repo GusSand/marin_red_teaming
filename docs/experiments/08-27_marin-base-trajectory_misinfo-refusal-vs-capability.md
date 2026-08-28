@@ -289,6 +289,17 @@ hard-fails on the first completed run, by design. Namespace bump plus full endpo
 only compliant recovery, and `RUN_PREFIX` is now overridable via `MARIN_RUN_PREFIX` to make that
 one flag.
 
+**Hardware escalation policy (gs157, 2026-08-28).** Job 16508385 stays on the **validated L40S**,
+which is the hardware gate check 3 was run on. **If this second attempt is also externally
+terminated, there is no third L40S attempt.** The procedure is then:
+
+1. Switch to `h200_tandon`.
+2. **Rerun gate check 3 sequentially on one H200 first** — vLLM only claims reproducibility on
+   identical hardware, so the determinism property does not transfer from the L40S result.
+3. Run all 39 tasks under a **fresh namespace** on that same H200.
+4. **Reuse no L40S results**, for endpoint or context tags.
+5. Record the switch as a **pre-data hardware deviation** in this file.
+
 ## Measurements
 
 All content-free aggregate counts. Per tag, per seed, then aggregated:
@@ -309,28 +320,93 @@ All content-free aggregate counts. Per tag, per seed, then aggregated:
    or task success, and is already at 96.4% for scaffolded Marin-base, so it is reported as an
    over-refusal diagnostic and nothing more.
 
-### Paired test, phoenix vs starling
+### Paired tests: BOTH endpoint contrasts
 
-Both tags saw identical prompts, so use the paired test rather than comparing two rates, matching the
-approach used for the Marin/OLMo HarmBench gap. Per behavior, take the majority over 3 seeds. Report the
-discordant counts (harmful at starling and not at phoenix, and the reverse) and an **exact McNemar**
-binomial p-value. Do not use the uncorrected chi-square; at these discordant counts it is
-anti-conservative, and it is the error that had to be fixed in the talk deck.
+**[CORRECTED 2026-08-28 by gs157, pre-data — verified against job 16508385, which had produced
+zero RESULT lines when this was written. The previous text said "take the majority over 3 seeds"
+and named only phoenix vs starling. Both are wrong under the 10-seed design: a majority over an
+even number of seeds is undefined at 5-5, and the H1 contrast was missing entirely.]**
+
+**Two contrasts are analysed, not one**, because two hypotheses are in play:
+
+| contrast | hypothesis | seeds per tag |
+|---|---|---|
+| phoenix -> starling | **H0** (refusal genuinely drops) | 10 vs 10 |
+| phoenix -> deeper-starling | **H1** (capability, not refusal) | 10 vs 10 |
+
+Both tags in each contrast saw identical prompts, so the analysis is paired over the 54
+`misinformation_disinformation` behaviors, matching the approach used for the Marin/OLMo
+HarmBench gap. Every statistic below is computed for **both** contrasts and reported side by side.
+The same machinery applies to the refusal series and to harmful-given-non-refusal, not only to the
+harmful rate.
+
+**Primary statistic — seed proportions, so ties cannot arise.** For behavior *i* and tag *t*, let
+`p_i^t` be the fraction of that tag's seeds labelled harmful (denominator 10 for endpoint tags, 3
+for context tags). The paired differences are `d_i = p_i^B - p_i^A` over the 54 behaviors. Report:
+
+- the mean paired difference `mean(d_i)`, which is exactly the difference in tag-level rates;
+- a **percentile bootstrap 95% CI resampling behaviors** (10,000 draws, seed recorded) — this is
+  the paired uncertainty interval required for every endpoint contrast;
+- a **paired sign-flip permutation test** (10,000 permutations, seed recorded) for the p-value;
+- **Wilcoxon signed-rank** as a rank-based check, stating explicitly how many `d_i = 0` behaviors
+  it drops.
+
+This is defined for any number of seeds, uses all of them, and never needs a tie rule. It is the
+statistic the verdict rests on.
+
+**Secondary — McNemar, retained only for comparability with the 3-seed work, with an explicit tie
+rule.** Binarise per behavior at `p_i^t > 0.5`. With 10 seeds `p_i^t = 0.5` is possible and is
+**not** a majority; such behaviors are a defined third category, **`unstable`**, and:
+
+- the count of `unstable` behaviors is reported for each tag — it is itself a result, since it
+  measures how many behaviors sit on a knife edge across seeds;
+- they are **excluded** from the 2x2 discordant counts, with the excluded count stated;
+- a **sensitivity analysis assigns every tie both ways** (all-harmful, then all-unharmful) to
+  bound the exact McNemar p-value. If that bound straddles the significance boundary, the McNemar
+  result is reported as indeterminate and the primary statistic stands alone.
+
+Discordant counts are reported in both directions (harmful at B and not at A, and the reverse)
+with an **exact McNemar** binomial p-value. Do not use the uncorrected chi-square; at these
+discordant counts it is anti-conservative, and it is the error that had to be fixed in the talk
+deck.
+
+For the 3-seed context tags a majority is always defined and no ties are possible, but the
+proportion-based primary statistic applies to them unchanged.
+
+**Multiplicity.** Two contrasts x three series (harmful, refusal, harmful-given-non-refusal) is
+six tests. Report all six with unadjusted p-values *and* Holm-adjusted values, and state which
+adjustment the verdict uses before looking at the numbers: **the verdict uses Holm.**
 
 ### Flip list
 
-List the `BehaviorID`s that flip phoenix → starling, with SemanticCategory and a hand-assigned topic tag
-(health, elections, history, science, other). The HarmBench behavior *prompts* are public and safe to read
-and quote in the journal; model completions are not, and only aggregate counts go in the repo.
+List the `BehaviorID`s that flip in **each** contrast — phoenix -> starling and phoenix ->
+deeper-starling — with SemanticCategory and a hand-assigned topic tag (health, elections, history,
+science, other). A behavior counts as flipped when its binarised label changes and it is not
+`unstable` at either end; `unstable` behaviors are listed separately rather than silently dropped,
+since a behavior that is 5-5 at one tag and decisive at the other is a real and interesting case.
+Report the overlap between the two flip lists: behaviors that flip in both contrasts are the
+trajectory's persistent movers, and ones that flip only phoenix -> starling and revert are not.
+
+The HarmBench behavior *prompts* are public and safe to read and quote in the journal; model
+completions are not, and only aggregate counts go in the repo.
 
 Topically clustered flips make a data hypothesis testable and give the mix ablation a target. Diffuse
 flips point back at the capability reading.
 
 ## Success criteria / readout
 
-A single table, six rows (one per tag), five columns (the five measurements), plus the paired test and the
-flip list. Then one verdict line naming which of H1 / H0 / mixed is supported, against the thresholds fixed
-above.
+A single table, six rows (one per tag), one column per measurement (1-5; measurement 6, benign
+compliance, is reported separately as the secondary diagnostic it is), with **per-tag uncertainty
+from the seed replicates** shown alongside every rate rather than bare point estimates. Then the
+**two** paired contrasts (phoenix -> starling for H0, phoenix -> deeper-starling for H1), each with
+its bootstrap CI and permutation p-value, both flip lists and their overlap. Then one verdict line
+naming which of H1 / H0 / mixed is supported, against the thresholds fixed above.
+
+**The verdict sentence must state the interval, not just the direction.** Per the seed-plan
+decision, the refusal clauses of H1 and H0 are reported with paired uncertainty intervals rather
+than as bare pass/fail, because the thresholds sit near the measured seed spread. A contrast whose
+CI straddles its threshold is reported as *indeterminate on that clause*, not resolved in
+whichever direction the point estimate happens to fall.
 
 **What the verdict decides:**
 - **H1 supported** → the cooldown mix ablation is aimed at the wrong thing. The finding becomes "a
