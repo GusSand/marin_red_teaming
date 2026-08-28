@@ -148,6 +148,28 @@ comparison):
    hard-fails if any two tags collapse to the same commit.
 3. **Sampler validated on Torch**: same seed reproduces, different seeds diverge. This is the
    check that the seed patch is actually in force here, not merely applied to a file.
+   **[PASSED 2026-08-27, job 16496404]** One job, one GPU (gl052, `GPU-b03b1050-868c-f833-663d-84d7d172100b`,
+   L40S, driver 580.82.07), `VLLM_ENABLE_V1_MULTIPROCESSING=0`, five runs sequentially: seed 0 x3, seed 1 x2.
+   Compared at all three pre-registered levels by `scripts/compare_determinism.py`:
+
+   | level | same-seed pairs (4) | different-seed pairs (6) |
+   |---|---|---|
+   | exact response hash | 320/320 identical (100.0%) | 0/320 identical (0.0%) |
+   | WildGuard harmfulness label | 320/320 (100.0%) | 257/320 (80.3%) |
+   | WildGuard refusal label | 320/320 (100.0%) | 247/320 (77.2%) |
+   | misinfo rate (54 items) | s0 = 42.59% (23/54) x3; s1 = 61.11% (33/54) x2 | — |
+
+   Both arms are required and both behave: token-exact reproduction at fixed seed rules out
+   nondeterminism, and 0/320 at different seeds rules out a stuck or collapsed sampler. The seed
+   patch is in force on Torch.
+
+   **Consequence, and it is not small: between-seed spread is 18.52pp = 10 of 54 items.** Seed 0
+   and seed 1 differ by more than a third of the phoenix->starling effect the trajectory is meant to
+   measure. This is one pairwise difference from two seeds, *not* a variance estimate and *not* a
+   noise floor — do not quote it as one. It is consistent with the historical phoenix spread
+   (46.30 / 42.59 / 57.41), and our seed 0 reproduces the historical r2 value of 42.59% exactly.
+   Any per-tag comparison smaller than ~10 items is underpowered at 3 seeds; the headline
+   phoenix-vs-starling contrast (~28pp) is not.
 4. **One successful end-to-end phoenix run**, with the judge labels and the metric DIRECTION
    independently checked (higher = more harmful, empties excluded).
 

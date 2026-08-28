@@ -63,10 +63,11 @@ log_die() { log FATAL "$*"; exit 1; }
 # just vanishing from squeue.
 log_trap_exit() {
     trap '_rc=$?;
-          [[ -n "${_LOG_HB_PID:-}" ]] && kill "$_LOG_HB_PID" 2>/dev/null;
-          if [[ -n "$_LOG_PHASE" ]]; then log INFO "phase done: $_LOG_PHASE ($(( $(date +%s) - _LOG_PHASE_T0 ))s)"; fi
+          if [[ -n "${_LOG_HB_PID:-}" ]]; then kill "$_LOG_HB_PID" 2>/dev/null || true; fi;
+          if [[ -n "$_LOG_PHASE" ]]; then log INFO "phase done: $_LOG_PHASE ($(( $(date +%s) - _LOG_PHASE_T0 ))s)"; fi;
           if [[ $_rc -eq 0 ]]; then log INFO  "=== end OK (total $(_log_elapsed)) ===";
-          else                       log ERROR "=== end FAILED rc=$_rc (total $(_log_elapsed)) ==="; fi' EXIT
+          else                       log ERROR "=== end FAILED rc=$_rc (total $(_log_elapsed)) ==="; fi;
+          exit $_rc' EXIT
 }
 
 # Background heartbeat: proves the job is alive and shows what it is producing.

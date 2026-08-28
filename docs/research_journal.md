@@ -463,3 +463,32 @@ sampling → "3 seeds" collapse to n=1 in deterministic cells (Study-B SFT-HarmB
 point estimates VERIFIED, only CIs understated. (2) StrongREJECT (quality judge) vs WildGuard (refusal judge)
 disagree in sign under the attack and in the 32B comparison — Marin complies but with lower specificity. Both logged
 for gs157 decision. Written up: SUMMARY Parts 7–10 + glossary tamper line corrected.
+
+## 2026-08-27 — Gate check 3 (sampler determinism on Torch): PASSED, and a bug in the logging library
+Research question: is generation reproducible at fixed seed on fixed hardware, and does the seed patch
+actually control vLLM sampling on the new cluster? (Port gate check 3 of
+`docs/experiments/08-27_marin-base-trajectory_misinfo-refusal-vs-capability.md`. Supersedes the INBOX
+entry of the same date, which reported an INCONCLUSIVE result from an invalid cross-GPU array test.)
+Method: job 16496404, one Slurm job, one GPU, five phoenix runs SEQUENTIALLY — seed 0 x3 then seed 1 x2.
+`marin-community/marin-8b-base` @ phoenix (snapshot 5837472e1344), harmbench:default (320 prompts),
+base scaffold v2, safety-eval @060cc903, torch 2.8.0+cu128, vllm 0.11.0, transformers 4.57.1,
+`VLLM_ENABLE_V1_MULTIPROCESSING=0`. Host gl052, GPU-b03b1050-868c-f833-663d-84d7d172100b (L40S),
+driver 580.82.07 — all recorded in per-run provenance.json. Compared by scripts/compare_determinism.py
+at the three pre-registered levels.
+Results (no interpretation): same-seed pairs 320/320 token-exact identical, and identical on both the
+WildGuard harmfulness and refusal labels. Different-seed pairs 0/320 token-exact identical, 257/320
+(80.3%) agreeing on harmfulness, 247/320 (77.2%) on refusal. Misinformation subset: seed 0 = 42.59%
+(23/54) in all three runs; seed 1 = 61.11% (33/54) in both runs. Spread across seeds 18.52pp = 10 items.
+Historical phoenix per-seed values were 46.30 / 42.59 / 57.41; seed 0 here reproduces 42.59 exactly.
+Interpretation (mine, flagged): gate check 3 passes. Both arms are needed and both behave — token-exact
+reproduction rules out nondeterminism, 0/320 at different seeds rules out a collapsed sampler. The
+18.52pp seed spread is ONE pairwise difference from TWO seeds; it is not a variance estimate and must
+not be quoted as a noise floor. It does mean any per-tag contrast smaller than ~10 items is underpowered
+at 3 seeds. The headline phoenix->starling contrast (~28pp) is not affected.
+Incidental bug, found and fixed: `scripts/log_lib.sh` `log_trap_exit` began its EXIT trap with
+`[[ -n "${_LOG_HB_PID:-}" ]] && kill ...`. With the heartbeat already stopped that test returns 1, and
+under `set -euo pipefail` it aborted the trap. Effect: every successful job in this project exited 1 and
+was recorded FAILED by Slurm, and the `=== end ===` summary line was never written (confirmed: 0
+occurrences in the 16496404 log despite all five runs completing). Job 16496404 was in fact a success.
+Fixed to an if-block with `|| true` plus an explicit `exit $_rc`; verified locally on both the success
+path (rc=0, `end OK`) and the failure path (rc=1, `end FAILED rc=1`).
