@@ -80,8 +80,8 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
     </div>
     <div class="facts">
       <div class="fact"><strong>54</strong><span>behaviours; one is 1.85pp</span></div>
-      <div class="fact"><strong>39</strong><span>runs, one GPU, one allocation</span></div>
-      <div class="fact"><strong>10 × 3</strong><span>seeds at the endpoint tags</span></div>
+      <div class="fact"><strong>46</strong><span>runs, one GPU, one allocation</span></div>
+      <div class="fact"><strong>10 × 4</strong><span>seeds at the endpoint tags</span></div>
       <div class="fact"><strong>4 / 4</strong><span>gate checks passed</span></div>
       <div class="fact"><strong>320 / 320</strong><span>same-seed identical; 0 / 320 across seeds</span></div>
       <div class="fact"><strong>0</strong><span>L40S results reused</span></div>
@@ -94,7 +94,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <h2>Experimental Details</h2>
   <p><strong>Probe.</strong> HarmBench, 320 behaviours; analysis on the 54 misinformation ones. Prompts wrapped in a <code>User:/Assistant:</code> scaffold, because unscaffolded base models echo the prompt and the judge scores the echo.</p>
   <p><strong>Generation.</strong> vLLM 0.11, temp 0.7, top-p 0.95, safety-eval pinned. A patch puts the seed into vLLM's sampler; without it the old "three seeds" were byte-identical. Judge: WildGuard 7B, offline weights, one harmfulness and one refusal label per response.</p>
-  <p><strong>Design.</strong> Six pinned revisions. Phoenix, Starling and Deeper-Starling get ten seeds; the rest get three. All 39 runs go sequentially on one GPU, because vLLM only reproduces on identical hardware and an array would confound revision with node.</p>
+  <p><strong>Design.</strong> Six pinned revisions. Jellyfish, Phoenix, Starling and Deeper-Starling get ten seeds; Kestrel and Ocelot get three. All 46 runs go sequentially on one GPU, because vLLM only reproduces on identical hardware and an array would confound revision with node.</p>
   <p><strong>Output per checkpoint.</strong> Refusal rate, harmful rate, harmful given non-refusal, empty rate, response length, non-response rate. Per-instance labels stay out of the repo.</p>
 
   <figure class="figure-shell"><div class="figure">
@@ -110,7 +110,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
         <g font-family="DM Mono, monospace" font-size="13">
           <rect x="100" y="126" width="90" height="124" fill="var(--frame)"/><text x="145" y="118" text-anchor="middle" fill="var(--ink)">62</text><a href="https://en.wikipedia.org/wiki/Kestrel" target="_blank" rel="noopener"><text x="145" y="272" text-anchor="middle" fill="var(--muted)">kestrel</text></a><text x="145" y="318" text-anchor="middle" font-size="40">🦅</text>
           <rect x="230" y="116" width="90" height="134" fill="var(--frame)"/><text x="275" y="108" text-anchor="middle" fill="var(--ink)">67</text><a href="https://en.wikipedia.org/wiki/Ocelot" target="_blank" rel="noopener"><text x="275" y="272" text-anchor="middle" fill="var(--muted)">ocelot</text></a><text x="275" y="318" text-anchor="middle" font-size="40">🐆</text>
-          <rect x="360" y="130" width="90" height="120" fill="var(--frame)"/><text x="405" y="122" text-anchor="middle" fill="var(--ink)">60</text><a href="https://en.wikipedia.org/wiki/Jellyfish" target="_blank" rel="noopener"><text x="405" y="272" text-anchor="middle" fill="var(--muted)">jellyfish</text></a><text x="405" y="318" text-anchor="middle" font-size="40">🪼</text>
+          <rect x="360" y="130" width="90" height="120" fill="var(--umber)"/><text x="405" y="122" text-anchor="middle" fill="var(--ink)" font-weight="500">60</text><a href="https://en.wikipedia.org/wiki/Jellyfish" target="_blank" rel="noopener"><text x="405" y="272" text-anchor="middle" fill="var(--umber-dark)" font-weight="500">jellyfish</text></a><text x="405" y="318" text-anchor="middle" font-size="40">🪼</text>
           <rect x="490" y="152" width="90" height="98" fill="var(--umber)"/><text x="535" y="144" text-anchor="middle" fill="var(--ink)" font-weight="500">49</text><a href="https://en.wikipedia.org/wiki/Phoenix_(mythology)" target="_blank" rel="noopener"><text x="535" y="272" text-anchor="middle" fill="var(--umber-dark)" font-weight="500">phoenix</text></a><text x="535" y="318" text-anchor="middle" font-size="40">🐦‍🔥</text>
           <rect x="620" y="96" width="90" height="154" fill="var(--umber)"/><text x="665" y="88" text-anchor="middle" fill="var(--ink)" font-weight="500">77.2</text><a href="https://en.wikipedia.org/wiki/Starling" target="_blank" rel="noopener"><text x="665" y="272" text-anchor="middle" fill="var(--umber-dark)" font-weight="500">starling</text></a><text x="665" y="318" text-anchor="middle" font-size="40">🐦</text>
           <rect x="750" y="91" width="90" height="159" fill="var(--umber)"/><text x="795" y="83" text-anchor="middle" fill="var(--ink)" font-weight="500">79.6</text><a href="https://en.wikipedia.org/wiki/Starling" target="_blank" rel="noopener"><text x="795" y="272" text-anchor="middle" fill="var(--umber-dark)" font-weight="500">deeper-starling</text></a><text x="795" y="318" text-anchor="middle" font-size="40">🐦</text>
@@ -118,7 +118,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
         <text x="535" y="30" font-family="DM Mono, monospace" font-size="11" fill="var(--muted)" text-anchor="start" letter-spacing=".06em">← WEB PHASE   |   HQ MIX ENTERS →</text>
       </svg>
     </div>
-    <figcaption>Checkpoints are named after animals; click one. Umber bars get ten seeds. Historical values, context only: the old Starling and Deeper-Starling seeds were collapsed and Jellyfish's spread is invalid. The new run is the inferential dataset.</figcaption>
+    <figcaption>Checkpoints are named after animals; click one. Umber bars get ten seeds; Jellyfish joined them on 28 Aug, pre-data. Historical values, context only: the old Starling and Deeper-Starling seeds were collapsed and Jellyfish's spread is invalid. The new run is the inferential dataset.</figcaption>
   </div></figure>
 </section>
 
@@ -127,6 +127,11 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <h2>Claims</h2>
   <p>Thresholds fixed before the run. Verdicts report intervals; a contrast whose interval straddles its threshold is indeterminate, not decided by the point estimate.</p>
 
+  <div class="claim">
+    <h3>H-min: Phoenix is the minimum</h3>
+    <p class="result">RESULT: <b class="pending">Pending</b></p>
+    <p>Harmful rate at Phoenix below Jellyfish, paired interval excluding zero. Historically 60 to 49, six items. Added 28 Aug, pre-data, because this is the claim the slide rests on.</p>
+  </div>
   <div class="claim">
     <h3>H0: Refusal genuinely drops in the cooldown</h3>
     <p class="result">RESULT: <b class="pending">Pending</b></p>
@@ -221,7 +226,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
       <tr><td>1</td><td>16500537</td><td>—</td><td>Cancelled at 3 min: launcher would have adopted a prior run with incompatible provenance</td><td class="num">0</td></tr>
       <tr><td>2</td><td>16500928</td><td>gl002</td><td>External SIGTERM at 2h20, node drain; Phoenix ×10 and Starling ×10 complete, Deeper-Starling not started</td><td class="num">0</td></tr>
       <tr><td>3</td><td>16508385</td><td>gl038</td><td>External SIGTERM at 2h05, node drain; Phoenix ×10 and Starling ×8 complete</td><td class="num">0</td></tr>
-      <tr><td>4</td><td>16513111</td><td>H200</td><td>Gate check 3 rerun on H200 first; trajectory follows on the same hardware, fresh namespace</td><td class="num">pending</td></tr>
+      <tr><td>4</td><td>16513111</td><td>H200</td><td>Gate check 3 rerun on H200 first; 46-run trajectory follows on the same hardware, fresh namespace</td><td class="num">pending</td></tr>
     </tbody>
   </table></div>
 
@@ -229,7 +234,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <p>A benign control should separate instruction following from safety: better format-following lifts compliance on everything. But <code>wildjailbreak:benign</code> scores non-refusal, not task success, so off-topic text passes, which is the exact failure it was meant to catch. It is also saturated at 96.4%. H1b needs a gradable benign task; until then it stays open.</p>
 
   <h3>Q4: How is the paired analysis defined with ten seeds?</h3>
-  <p>Paired over the 54 behaviours. Primary: per-behaviour seed proportions, bootstrap CI, permutation p. No tie problem at any seed count. McNemar kept for comparability, with 5–5 splits as an explicit <em>unstable</em> category. Two contrasts, three series, six tests, Holm-adjusted.</p>
+  <p>Paired over the 54 behaviours. Primary: per-behaviour seed proportions, bootstrap CI, permutation p. No tie problem at any seed count. McNemar kept for comparability, with 5–5 splits as an explicit <em>unstable</em> category. Three contrasts, seven tests, Holm-adjusted.</p>
   <div class="callout"><span class="eyebrow">Verification rule</span>Nothing is logged until an independent pass recomputes the headline from raw labels, without the analysis code.</div>
 </section>
 
@@ -237,13 +242,13 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <p class="section-kicker">Reference</p>
   <h2>Run grid</h2>
   <details open>
-    <summary>39 runs · six revisions · resolved commits · status</summary>
+    <summary>46 runs · six revisions · resolved commits · status</summary>
     <div class="tablewrap"><table class="grid-table">
       <thead><tr><th>Revision</th><th>Role</th><th>Commit</th><th class="num">Seeds</th><th>Historical rate</th><th>Historical baseline usable?</th><th>Status</th></tr></thead>
       <tbody>
         <tr><td>kestrel</td><td>context</td><td>56ef403a</td><td class="num">3</td><td class="num">62</td><td>yes</td><td>queued (H200)</td></tr>
         <tr><td>ocelot</td><td>context</td><td>e4d18c1d</td><td class="num">3</td><td class="num">67</td><td>yes</td><td>queued (H200)</td></tr>
-        <tr><td>jellyfish</td><td>context</td><td>c92465e4</td><td class="num">3</td><td class="num">60</td><td>no: three identical seeds, no reseed</td><td>queued (H200)</td></tr>
+        <tr><td>jellyfish</td><td>endpoint · H-min</td><td>c92465e4</td><td class="num">10</td><td class="num">60</td><td>no: three identical seeds, no reseed</td><td>queued (H200)</td></tr>
         <tr><td>phoenix</td><td>endpoint · H0, H1</td><td>5837472e</td><td class="num">10</td><td class="num">49</td><td>yes</td><td>queued (H200)</td></tr>
         <tr><td>starling</td><td>endpoint · H0</td><td>66279e71</td><td class="num">10</td><td class="num">77.2</td><td>reseed dirs only; plain dirs collapsed</td><td>queued (H200)</td></tr>
         <tr><td>deeper-starling</td><td>endpoint · H1</td><td>d57287aa</td><td class="num">10</td><td class="num">79.6</td><td>reseed dirs only; plain dirs collapsed</td><td>queued (H200)</td></tr>
