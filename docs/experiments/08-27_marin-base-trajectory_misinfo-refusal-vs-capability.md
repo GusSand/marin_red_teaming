@@ -329,6 +329,37 @@ and is the concrete reason no L40S run may be mixed into an H200 contrast.
 The trajectory (job 16514189, namespace `2026-08-28-traj4-h200`) was chained on the gate job
 and started on the **same GPU** (`GPU-6ca7be8d`) at 11:45 EDT. 46 runs at ~5 min each.
 
+### Hardware rule relaxed: same GPU model, not same physical card (gs157, 2026-08-28, pre-results deviation)
+
+**What happened.** Job 16514189 was cancelled at 2h16 with **29/46 runs complete** on one H200:
+phoenix x10, starling x10, deeper-starling x9. The cause of all three cancellations on 2026-08-28
+was the cluster's **GPU-utilization watchdog** (cancels under 50% average utilization over 2h;
+this job averaged ~39%), not node drains. The sequential per-run design is mostly idle: model
+load, under a minute of generation, unload, judge load, judge. No result had been analysed.
+
+**Evidence for the relaxation.** Seed 0 of phoenix on three different physical L40S cards
+(gl052 gate run, gl002 traj2, gl038 traj3): **320/320 token-exact identical responses**,
+identical harmfulness and refusal labels, 23/54 on all three. The same GPU model with the same
+driver and engine flags reproduces exactly; the "same physical GPU UUID" requirement in the
+isolation rule was stricter than the hardware needs. The H200 cross-card check (job 16520114,
+one phoenix seed-0 run on gh115 vs the gh114 gate run) is the precondition for applying this to
+the H200 data; result recorded below when it lands.
+
+**The rule now.** A completed run is reused only if its provenance matches the current
+allocation on **GPU model, driver version, `VLLM_ENABLE_V1_MULTIPROCESSING=0`, safety-eval sha,
+resolved model sha, and seed**. Hostname and GPU UUID remain recorded but are no longer required
+to match. Any mismatch or missing field is still a hard failure. The 29 traj4 runs are kept; the
+remaining 17 (deeper-starling s9, jellyfish x10, kestrel x3, ocelot x3) run under the same
+namespace on an H200 with the same driver.
+
+**Operational rule from now on: every job finishes under 2h.** Walltime is capped at 1h50.
+A full 46-run pass must be split into sub-2h jobs. The durable fix is to load each model once
+and generate all seeds in one vLLM session; that is a harness change and must be verified
+token-exact against the gate runs before it is used.
+
+The earlier statement in this file that a killed job "cannot be resumed into a new allocation"
+is superseded by this section.
+
 ## Measurements
 
 All content-free aggregate counts. Per tag, per seed, then aggregated:

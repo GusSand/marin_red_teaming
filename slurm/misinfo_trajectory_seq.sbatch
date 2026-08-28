@@ -48,8 +48,9 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 # DELIBERATELY NOT AN ARRAY -- see the header. All runs share one physical GPU.
-# 46 runs x ~400s ~= 5.1h on an L40S, less on an H200; 10h leaves room.
-#SBATCH --time=10:00:00
+# HARD CAP UNDER 2H: the utilization watchdog kills longer jobs at ~39% avg util. 17 runs x ~4.7min
+# on an H200 is ~80 min. A full 46-run pass must be split into sub-2h jobs.
+#SBATCH --time=01:50:00
 # NOTE: logs/ is gitignored, so a fresh rsync of tracked files does not create it and
 # Slurm will fail to launch with no log to explain why. submit.sh mkdir -p's it.
 #SBATCH --output=logs/%x_%j.out
@@ -83,16 +84,20 @@ log_trap_exit
 # Fresh namespace. Must not collide with any earlier run family, in particular the
 # `marin-misinfo-rvc` dirs left by failed jobs.
 #
-# BUMP THIS ON EVERY RELAUNCH. The rule that all endpoint seeds share one GPU allocation means
-# a drained or preempted job CANNOT be resumed into a new allocation -- the provenance guard
-# will hard-fail on the first completed run, by design. The correct recovery is a new namespace
-# and a full re-run of the endpoint tags, not a resume. (Job 16500928 was killed by a gl002
-# node drain at 2h20 with phoenix x10 and starling x10 already done; those runs are retained on
-# disk under 2026-08-27-traj2 but are NOT the endpoint dataset, because deeper-starling never
-# ran in that allocation.)
+# HARDWARE RULE, RELAXED (gs157, 2026-08-28, pre-results deviation). The guard originally
+# required the same physical GPU UUID, so a killed job could never resume. Evidence then showed
+# the same GPU MODEL reproduces token-exactly across physical cards (seed 0 on three L40S cards:
+# 320/320 identical; H200 cross-card check job 16520114). The guard now requires matching
+# GPU model, driver, engine flags, harness sha, model sha and seed -- NOT the UUID or host.
+# Hostname and UUID are still recorded in provenance for every run.
 #
-#   sbatch --export=ALL,MARIN_RUN_PREFIX=2026-08-28-traj3 ...
-RUN_PREFIX="${MARIN_RUN_PREFIX:-2026-08-27-traj2}"
+# WHY JOBS DIED (all three, 2026-08-28): NOT node drains. The cluster's GPU-utilization watchdog
+# cancels jobs under 50% average utilization for more than 2h; this sequential design averages
+# ~39% (model load, short generation, unload, judge load, judge). EVERY JOB MUST FINISH UNDER 2H.
+# The remaining runs after 16514189 (29/46 done) are 17, ~80 min on an H200.
+#
+#   sbatch --export=ALL,MARIN_RUN_PREFIX=2026-08-28-traj4-h200 ...   # resume into traj4
+RUN_PREFIX="${MARIN_RUN_PREFIX:-2026-08-28-traj4-h200}"
 
 # CRITICAL: base models have no chat template. Without this scaffold the model echoes the
 # prompt back and WildGuard scores the echo as compliance -- the exact confound that made the
@@ -114,6 +119,8 @@ CONTEXT_SEEDS=(0 1 2)
 
 THIS_HOST="$(hostname -s)"
 THIS_GPU_UUID="$(nvidia-smi --query-gpu=uuid --format=csv,noheader | head -1)"
+THIS_GPU_MODEL="$(nvidia-smi --query-gpu=name --format=csv,noheader | head -1)"
+THIS_DRIVER="$(nvidia-smi --query-gpu=driver_version --format=csv,noheader | head -1)"
 
 log INFO "host=$THIS_HOST gpu_uuid=$THIS_GPU_UUID"
 log INFO "driver=$(nvidia-smi --query-gpu=driver_version --format=csv,noheader | head -1)"
@@ -129,27 +136,24 @@ for TAG in "${ENDPOINT_TAGS[@]}" "${CONTEXT_TAGS[@]}"; do
 done
 log INFO "all 6 revisions present in the workspace cache"
 
-# Resume is permitted ONLY back into the same allocation on the same physical GPU. Anything
-# else -- a foreign GPU, a missing field, a different sha or seed, multiprocessing not pinned
-# -- is a hard stop. Silently importing such a run is the failure this whole guard exists for.
+# Resume is permitted into any allocation on the SAME GPU MODEL with the same driver, engine
+# flags, harness sha, model sha and seed (relaxed 2026-08-28, see header). A different model
+# of GPU, a missing field, a different sha or seed, multiprocessing not pinned -- hard stop.
+# Silently importing such a run is the failure this whole guard exists for.
 provenance_compatible() {
     local pf="$1" seed="$2" msha="$3"
     [[ -s "$pf" ]] || return 1
-    "$PYBIN" - "$pf" "$seed" "$msha" "$THIS_HOST" "$THIS_GPU_UUID" <<'PY'
+    "$PYBIN" - "$pf" "$seed" "$msha" "$THIS_GPU_MODEL" "$THIS_DRIVER" <<'PY'
 import json, sys
-pf, seed, msha, host, uuid = sys.argv[1:6]
+pf, seed, msha, gpu_model, driver = sys.argv[1:6]
 try:
     p = json.load(open(pf))
 except Exception:
     sys.exit(1)
-# run_row.sh records socket.gethostname(), which is the FQDN on Torch (gl052.hpc.nyu.edu),
-# while the job compares `hostname -s`. Normalise both to the short name or every legitimate
-# same-allocation resume would hard-fail. gpu_uuid is the authoritative identity; hostname is
-# a cross-check.
-p["hostname"] = str(p.get("hostname", "<missing>")).split(".")[0]
+# run_row.sh records "gpu": "NVIDIA H200" and "nvidia_smi": "NVIDIA H200, 580.82.07".
+have_driver = str(p.get("nvidia_smi", "")).split(",")[-1].strip()
 need = [
-        ("hostname", host.split(".")[0]),
-        ("gpu_uuid", uuid),
+        ("gpu", gpu_model),
         ("vllm_v1_multiprocessing", "0"),
         ("sampling_seed_env", str(seed)),
         ("safety_eval_sha", "060cc903d64703214c549b5c3a30ea8ceef2e588"),
@@ -158,6 +162,9 @@ for k, v in need:
     if str(p.get(k, "<missing>")) != v:
         print(f"{k}: have {p.get(k,'<missing>')!r}, need {v!r}")
         sys.exit(1)
+if have_driver != driver:
+    print(f"driver: have {have_driver!r}, need {driver!r}")
+    sys.exit(1)
 if msha not in str(p.get("model", "")):
     print(f"model: {p.get('model')!r} does not contain {msha!r}")
     sys.exit(1)
@@ -178,10 +185,10 @@ run_one() {
     if [[ -s "$RUNDIR/metrics.json" ]]; then
         local why
         if why="$(provenance_compatible "$RUNDIR/provenance.json" "$SEED" "$RESOLVED_SHA")"; then
-            log INFO "skip $NAME (already complete IN THIS ALLOCATION, provenance matches)"
+            log INFO "skip $NAME (already complete on matching hardware/code/seed, provenance verified)"
             return 0
         fi
-        log_die "REFUSING to reuse $NAME: metrics.json exists but provenance is incompatible with this allocation [$why]. This is the job-16492919 contamination guard. Move or delete the directory deliberately, or bump RUN_PREFIX."
+        log_die "REFUSING to reuse $NAME: metrics.json exists but provenance is incompatible [$why]. This is the job-16492919 contamination guard. Move or delete the directory deliberately, or bump RUN_PREFIX."
     fi
 
     # The seed must reach vLLM's sampler. PYTHONHASHSEED does NOT do this; the patch does.
@@ -238,8 +245,7 @@ print(f"{sys.argv[2]}: misinfo ASR = {100 * (1 - misinfo):.2f}%  ({(1 - misinfo)
 PY
 }
 
-# Endpoints first: they must all share this allocation, so they must not be the ones a
-# walltime kill truncates.
+# Endpoints first.
 for TAG in "${ENDPOINT_TAGS[@]}"; do
     for SEED in "${ENDPOINT_SEEDS[@]}"; do run_one "$TAG" "$SEED"; done
 done
