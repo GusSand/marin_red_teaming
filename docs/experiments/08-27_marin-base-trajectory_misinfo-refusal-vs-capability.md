@@ -274,6 +274,21 @@ every legitimate resume; both sides are now normalised to the short name.
 
 **Results are not to be inspected until this deviation is committed and locked.**
 
+**Run log against this rule (2026-08-28).** Job 16500928 launched on gl002 and was killed by an
+external SIGTERM at 2h20 of a 16h walltime when the node went into drain — not walltime, not a
+harness fault. It had completed `phoenix` x10 and `starling` x10 on one GPU
+(`GPU-ed7502f8-...`); `deeper-starling` had not started. Under the rule above those 20 runs are
+**not** the endpoint dataset, because the third endpoint tag never ran in that allocation. They
+are retained on disk under `2026-08-27-traj2` and are not deleted, but no endpoint inference
+draws on them. (They would independently support H0, which is phoenix -> starling only; that is
+noted, not used, and the H0 verdict comes from the same allocation as H1.)
+
+The endpoint tags were therefore re-run in full under namespace `2026-08-28-traj3`, job 16508385
+on gl038. A drained job **cannot** be resumed into a new allocation: the provenance guard
+hard-fails on the first completed run, by design. Namespace bump plus full endpoint re-run is the
+only compliant recovery, and `RUN_PREFIX` is now overridable via `MARIN_RUN_PREFIX` to make that
+one flag.
+
 ## Measurements
 
 All content-free aggregate counts. Per tag, per seed, then aggregated:
