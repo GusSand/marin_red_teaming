@@ -1,5 +1,18 @@
 # INBOX — things needing gs157 (newest on top). Append `→ answer:` inline when you reply.
 
+- **[2026-08-27] FYI, decision made, tell me to revert if you disagree — the trajectory will run SEQUENTIALLY on ONE GPU, not as an 18-task array.** `slurm/misinfo_refusal_vs_capability.sbatch` is written as `--array` = 6 revisions x 3 seeds, which scatters tasks across nodes. The standing CLAUDE.md rule added today says *"any comparison between runs must hold the GPU fixed"*, and this experiment's entire content is a comparison across tags, so an array would confound hardware with revision — the precise error that invalidated the first determinism test. Cost of pinning is small: the determinism runs took ~400s each, so 18 runs is roughly 2h sequential, well inside an 8h walltime. This changes execution topology only — same models, seeds, prompts, scaffold, judge and metric — and it strictly removes a confound, so I am treating it as a documented pre-data deviation rather than a design change. Recorded in the experiment doc.
+
+- **[2026-08-27] NEEDS YOUR CALL (pre-data, power) — seed noise may be larger than the pre-registered H0 threshold, so 3 seeds may not discriminate H1 from H0.** Gate check 3 gave us the first clean measurement of seed-to-seed movement on this probe (phoenix, one GPU, sampler verified in force). On the 54-item misinformation subset, changing seed 0 -> seed 1 moves:
+  - harmful: 23/54 -> 33/54, i.e. 42.59% -> 61.11% (10 items, 18.52pp)
+  - **refusal: 20/54 -> 8/54, i.e. 37.0% -> 14.8% (12 items, 22.2pp)**
+
+  The pre-registered H0 ("refusal genuinely drops") fires when refusal falls by **>= 10pp**, which on 54 items is **5.4 items**. A single seed swap moves refusal by 12. Averaging 3 seeds shrinks the SEM by only ~1.7x. **H1's first clause ("refusal moves by < 10pp") has the same problem in the other direction** — it could read as satisfied purely by seed noise.
+
+  Caveat on my own number: this is ONE pairwise difference from TWO seeds. It is not a variance estimate and I am not quoting it as a noise floor. It is enough to show the threshold is close to the noise, not enough to say by how much.
+
+  Options: **(a)** raise seeds on all six tags from 3 to 10 — seeds 0,1,2 are reused so nothing already run is wasted, cost goes from ~2h to ~7h on one L40S, and it makes the refusal thresholds meaningful; **(b)** keep 3 seeds, run it, and report the refusal clause as underpowered with an explicit CI rather than as a pass/fail; **(c)** keep 3 seeds for the four context tags and use 10 for phoenix and starling only, which are the two the H1/H0 call actually rests on (~3.5h). My recommendation is **(c)** — it buys the power exactly where the inference happens. **I am not changing the pre-registered design on my own; tell me which.** Meanwhile I am proceeding with the 3-seed run as written, since seeds 0-2 are a strict prefix of any larger set and none of that work is thrown away. → answer:
+
+
 - **[2026-08-27] Gate check 3: determinism diagnostic INCONCLUSIVE. Test was invalid by construction; rerunning properly.** (Supersedes an earlier version of this entry that claimed a harness property and a ~4pp noise floor. Both overstated; corrected below.)
 
   What was run: three phoenix tasks as a Slurm array, seed 0 twice and seed 1 once. Result was s0a vs s0b identical on only 118/320 responses, with misinfo ASR 42.59% vs 46.30%.
