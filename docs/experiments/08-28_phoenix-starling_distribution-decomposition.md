@@ -49,11 +49,11 @@ labels; it does not identify their result.
 
 ### Step 1 — IFEval (official, pinned) on four checkpoints
 
-- Repo: `google-research/instruction_following_eval`, commit pinned at run time and recorded here.
+- Repo: `google-research/instruction_following_eval`, commit pinned at run time and recorded here: `google-research` `0413387` (sparse checkout of `instruction_following_eval/`, cloned 2026-08-28 to `$WORK/ifeval/`). Deps `nltk langdetect absl-py immutabledict` added to the shared venv; punkt/punkt_tab in `~/nltk_data`.
   541 prompts, greedy decoding (the official protocol), under the base scaffold. Off-the-shelf,
   verifiable constraints: no rubric, no judge.
 - Checkpoints: jellyfish, phoenix, starling, deeper-starling. One greedy run each (~15 min/ckpt).
-- Metric: prompt-level strict accuracy; instruction-level loose reported alongside.
+- Metric: prompt-level strict accuracy; instruction-level loose reported alongside. **Primary scoring uses responses truncated at the first `\nUser:`** (a base model opening a fake next turn is a scaffold artefact); raw untruncated responses are scored too and both are reported. Generation: greedy, max_new_tokens 2048, no stop strings, matching the misinfo runs. Scripts: `scripts/ifeval_generate.py`, `slurm/ifeval.sbatch`. Cost estimate: 4 × ~10 min on one H200, one job.
 - **Trigger for step 5:** starling − phoenix ≥ **+5pp** prompt-level strict, bootstrap 95% CI over
   prompts (10k, seed 20260828) excluding 0. Below that, benign twins are not built and IF is
   carried as "not detected by IFEval", not "absent".
