@@ -34,7 +34,10 @@ for SET in calibration_v1 full_phoenix_starling_v1; do
   log_phase "$J on $SET"
   log_heartbeat_start 120 "$LAB/$SET/judge/$J.jsonl"
   cd "$WORK/repro-olmo3-safety/safety-eval"
-  "$PY" "$WORK/scripts/judge_dimensions.py" --judge "$SNAP" --name "$J" --items "$LAB/$SET/items.jsonl" --out "$LAB/$SET/judge" $QUANT 2>&1 | grep "^\[judge\]" | while read -r l; do log RESULT "$l"; done
+  mkdir -p "$LAB/$SET/judge"
+  "$PY" "$WORK/scripts/judge_dimensions.py" --judge "$SNAP" --name "$J" --items "$LAB/$SET/items.jsonl" --out "$LAB/$SET/judge" $QUANT > "$LAB/$SET/judge/$J.stdout.log" 2>&1 \
+      || { grep -E "Error|Traceback|REFUSING" "$LAB/$SET/judge/$J.stdout.log" | tail -3 | while read -r l; do log ERROR "$l"; done; log_die "judge failed on $SET (log: $LAB/$SET/judge/$J.stdout.log)"; }
+  grep "^\[judge\]" "$LAB/$SET/judge/$J.stdout.log" | while read -r l; do log RESULT "$l"; done
   log_heartbeat_stop
   [[ -s "$LAB/$SET/judge/$J.jsonl" ]] || log_die "no output for $SET"
 done
