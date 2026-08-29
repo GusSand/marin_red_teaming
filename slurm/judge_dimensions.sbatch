@@ -20,8 +20,8 @@ export HF_HOME="$WORK/hf_cache" HF_HUB_CACHE="$WORK/hf_cache/hub" HUGGINGFACE_HU
 export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 VLLM_ENABLE_V1_MULTIPROCESSING=0
 J="${JUDGE:?JUDGE=qwen72|olmo32}"
 case "$J" in
-  qwen72) REPO=models--Qwen--Qwen2.5-72B-Instruct; QUANT="--quant fp8";;
-  olmo32) REPO=models--allenai--OLMo-2-0325-32B-Instruct; QUANT="";;
+  qwen72) REPO=models--Qwen--Qwen2.5-72B-Instruct; QUANT="--quant fp8"; MAXLEN=8192;;
+  olmo32) REPO=models--allenai--OLMo-2-0325-32B-Instruct; QUANT=""; MAXLEN=4096;;  # OLMo-2 max_position_embeddings=4096
   *) echo "unknown JUDGE $J"; exit 2;;
 esac
 SNAP="$(ls -d $HF_HOME/hub/$REPO/snapshots/* | head -1)"
@@ -35,7 +35,7 @@ for SET in calibration_v1 full_phoenix_starling_v1; do
   log_heartbeat_start 120 "$LAB/$SET/judge/$J.jsonl"
   cd "$WORK/repro-olmo3-safety/safety-eval"
   mkdir -p "$LAB/$SET/judge"
-  "$PY" "$WORK/scripts/judge_dimensions.py" --judge "$SNAP" --name "$J" --items "$LAB/$SET/items.jsonl" --out "$LAB/$SET/judge" $QUANT > "$LAB/$SET/judge/$J.stdout.log" 2>&1 \
+  "$PY" "$WORK/scripts/judge_dimensions.py" --judge "$SNAP" --name "$J" --items "$LAB/$SET/items.jsonl" --out "$LAB/$SET/judge" $QUANT --max-model-len "$MAXLEN" > "$LAB/$SET/judge/$J.stdout.log" 2>&1 \
       || { grep -E "Error|Traceback|REFUSING" "$LAB/$SET/judge/$J.stdout.log" | tail -3 | while read -r l; do log ERROR "$l"; done; log_die "judge failed on $SET (log: $LAB/$SET/judge/$J.stdout.log)"; }
   grep "^\[judge\]" "$LAB/$SET/judge/$J.stdout.log" | while read -r l; do log RESULT "$l"; done
   log_heartbeat_stop
