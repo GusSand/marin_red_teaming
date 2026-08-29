@@ -588,3 +588,56 @@ The verifier matched my numbers, then found 13–21 null WildGuard labels per fi
 ## 2026-08-29 — DESIGN ERROR caught before analysis: annotator confounded with checkpoint in the full-set annotation
 
 Split 1,080 items across four blind annotators by line range. The export is run-ordered, so parts 1–2 were entirely Phoenix and parts 3–4 entirely Starling — annotator instance perfectly confounded with the checkpoint contrast. Caught when part-1's `no_attempt` count (92/270) diverged from parts 3–4 (23, 31) and I checked the shard composition against `key.json`. **No decomposition was run on those labels.** Re-sharded by `index % 4` (135 Phoenix + 135 Starling each, verified) and re-annotated. Pass-1 labels retained as a second rating pass; pass1-vs-pass2 agreement now serves as a 1,080-item test–retest reliability estimate. Rule added: check partition balance on the contrast before running, not after.
+
+## 2026-08-29 — Stage 1 step 3: behavior-level distribution decomposition, phoenix → starling (VERIFIED: fresh subagent, own code path from the four raw annotator sheets, all six deltas within 0.02pp)
+
+**Research question.** The 2026-08-28 result left a +11pp rise in `harmful | non-refusal` that WildGuard
+could not decompose — off-topic-ness (H1b) and writing quality (H1) were unsplit. Where does the mass
+actually go between phoenix and starling?
+
+**Method.** 1,080 existing responses (54 misinformation behaviors × 10 seeds × 2 checkpoints, namespace
+`2026-08-28-traj4-h200`); no new generation. Judge = four blind Claude Fable 5 annotator instances
+applying locked `config/judge_rubric_v1` (relevance / task / stance / three quality scales), shards
+balanced at 135 Phoenix + 135 Starling each and verified balanced *within every behavior* before
+dispatch. Six derived categories, first-rule-wins. Per behavior and checkpoint, category mass over 10
+seeds; mean over 54 behaviors of the starling−phoenix difference; behavior bootstrap 95% CI (10k, seed
+20260828), sign-flip permutation p, Holm over six categories. Scripts: `merge_sheets.py`,
+`decompose_distribution.py`, `retest_agreement.py`.
+
+**Results (no interpretation).** 54 behaviors, 0 uncategorised; masses sum to 100.000% per arm.
+
+| category | phoenix % | starling % | Δ pp [95% CI] | Holm p |
+|---|---|---|---|---|
+| refuse | 18.0 | 5.7 | −12.2 [−16.9, −7.8] | 0.000 |
+| correct | 32.2 | 20.0 | −12.2 [−17.2, −7.6] | 0.000 |
+| hedge | 20.2 | 17.0 | −3.1 [−8.1, +1.7] | 0.770 |
+| no-attempt | 4.8 | 3.3 | −1.5 [−4.3, +1.3] | 0.770 |
+| attempt-weak | 4.8 | 5.4 | +0.6 [−2.0, +3.1] | 0.777 |
+| attempt-strong | 20.0 | 48.5 | +28.5 [+22.2, +34.6] | 0.000 |
+
+Stance counts (n=540/arm): phoenix corrects 174 / endorses 160 / hedges 109 / refuses 97; starling
+endorses 309 / corrects 108 / hedges 92 / refuses 31. `quality_given_attempt` +0.12 [−0.05, +0.30]
+p=0.198 n=42. `quality_given_both_attempt_ge7of10` n=2, not evaluable. All `attempt-*` items have stance
+`endorses` (425/425). Test–retest pass 1 vs pass 2 on the 810 items in both: relevance 0.941, task 0.860,
+stance 0.809 (κ 0.710), six-category 0.748, three-way 0.884, quality ρ 0.662 / mean|Δ| 0.33. No category
+flips sign between passes.
+
+**Pre-registered readings.** IF signature (`no-attempt` down and `attempt-*` up): **not supported** —
+`no-attempt` n.s. EXP signature (quality-given-both-attempt ≥ 0.5): **not evaluable**, n=2. Soft-refusal
+reading: **partial** — `correct` drops, `hedge` does not.
+
+**Interpretation (mine).** Predominantly a **stance shift**: the verifier's decomposition puts ≈+23.4pp
+of the +28.5 on more endorsing and ≈+5pp on quality crossing the 2.5 threshold (strong-given-attempt
+0.806 → 0.900), so ≈82% stance / ≈18% quality — and the quality mean shift underlying that 18% is not
+significant. This splits the earlier +11pp: neither off-topic-ness (`no-attempt` flat) nor writing
+quality is the driver. The largest single component is a category WildGuard cannot see — `correct`, a
+fluent article refuting the false premise, which reads as non-refusal + unharmful and is
+indistinguishable from weak compliance. Phoenix holds 32.2% of its mass there, starling 20.0%.
+
+**Caveats carried.** Absolute category masses are annotator-instance-dependent (two equivalent shards
+differed by 9.6pp on `no_attempt`) and are not properties of the models; only differences are defended,
+by within-behavior instance balance (0/54 behaviors confounded). `quality_given_attempt` conditions on a
+post-treatment variable. Design is behavior-paired, not seed-paired. Sign agreement across passes
+certifies nothing, since pass 1 carries the annotator×checkpoint confound. A permutation-p implementation
+difference on the three null rows (ours the more conservative) is logged, changes no verdict, and is
+queued as a script follow-up.

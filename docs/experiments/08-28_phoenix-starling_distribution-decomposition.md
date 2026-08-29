@@ -614,3 +614,50 @@ pass 1 vs −18.7pp in pass 2, pooled), exactly as a confounded pass should.
 **UNVERIFIED.** An independent verifier is recomputing the six deltas from the four raw sheets by its own
 code path, with the mechanism, Iron-Law, instance-confound and seed-count checks. This does not enter
 `research_journal.md` as a finding until that returns a match within the pre-registered 0.5pp.
+
+#### Step 3 VERIFIED (2026-08-29 10:04) — and one correction to my interpretation
+
+Independent verifier, fresh context, own code path from the four raw sheets, forbidden to read
+`scripts/`. **VERDICT: REPRODUCED.** Every mass and delta agrees within **0.02pp** (tolerance 0.5pp);
+`quality_given_attempt` +0.119 [−0.04, +0.30] n=42 vs claimed +0.12. 54 behaviors, 0 uncategorised.
+
+Its four structural checks, all clean:
+
+- **Mechanism:** all 425 `attempt-*` items have stance `endorses`; none has refuses/corrects/hedges.
+- **Iron Law:** masses sum to exactly 100.000% in both arms, deltas to 0.000; 0 duplicate/missing/extra
+  cids, 0 quality-column violations. It specifically checked the eyebrow-raiser that `refuse` and
+  `correct` both fall by exactly −12.22pp — that is both losing exactly 66 items (97→31, 174→108), a
+  genuine coincidence in the raw counts, not a copy-paste artefact.
+- **Instance confound:** 0 of 54 behaviors differ in sheet mix between arms; every cell is 5+5 from the
+  same two sheets on both sides. Independently confirms the balance check above.
+- **Seeds:** all 108 (behavior × checkpoint) cells have exactly 10 distinct seeds.
+
+**CORRECTION to my interpretation.** I wrote that writing quality "does not move" and that the result is
+"a stance shift, not a capability shift". The significance test supports the first half; the verifier's
+decomposition shows the second half was too strong:
+
+| component of the +28.5pp | size |
+|---|---|
+| more endorsing (stance shift toward `endorses`, +27.6pp) | **≈ +23.4pp** |
+| higher quality among endorsements crossing the 2.5 threshold | **≈ +5pp** |
+
+Strong-given-attempt rises 0.806 (phoenix, n=134) → 0.900 (starling, n=291); mean quality among
+attempts 3.02 → 3.14. So roughly **82% of the effect is stance and ~18% is quality**. The underlying
+quality mean shift is the same +0.12 that is **not significant** [−0.05, +0.30], so the quality
+component is a point estimate, not an established effect — but "quality does not move" overstated it.
+Corrected reading: **predominantly a stance shift, with a smaller and statistically unresolved quality
+component.** The H1b conclusion is unaffected (`no-attempt` flat, −1.5pp n.s.).
+
+**Two caveats the verifier raised, both kept:**
+
+1. `quality_given_attempt` (n=42) **conditions on a post-treatment variable** — it drops the 12
+   behaviors with no attempts in one arm, disproportionately phoenix, which endorses less. Its CI
+   covers zero, so nothing strong rests on it, but it is not a clean causal contrast.
+2. The design is behavior-paired, **not seed-paired**: seeds are averaged before differencing, as
+   pre-registered. The CI therefore reflects behavior-level variance only.
+
+**Permutation-p discrepancy, logged.** On the three null rows the verifier's p differs beyond
+Monte-Carlo noise from `decompose_distribution.py` (hedge 0.216 vs 0.257; no-attempt 0.260 vs 0.372;
+attempt-weak 0.726 vs 0.777) — a tie-handling / `>=` vs `>` implementation difference. Our script is the
+**more conservative** side on every null row. No row changes significance status, and no significant row
+is affected. Not fixed under the result; flagged for a follow-up pass on the script.
