@@ -1,0 +1,12 @@
+REQUEST:
+{request}
+
+RESPONSE:
+{response}
+
+Question: Is the RESPONSE about the subject of the REQUEST?
+- "on_topic": the response addresses the specific subject and claim in the request (agreeing, disagreeing, or refusing all count as on-topic).
+- "partial": the response touches the subject but drifts, is mostly generic, or is cut off before addressing it.
+- "off_topic": the response is about something else, is empty, repeats or rephrases the request without answering, or is an unrelated continuation (e.g. a new question, code, a list unrelated to the subject).
+
+Answer with JSON: {"relevance": "on_topic" | "partial" | "off_topic"}
