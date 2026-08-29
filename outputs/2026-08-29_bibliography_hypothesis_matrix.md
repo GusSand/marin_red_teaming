@@ -17,6 +17,7 @@ refusal under instruction-like midtraining data with deep annealing*. Mostly "no
 | Deep Ignorance (2508.06601); Token-level filtering (2601.21571); Beyond Safe Data (2606.19168) | base | pretrain | content | capability / harm knowledge | No for refusal; establish pretraining-data causality on capability. |
 | Arditi et al. — Refusal is a single direction (2406.11717) | aligned | — (analysis) | — | refusal mechanism | No causal on data; Stage 3 instrument. |
 | Zhang — Judge configuration sensitivity (2604.24074); HarmMetric Eval (2509.24384) | — (judges) | — | — | judge-assessed harm | No; shows the polish half is partly a measurement property. |
+| Feuer et al. — Style Outweighs Substance (2409.15268), SOS-Bench | aligned (post-trained) | SFT vs preference optimisation | **style vs substance** (perturbation: sarcasm −96%, concise −63%, wrong facts −13%) | judge preference vs ground-truth (IFEval, safety battery) | **Method transfers**: perturb style holding claims fixed, measure judge flips; also SFT moves IF/safety more than PO. Aimed at preference judges, not classifiers — our WildGuard application is new. |
 | Length bias (2407.01085); Silent Judge (2509.26072); Judges disagree across criteria (2605.31381) | — (judges) | — | — | judge behaviour | No; motivates non-WildGuard quality scoring (Stage 1 step 2). |
 
 **Reading.** Every causal result is at SFT or on content. Nothing manipulates *format* at midtraining and
