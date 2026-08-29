@@ -234,3 +234,9 @@ depressed by format failures more than the others'; the phoenix→starling contr
 | 2026-08-28 23:55 | 4 wrappers | 16541569 / 16541576 / 16541617 | h200_tandon | one seed per job, 8 runs each, est. ~50 min each |
 | 2026-08-29 00:20 | 1, 4 resubmitted | 16541668 (ifeval), 16541698/16541707/16541719 (wrap s0/s1/s2) | h200_tandon,h200_public,l40s_public | h200_tandon had 146 pending; original jobs cancelled unstarted. Multi-partition submission. Every comparison in these steps is **within one job on one GPU**, so the GPU model is a nuisance factor recorded in provenance, not a confound. IFEval + wrap s0 started on L40S (gl005, gl004) at once. |
 | 2026-08-29 00:05 | 2/3 judges | 16541638 (qwen72), 16541645 (olmo32) | h200_tandon | stay on H200 (72B fp8 / 32B bf16 need it) |
+
+### Step 2 — judge outputs ready, selection pending human labels (2026-08-29 00:45)
+
+Both candidates ran on calibration (150) and full (1,080) sets, 0 unparsed calls each (jobs 16541638 qwen72-fp8, 16542095 olmo32). Rubric sha `5077a5be`.
+Pooled inter-judge agreement on the full set (no per-tag split computed, deliberately): relevance 0.73, task 0.55, **stance 0.40**, quality mean |Δ| 0.39/5.
+OLMo labels 634/1080 `refuses` vs Qwen 180 (WildGuard: ~220). At least one judge is far off on stance; the calibration set decides. Step 3 does not run until `compare_judges.py` has a verdict.
