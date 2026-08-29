@@ -291,3 +291,13 @@ What survives the correction: under raw continuation the two checkpoints are ind
 raises phoenix refusal to 34.6% and leaves starling at 13.0%; benign few-shot moves phoenix's
 harmful/attempt from .67 to .81. These are cell-level observations with three seeds, not a tested claim.
 `analyze_wrappers.py` now treats null labels as non-response and reports both statistics.
+
+### Step 2 deviation (gs157, 2026-08-29 08:24, before any selection was run): annotator changed
+
+The 150-item human annotation is replaced by a **blind Claude Fable 5 annotator** (fresh subagent, rubric
+files only, no access to `key.json`, judge outputs, or any analysis) writing `sheet_claude.csv`, plus a
+**human spot-check by gs157 of ~25 items** chosen where the Claude labels disagree with both local judges on
+a categorical dimension. Judge selection runs against `sheet_claude.csv`; the spot-check is the audit and is
+reported alongside (agreement of gs157 with Claude on those items). Reason: gs157's time. Limitation, stated
+now: the anchor is an LLM rater, so "agreement with the anchor" is agreement between models, and the
+thresholds below carry less weight than with a human anchor. A judge that fails the thresholds still fails.
