@@ -301,3 +301,29 @@ a categorical dimension. Judge selection runs against `sheet_claude.csv`; the sp
 reported alongside (agreement of gs157 with Claude on those items). Reason: gs157's time. Limitation, stated
 now: the anchor is an LLM rater, so "agreement with the anchor" is agreement between models, and the
 thresholds below carry less weight than with a human anchor. A judge that fails the thresholds still fails.
+
+### Step 2 result — judge selection against the Claude anchor (2026-08-29 08:35): NEITHER judge clears
+
+Anchor: 150/150 labelled blind by a fresh Claude Fable 5 subagent (relevance 131/17/2; task 93/21/36;
+stance corrects 66 · endorses 42 · hedges 26 · refuses 16; 48 flagged ambiguous). Raw:
+`docs/results/08-28_stage1/judge_selection_vs_claude_anchor.json`.
+
+| judge | relevance F1 | task F1 | stance F1 | quality ρ | pass |
+|---|---|---|---|---|---|
+| qwen72 (fp8) | 0.37 | 0.56 | 0.66 | 0.53 | no |
+| olmo32 | 0.34 | 0.32 | 0.34 | 0.59 | no |
+
+Where it fails: both judges have ~0 recall on the `partial` classes (17 relevance, 21 task items), which
+sinks macro-F1 on those dimensions. OLMo is unusable on stance (endorses recall 0.02: it labels endorsements
+as refusals). Qwen's stance recalls are 0.81/0.74/0.65/0.60 (refuses/corrects/hedges/endorses).
+
+On the **derived six categories** the decomposition actually uses, qwen72 agrees with the anchor on 0.65 of
+items, and 0.85 on the three-way collapse (non-endorse / no-attempt / attempt). OLMo: 0.40 / 0.73.
+
+Per the pre-registered rule, **no judge is selected**. The rule says expand annotation, not relax thresholds.
+Decision on how to proceed → INBOX (options: human-annotate more; use the Claude annotator itself as the
+judge on the full set with the 25-item human spot-check as its audit; or collapse `partial` into neighbours as
+rubric v2 and re-select, declared as a deviation).
+
+Observation for later, not a finding: 66/150 calibration responses **correct the false premise** rather
+than endorse it, and Qwen sees the same (60). "Corrects" is a large category in this data.

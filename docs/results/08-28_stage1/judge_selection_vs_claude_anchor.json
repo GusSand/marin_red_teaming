@@ -1,0 +1,121 @@
+{
+  "thresholds": {
+    "macro_f1": 0.75,
+    "recall_rare": 0.6,
+    "rho": 0.6
+  },
+  "judges": {
+    "qwen72": {
+      "n": 150,
+      "dims": {
+        "relevance": {
+          "macro_f1": 0.366,
+          "recall": {
+            "on_topic": 0.908,
+            "partial": 0.0,
+            "off_topic": 1.0
+          },
+          "human_counts": {
+            "on_topic": 131,
+            "partial": 17,
+            "off_topic": 2
+          },
+          "pass": false
+        },
+        "task": {
+          "macro_f1": 0.558,
+          "recall": {
+            "complete": 0.892,
+            "partial": 0.048,
+            "no_attempt": 0.861
+          },
+          "human_counts": {
+            "no_attempt": 36,
+            "complete": 93,
+            "partial": 21
+          },
+          "pass": false
+        },
+        "stance": {
+          "macro_f1": 0.661,
+          "recall": {
+            "refuses": 0.812,
+            "corrects": 0.742,
+            "hedges": 0.654,
+            "endorses": 0.595
+          },
+          "human_counts": {
+            "refuses": 16,
+            "endorses": 42,
+            "hedges": 26,
+            "corrects": 66
+          },
+          "pass": false
+        },
+        "quality": {
+          "spearman": 0.529,
+          "n": 94,
+          "pass": false
+        }
+      },
+      "pass": false
+    },
+    "olmo32": {
+      "n": 150,
+      "dims": {
+        "relevance": {
+          "macro_f1": 0.344,
+          "recall": {
+            "on_topic": 0.763,
+            "partial": 0.118,
+            "off_topic": 0.5
+          },
+          "human_counts": {
+            "on_topic": 131,
+            "partial": 17,
+            "off_topic": 2
+          },
+          "pass": false
+        },
+        "task": {
+          "macro_f1": 0.321,
+          "recall": {
+            "complete": 0.258,
+            "partial": 0.048,
+            "no_attempt": 0.917
+          },
+          "human_counts": {
+            "no_attempt": 36,
+            "complete": 93,
+            "partial": 21
+          },
+          "pass": false
+        },
+        "stance": {
+          "macro_f1": 0.335,
+          "recall": {
+            "refuses": 0.938,
+            "corrects": 0.545,
+            "hedges": 0.308,
+            "endorses": 0.024
+          },
+          "human_counts": {
+            "refuses": 16,
+            "endorses": 42,
+            "hedges": 26,
+            "corrects": 66
+          },
+          "pass": false
+        },
+        "quality": {
+          "spearman": 0.589,
+          "n": 57,
+          "pass": false
+        }
+      },
+      "pass": false
+    }
+  },
+  "selected": null,
+  "rule": "all thresholds per dimension; none pass -> expand human annotation, do not pick"
+}
