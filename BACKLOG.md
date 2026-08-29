@@ -1,6 +1,17 @@
 # Task 1: reproduce Olmo 3 7B safety numbers
 
-- [ ] **H1b instrument: relevance / task-success scorer (or gradable benign task).** Needed to split the +11pp harmful|non-refusal rise into writing quality (H1) vs on-topic-ness (H1b) in the cooldown. Candidates: an LLM relevance grader on (behavior, response) with a held-out human-labelled set; or a benign task with objective grading. Selection experiment; pre-register before running.
+## Stage 1 / Stage 2 program (gs157, 2026-08-28) — spec: docs/experiments/08-28_phoenix-starling_distribution-decomposition.md
+
+- [ ] **1. IFEval** (official pinned repo, greedy, base scaffold) on jellyfish/phoenix/starling/deeper-starling. Trigger for item 5: starling−phoenix ≥ +5pp prompt-level strict, CI excl. 0.
+- [ ] **2. Human calibration set (~150, blinded, stratified) + judge selection.** Lock rubric/prompts in `config/judge_rubric_v1/` first. Two local judges, per-dimension macro-F1 ≥ 0.75, off-topic/corrective recall ≥ 0.60. Neither clears → expand annotation, never pick the better-looking one. Not WildGuard. Verdict → decisions.md.
+- [ ] **3. Behavior-level distribution decomposition** phoenix→starling, 1,080 existing responses, six categories, mass changes with behavior bootstrap. Never phrased as flows.
+- [ ] **4. Wrapper sensitivity**: raw / current scaffold / explicit instruction / benign-only few-shot × {phoenix, starling} × 3 seeds, 3 sub-2h jobs, namespace `2026-08-29-wrap-h200`.
+- [ ] **5. Benign twins** (only if item 1 triggers): 54 rule-gradable twins, same wrappers/seeds as item 4 W1.
+- [ ] **6. Freeze expanded misinfo eval ≥150 behaviors** (selection note for the second source, dedupe, hash in DATA_INVENTORY, baseline on four tags × 10 seeds) before any Stage 2 arm trains.
+- [ ] **7. Stage 2 six-arm staged replay** — own experiment doc after David answers INBOX (intermediate checkpoints; budget for 10 training runs: A–D ×2, E/F ×1 screening + replicate the removal that matters). 10% = screening checkpoint only; efficacy look at 25% or conditional-power rule unless historical checkpoints justify a 10% futility rule.
+- [ ] **Bibliography hypothesis matrix** (parallel, non-gating): convert `outputs/2026-08-28_lit_refusal_vs_polish.md` to base/aligned · pretrain/CPT/SFT · content vs format · refusal/task/judge-harm · transferable-causal columns.
+
+- [x] ~~H1b instrument~~ → superseded by Stage 1 items 1, 2, 5 above (2026-08-28). **H1b instrument: relevance / task-success scorer (or gradable benign task).** Needed to split the +11pp harmful|non-refusal rise into writing quality (H1) vs on-topic-ness (H1b) in the cooldown. Candidates: an LLM relevance grader on (behavior, response) with a held-out human-labelled set; or a benign task with objective grading. Selection experiment; pre-register before running.
 - [ ] **wandb for job tracking (Gus, 2026-08-28: "leave it for next time").** Login node reaches api.wandb.ai; test from a compute node inside a job first (jobs run HF_HUB_OFFLINE=1, network unconfirmed). Needs an API key on Torch, which is Gus's to place. Log per-run RESULT lines, heartbeat GPU %, and terminal state. Motivation: three jobs were killed by the utilization watchdog before anyone noticed.
 - [ ] **Load-once multi-seed generation.** Sequential per-run design averages ~39% GPU util, below the 50% watchdog cutoff. Load each model once, generate all seeds in one vLLM session, judge once. Must be verified token-exact against the gate runs before it replaces run_row.sh.
 
