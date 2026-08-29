@@ -538,3 +538,79 @@ already implied by the rules fixed above but worth stating with the numbers atta
 1. **No absolute category mass from this annotation is a property of the models.** Only differences are.
 2. The behavior bootstrap resamples behaviors carrying two disjoint rater-pair regimes ({1,3} and
    {2,4}), so this variance lands **inside** the CI rather than beside it. Correct, and conservative.
+
+### Step 3 RESULT — distribution decomposition, phoenix → starling (2026-08-29 10:05) — **UNVERIFIED**
+
+Judge: blind Claude Fable 5 annotators, pass 2, four instances on balanced shards. n = 54 behaviors ×
+10 seeds × 2 checkpoints = 1,080 items, **0 uncategorised**. Merge validated (all cids once, all values
+in vocabulary, quality present exactly when `task != no_attempt`).
+Raw: `docs/results/08-28_stage1/decomp_pass2/`, labels `judge/claude_fable_pass2.jsonl`.
+
+| category | phoenix % | starling % | Δ mass pp [95% CI] | perm p | Holm |
+|---|---|---|---|---|---|
+| refuse | 18.0 | 5.7 | **−12.2** [−16.9, −7.8] | 0.000 | 0.000 |
+| correct | 32.2 | 20.0 | **−12.2** [−17.2, −7.6] | 0.000 | 0.000 |
+| hedge | 20.2 | 17.0 | −3.1 [−8.1, +1.7] | 0.257 | 0.770 |
+| no-attempt | 4.8 | 3.3 | −1.5 [−4.3, +1.3] | 0.372 | 0.770 |
+| attempt-weak | 4.8 | 5.4 | +0.6 [−2.0, +3.1] | 0.777 | 0.777 |
+| attempt-strong | 20.0 | 48.5 | **+28.5** [+22.2, +34.6] | 0.000 | 0.000 |
+
+Conditional series: `quality_given_attempt` **+0.12** [−0.05, +0.30] p=0.198, n=42 ·
+`wg_harmful_given_attempt_pp` +7.60 [+0.96, +15.59] p=0.050, n=42 (**not independent rubric evidence** —
+see the synthetic-label caveat above) · `quality_given_both_attempt_ge7of10` n=2, too few behaviors,
+**not evaluable**.
+
+#### Against the pre-registered readings
+
+| pre-registered reading | verdict |
+|---|---|
+| refusal mass drop **with** `correct`+`hedge` also dropping → vanished refusal was largely soft | **Partial.** `correct` drops 12.2pp (p<0.001); `hedge` −3.1pp is n.s. |
+| `no-attempt` down **and** `attempt-*` up → **IF signature** | **Not supported.** `no-attempt` −1.5pp, n.s. |
+| quality-given-both-attempt up ≥ 0.5 with CI excluding 0 → **EXP signature** | **Not evaluable** (n=2). The weaker `quality_given_attempt` is +0.12, n.s. |
+
+#### Interpretation (mine, flagged)
+
+The move is a **stance shift, not a capability shift**. `attempt-weak`/`attempt-strong` are reachable
+only by `endorses` items (the first three rules capture every other stance), so the +28.5pp is mass
+arriving at endorsement. Conditional on endorsing, writing quality does **not** move (+0.12, n.s.), and
+off-topic/no-attempt mass does not move either (−1.5pp, n.s.).
+
+This splits the +11pp `harmful | non-refusal` rise that the earlier WildGuard work could not decompose.
+The 2026-08-28 CORRECTION recorded that WildGuard cannot separate off-topic from on-topic-but-weak, so
+that rise was "H1+H1b unsplit". It is now split: **H1b (off-topic-ness) is not the driver** — no-attempt
+mass is flat — and **H1 (writing quality) is not the driver either** — quality given attempt is flat.
+What moves is where the mass sits: out of `refuse` (−12.2) and `correct` (−12.2), into endorsement.
+
+The `correct` result is the part WildGuard was blind to by construction: a fluent article *refuting* the
+false premise is `non-refusal` and `unharmful` to WildGuard, indistinguishable from a weak compliance.
+Phoenix spends 32.2% of its mass there; Starling 20.0%.
+
+#### Reliability of these labels — pass 1 vs pass 2, 810 items
+
+`docs/results/08-28_stage1/retest_pass1_vs_pass2.json`.
+
+| | agreement | κ |
+|---|---|---|
+| relevance | 0.941 | 0.448 (rare classes) |
+| task | 0.860 | 0.695 |
+| stance | 0.809 | 0.710 |
+| derived six categories | 0.748 | 0.665 |
+| derived three-way | 0.884 | — |
+| quality mean (603 both-scored) | ρ 0.662, mean\|Δ\| 0.33 | — |
+
+Comparable to the between-anchor (Claude vs GPT) agreement on the 150-item calibration set — stance
+κ 0.78 there vs 0.71 here, three-way 0.93 vs 0.88. **Quality recomputed for a fair comparison:** the
+anchor ρ 0.56 used ordinal ranks, which mistreat the many ties; with the same tie-aware estimator used
+here the anchor is **ρ 0.622** against this retest's **0.662**, and mean |Δ| 0.92 vs **0.33**.
+
+**Sign check (the pre-registered one-directional rule): no category flips sign between passes** — so no
+category is marked `rater-unstable`, and none loses its reading. Per the rule fixed before pass 2 was
+read, this **certifies nothing**: pass 1 carries the annotator×checkpoint confound, so sign agreement is
+not evidence of stability. The magnitudes differ substantially between passes (e.g. `refuse` −9.1pp in
+pass 1 vs −18.7pp in pass 2, pooled), exactly as a confounded pass should.
+
+#### Status
+
+**UNVERIFIED.** An independent verifier is recomputing the six deltas from the four raw sheets by its own
+code path, with the mechanism, Iron-Law, instance-confound and seed-count checks. This does not enter
+`research_journal.md` as a finding until that returns a match within the pre-registered 0.5pp.
