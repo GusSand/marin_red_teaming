@@ -1,5 +1,22 @@
 # INBOX — things needing gs157 (newest on top). Append `→ answer:` inline when you reply.
 
+- **STALE — please triage.** Four items below are waiting on you: the 25-item spot-check (09:05), the
+  judge-selection decision (08:40, which I have provisionally acted on per my own recommendation), the
+  two Stage 2 questions for David (08-28), and the HF gate immediately below. Nothing is idle — step 3
+  annotation is running and other work is proceeding — but the spot-check is the audit for the whole
+  step-3 judge, so step 3 cannot be *verified* without it.
+
+- **[2026-08-29 10:15] BLOCKED, 2-minute fix — `google/gemma-2b` is gated and Torch is unauthenticated.**
+  Backlog 3b (StrongREJECT graded sidecar) is pre-registered and ready, but its judge
+  `qylu4156/strongreject-15k-v1` is a **LoRA adapter over `google/gemma-2b`**, which is a gated repo.
+  The July StrongREJECT rows ran on the retired Paperspace box, whose cache had access; Torch's does not.
+  All three safety-eval StrongREJECT variants use the same base, so there is no way around it in code.
+  **Need from you:** accept the Gemma license at https://huggingface.co/google/gemma-2b with the HF
+  account, and place a read token on Torch (`huggingface-cli login`, or write `HF_TOKEN` somewhere I can
+  export). I have already cached the adapter itself. Once the base downloads, the job is ~30 min on one
+  GPU. Doc: `docs/experiments/08-29_strongreject_sidecar_phoenix-starling.md`. Not urgent — 3b is a
+  sidecar that reports alongside step 3, never as its primary.
+
 - **[2026-08-29 09:30] My design error, caught before it produced a number.** I sharded the 1,080-item annotation by line range; the export is run-ordered, so two annotators got only Phoenix and two only Starling — annotator confounded with the contrast. No decomposition was computed from those labels. Re-sharded 135/135 per annotator and re-running now (~15 min). Silver lining: every item ends up labelled twice under different shardings, giving a 1,080-item test–retest reliability estimate instead of the 150-item one. Nothing needed from you.
 
 - **[2026-08-29 09:05] Spot-check ready — 25 items where Claude and ChatGPT disagree.** `python3 /scratch/gs157/marin-red-teaming/scripts/annotate.py /scratch/gs157/marin-misinfo-labels/calibration_v1/spotcheck` (~15 min). The two anchors agree κ 0.78 on stance, 0.79 on the six derived categories, 0.93 on the three-way split; both local judges fail against both anchors. Proposal: drop the local judges, run the Claude annotator on the full 1,080 set as the step-3 judge; your 25 labels are the audit. I'll start the full-set annotation now unless you say otherwise; it's redoable.

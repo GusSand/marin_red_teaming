@@ -1,6 +1,7 @@
 # 08-29 · StrongREJECT graded sidecar on the phoenix→starling misinformation responses
 
-**Status:** PRE-REGISTERED 2026-08-29 10:05. Written before the judge ran. Backlog item 3b.
+**Status:** PRE-REGISTERED 2026-08-29 10:05, then **BLOCKED 10:15** on a gated model (see below).
+Written before the judge ran. Backlog item 3b.
 **Commit at pre-registration:** see `git log` for the commit adding this file.
 
 ## Research question
@@ -85,6 +86,17 @@ is a bug. Investigate before reporting.
   silently dropped. Items WildGuard left unlabelled (the known N/A class) are reported as their own
   row, following the correction already made to the step-4 wrapper analysis.
 - **Split:** not applicable; no model is fit.
+
+## Blocker (2026-08-29 10:15)
+
+`qylu4156/strongreject-15k-v1` is a **LoRA adapter over `google/gemma-2b`**, a gated repo, and the
+Torch workspace has no HF authentication. The adapter itself is cached
+(`hf_cache/hub/models--qylu4156--strongreject-15k-v1`); the base 401s. All three safety-eval
+StrongREJECT variants share that base, so no code path avoids it. The July 2026 StrongREJECT rows
+ran on the retired Paperspace box, whose cache had access.
+
+Needs gs157: accept the Gemma license on HF and place a read token on Torch. Queued in `INBOX.md`.
+Everything else here is ready; the run is ~30 min on one GPU once the base resolves.
 
 ## Results
 
