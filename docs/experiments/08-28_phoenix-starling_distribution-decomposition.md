@@ -89,6 +89,8 @@ Thresholds, **per dimension, not overall**:
 - per-class recall ≥ **0.60** for `off-topic` and `corrects` specifically;
 - Quality: Spearman ρ ≥ **0.60** against the human mean.
 
+Execution note (2026-08-29, before any judge output was read): both candidates run on the calibration set AND the full 1,080-item set in the same job, to save a queue cycle. Only the selected judge's full-set output is primary; the non-selected judge's is reported as a sensitivity check.
+
 Rules: the judge that clears every threshold is used; if both clear, the higher mean macro-F1. **If
 neither clears, expand human annotation** (to ~300) and re-run selection. The better-looking judge
 is never chosen below threshold. Write the verdict to `docs/decisions.md`.
@@ -199,4 +201,5 @@ three sub-2h jobs plus judging. Step 5: 6 runs. Step 6: baseline 4 tags × 10 se
 | 2026-08-28 23:44 | 1 IFEval | 16541467 | h200_tandon | 4 tags sequential, est. 4 × ~10 min |
 | 2026-08-28 23:49 | 2 judge download | 16541556 | cpu_short | Qwen2.5-72B-Instruct + OLMo-2-32B-Instruct (login-node background downloads die at session end) |
 | 2026-08-28 23:48 | 2 calibration set | — | login (CPU, seconds) | 150 items → `marin-misinfo-labels/calibration_v1/`; INBOX asks gs157 to annotate |
+| 2026-08-29 00:05 | 2/3 judges | see below | h200_tandon | qwen72 (fp8) and olmo32 on calibration + full set, one job each, est. <1h |
 | 2026-08-28 23:55 | 4 wrappers | 16541569 / 16541576 / 16541617 | h200_tandon | one seed per job, 8 runs each, est. ~50 min each |
