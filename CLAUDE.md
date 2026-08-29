@@ -136,6 +136,12 @@ Scratch quota is **5TB, 18% used**, and it is **not backed up and is flushed**. 
 must survive belongs in the repo or `$ARCHIVE`. `$HOME` is only 50GB, which is why `HF_HOME`
 must point into scratch; the preflight fails if it is unset.
 
+### Login-node /tmp (learned 2026-08-29)
+
+`/tmp` on the Torch login nodes is a **2 GB shared tmpfs** and fills up. Symptom: VS Code Remote-SSH
+(and anything using `mktemp`) fails with "no space left" while quotas look fine. `~/.bashrc` and
+`~/.bash_profile` on Torch now export `TMPDIR=/scratch/gs157/tmp`; keep it that way.
+
 ### Preflight rule
 
 Submit GPU jobs only via `bash scripts/submit.sh slurm/<file>.sbatch`. It runs
