@@ -415,3 +415,24 @@ presented as continuity.
 pass 1's pooled category deltas. Those are the quarantined confounded labels, no pass-2 label existed
 yet, and the four annotators run in isolated contexts that never received them — but the direction was
 seen by me before pass 2 landed, so it is recorded here.
+
+#### Step-3 analysis path smoke-tested before the labels landed (2026-08-29 10:25)
+
+Ran `decompose_distribution.py` against the real `key.json` with a **synthetic judge file** — 1,080
+rows of uniformly random rubric labels, seed 7. Purpose: catch interface bugs before the real labels
+arrive, and get a negative control on the estimator.
+
+Result: all six category mass deltas null, as they must be (largest |Δ| 2.8pp, every CI spanning 0,
+every Holm-adjusted p = 1.000), and **0 uncategorised items** — the category rules cover the full
+label space. The analysis path returns nothing from nothing.
+
+**One caveat, so it is not misread later.** The conditional series
+`wg_harmful_given_attempt_pp` came back **+21.8pp [+4.1, +39.6], p=0.023 even on random labels.** That
+is not a bug: the WildGuard labels in that series are the real ones, and conditioning them on a random
+`attempt` mask still lets the genuine phoenix→starling harmful difference through, with n=32 behaviors
+and a wide interval. It does mean this series is **not** protected by the rubric labels being
+informative — it inherits WildGuard's effect whatever the rubric says. Read it as a WildGuard series
+restricted to a rubric-defined subset, never as independent rubric evidence.
+
+`quality_given_both_attempt_ge7of10` was empty under random labels (n=0), as expected; it should
+populate with real ones.
