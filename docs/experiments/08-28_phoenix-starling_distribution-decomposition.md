@@ -191,3 +191,12 @@ three sub-2h jobs plus judging. Step 5: 6 runs. Step 6: baseline 4 tags × 10 se
 ## Results
 
 (empty until run)
+
+## Run log
+
+| date | step | job | partition | notes |
+|---|---|---|---|---|
+| 2026-08-28 23:44 | 1 IFEval | 16541467 | h200_tandon | 4 tags sequential, est. 4 × ~10 min |
+| 2026-08-28 23:49 | 2 judge download | 16541556 | cpu_short | Qwen2.5-72B-Instruct + OLMo-2-32B-Instruct (login-node background downloads die at session end) |
+| 2026-08-28 23:48 | 2 calibration set | — | login (CPU, seconds) | 150 items → `marin-misinfo-labels/calibration_v1/`; INBOX asks gs157 to annotate |
+| 2026-08-28 23:55 | 4 wrappers | 16541569 / 16541576 / 16541617 | h200_tandon | one seed per job, 8 runs each, est. ~50 min each |
