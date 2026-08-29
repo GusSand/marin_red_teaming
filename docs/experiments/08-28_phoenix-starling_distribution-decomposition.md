@@ -192,7 +192,7 @@ three sub-2h jobs plus judging. Step 5: 6 runs. Step 6: baseline 4 tags × 10 se
 
 ## Results
 
-### Step 1 — IFEval (2026-08-29, job 16541668, one L40S gl005, greedy; verification: see below)
+### Step 1 — IFEval (2026-08-29, job 16541668, one L40S gl005, greedy; **VERIFIED** by a fresh subagent from the raw scorer jsonl, independent code path: every level and contrast identical to 2 decimals, 541/541 paired, 0 duplicates)
 
 Prompt-level strict, responses truncated at the first `\nUser:` (primary) / raw:
 

@@ -567,7 +567,7 @@ harmful|non-refusal is the sum of H1 (writing quality) and H1b (on-topic-ness). 
 The relevance / gradable-benign-task instrument is required for the cooldown claim too. Verdicts on H0, H-min and
 the mixed reading are unaffected; the refusal drop is independent of this.
 
-## 2026-08-29 — Stage 1 step 1: IFEval across four Marin base tags (UNVERIFIED until the fresh-subagent check lands)
+## 2026-08-29 — Stage 1 step 1: IFEval across four Marin base tags (VERIFIED: fresh subagent recomputed from raw scorer jsonl, all numbers identical)
 
 - **Question:** does benign, judge-free instruction following move in the cooldown, and where?
 - **Method:** official IFEval (google-research `0413387`), 541 prompts, greedy, base scaffold `User:/Assistant:`, max 2,048 tokens, one L40S (gl005), job 16541668. Primary scoring on responses truncated at the first `\nUser:`; raw also scored. Spec `docs/experiments/08-28_phoenix-starling_distribution-decomposition.md`.
