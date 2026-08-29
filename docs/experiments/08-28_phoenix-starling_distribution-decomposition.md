@@ -375,9 +375,43 @@ and this design cannot say whether that is the model or the rater.
 Starling** — verified. Shards at `full_phoenix_starling_v1/shards_v2/`, labels to `claude_parts_v2/`.
 Annotator effects are now balanced across the contrast and cancel in the paired difference.
 
-**Bonus from the mistake:** every item is now labelled twice by independent instances under different
-shardings. Pass 1 vs pass 2 agreement is a full test–retest reliability estimate on all 1,080 items, which
-is stronger than the 150-item calibration estimate. It will be reported with the step-3 result.
+**Bonus from the mistake:** items covered by both passes are labelled twice by independent instances
+under different shardings, so pass-1 vs pass-2 agreement is a test–retest reliability estimate on this
+data rather than on the 150-item calibration set. **Correction (09:50): the overlap is 810 items, not
+1,080.** Pass 1's part 2 never finished, so pass 1 holds parts 1/3/4 only — 270 Phoenix + 540 Starling.
+The estimate is therefore computed on 810 items with unequal arms, and the per-checkpoint breakdown is
+reported alongside the pooled number. `scripts/retest_agreement.py`, verified by an identity self-check
+(pass 1 against itself → agreement 1.000 on every dimension).
 
 Standing rule added for this project: **any partition of items across raters, judges, or jobs must be
 checked for balance on the contrast of interest before the work is done, not after.**
+
+#### Pass 2 annotation — setup as run (2026-08-29 09:45)
+
+Four blind **Claude Fable 5** subagents, one per `shards_v2/` part, writing to `claude_parts_v2/`.
+Same model family as the pass-1 annotator and the calibration anchor, so the full-set labels stay
+comparable with the Claude–GPT agreement that serves as their reliability estimate.
+
+Shard balance verified against `key.json` **before** dispatch, per the standing rule: each part is
+exactly 135 Phoenix + 135 Starling, seeds spread 26/28 per part, 1,080 unique cids covered once.
+
+Blinding held at dispatch: each agent was given only its own shard (`cid` / `request` / `response`),
+and explicitly forbidden `key.json`, `judge/`, the unsharded `items.jsonl`, the pass-1 sheets, other
+parts, and `docs/`. Responses are shown untruncated, matching what the calibration anchor saw (the
+6,000-character truncation in the rubric README applies to the local-judge calls only).
+
+**Conventions gap, disclosed.** The doc records that gs157 sent ChatGPT "the rubric + first annotator's
+conventions", but that conventions text was never checked in, so pass 1 cannot be reproduced exactly.
+The five conventions given to the pass-2 annotators are now written down verbatim in
+`config/annotator_conventions_v1.md` (deliberately **outside** `config/judge_rubric_v1/`, whose
+directory hash is recorded in judge outputs and must not change). The load-bearing one — judge only
+the text before the first fabricated `User:` turn — is not new: it is the same scaffold-artefact rule
+already pre-registered for IFEval scoring, and pass-1 sheets show it being applied (`notes` =
+"degenerate multi-turn after first answer" on rows labelled `on_topic`/`complete`). Making it explicit
+removes drift between the four pass-2 instances; it is recorded here as a pass-2 deviation rather than
+presented as continuity.
+
+**Disclosure.** While self-testing `retest_agreement.py` I ran it with pass 1 on both sides and saw
+pass 1's pooled category deltas. Those are the quarantined confounded labels, no pass-2 label existed
+yet, and the four annotators run in isolated contexts that never received them — but the direction was
+seen by me before pass 2 landed, so it is recorded here.

@@ -107,3 +107,26 @@ to local `repro-olmo3-safety/runs/` before the remote is shut down (fresh-instan
   `python scripts/analyze_trajectory.py --labels $SCRATCH/marin-misinfo-labels --prefix 2026-08-28-traj4-h200 --out docs/results/08-27_misinfo_rvc`
 - `log_lib.sh` — shared logging: `progress.log`, phases, heartbeat with GPU %, signal-aware EXIT
   trap (TERM/INT -> rc 143). The heartbeat's `gpu=0 %` lines were the utilization warning nobody read.
+
+### 2026-08-29 additions (Stage 1 step 2/3 — rubric annotation)
+
+- `shard_tool.py` — annotator-side helper. `dump` prints a window of items from one blinded shard
+  (`--start/--count`, so a rater works in batches instead of loading 270 items at once); `check`
+  validates one `sheet_part<N>.csv` against its shard using the same contract `merge_sheets.py`
+  enforces at merge time. Run `check` per part so a bad sheet is caught by its author.
+- `merge_sheets.py` — merges the four annotator part-sheets into one judge-style jsonl for
+  `decompose_distribution.py`. Fails loudly on missing/duplicate cids, out-of-vocabulary values, or
+  quality scores present when `task=no_attempt` (and absent when it is not).
+- `rubric_lib.py` — shared helpers for `judge_rubric_v1` sheets: derived six categories, the
+  three-way collapse, Cohen's kappa, agreement + confusion, tie-aware Spearman, sheet loading. Pure
+  stdlib, so it runs outside the safety-eval venv. `compare_anchors.py` keeps its own inline copy on
+  purpose — its outputs are already in the record and it is frozen. Note its Spearman used ordinal
+  ranks (ties broken arbitrarily); `rubric_lib.spearman` uses average ranks, so recompute both sides
+  with the same function before comparing rho values.
+- `retest_agreement.py` — test-retest reliability of the blind annotator, pass 1 vs pass 2. The two
+  passes sharded the same items differently, so every item common to both was labelled twice by
+  independent instances. Reports per-dimension agreement/kappa, derived-six and three-way agreement,
+  quality rho, **broken down by checkpoint**, plus a sign check on each pass's pooled category
+  deltas (a category whose sign flips between passes is not safely measurable with this rater).
+  Verified by an identity self-check: pass 1 against itself gives 1.000 on every dimension.
+  `python scripts/retest_agreement.py --pass1 <dir> --pass2 <dir> --key key.json --out <file.json>`
