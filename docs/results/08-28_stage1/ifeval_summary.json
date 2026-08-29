@@ -1,0 +1,189 @@
+{
+ "levels": {
+  "jellyfish/truncated/strict": {
+   "prompt_level": 12.57,
+   "instruction_level": 22.3,
+   "n": 541
+  },
+  "jellyfish/truncated/loose": {
+   "prompt_level": 13.31,
+   "instruction_level": 23.26,
+   "n": 541
+  },
+  "jellyfish/raw/strict": {
+   "prompt_level": 14.97,
+   "instruction_level": 26.5,
+   "n": 541
+  },
+  "jellyfish/raw/loose": {
+   "prompt_level": 16.45,
+   "instruction_level": 28.18,
+   "n": 541
+  },
+  "phoenix/truncated/strict": {
+   "prompt_level": 14.23,
+   "instruction_level": 23.38,
+   "n": 541
+  },
+  "phoenix/truncated/loose": {
+   "prompt_level": 16.64,
+   "instruction_level": 25.66,
+   "n": 541
+  },
+  "phoenix/raw/strict": {
+   "prompt_level": 16.64,
+   "instruction_level": 26.86,
+   "n": 541
+  },
+  "phoenix/raw/loose": {
+   "prompt_level": 18.85,
+   "instruction_level": 28.66,
+   "n": 541
+  },
+  "starling/truncated/strict": {
+   "prompt_level": 26.06,
+   "instruction_level": 39.33,
+   "n": 541
+  },
+  "starling/truncated/loose": {
+   "prompt_level": 28.84,
+   "instruction_level": 42.45,
+   "n": 541
+  },
+  "starling/raw/strict": {
+   "prompt_level": 23.66,
+   "instruction_level": 38.13,
+   "n": 541
+  },
+  "starling/raw/loose": {
+   "prompt_level": 25.14,
+   "instruction_level": 39.69,
+   "n": 541
+  },
+  "deeper-starling/truncated/strict": {
+   "prompt_level": 24.4,
+   "instruction_level": 37.89,
+   "n": 541
+  },
+  "deeper-starling/truncated/loose": {
+   "prompt_level": 27.73,
+   "instruction_level": 41.49,
+   "n": 541
+  },
+  "deeper-starling/raw/strict": {
+   "prompt_level": 23.29,
+   "instruction_level": 37.41,
+   "n": 541
+  },
+  "deeper-starling/raw/loose": {
+   "prompt_level": 24.95,
+   "instruction_level": 39.45,
+   "n": 541
+  }
+ },
+ "contrasts": {
+  "phoenix->starling/truncated/strict": {
+   "delta_pp": 11.83,
+   "ci95": [
+    8.13,
+    15.71
+   ],
+   "n": 541
+  },
+  "phoenix->starling/raw/strict": {
+   "delta_pp": 7.02,
+   "ci95": [
+    3.33,
+    10.72
+   ],
+   "n": 541
+  },
+  "jellyfish->phoenix/truncated/strict": {
+   "delta_pp": 1.66,
+   "ci95": [
+    -1.85,
+    5.18
+   ],
+   "n": 541
+  },
+  "jellyfish->phoenix/raw/strict": {
+   "delta_pp": 1.66,
+   "ci95": [
+    -1.66,
+    4.99
+   ],
+   "n": 541
+  },
+  "starling->deeper-starling/truncated/strict": {
+   "delta_pp": -1.66,
+   "ci95": [
+    -4.44,
+    1.11
+   ],
+   "n": 541
+  },
+  "starling->deeper-starling/raw/strict": {
+   "delta_pp": -0.37,
+   "ci95": [
+    -2.96,
+    2.22
+   ],
+   "n": 541
+  },
+  "phoenix->deeper-starling/truncated/strict": {
+   "delta_pp": 10.17,
+   "ci95": [
+    6.47,
+    14.05
+   ],
+   "n": 541
+  },
+  "phoenix->deeper-starling/raw/strict": {
+   "delta_pp": 6.65,
+   "ci95": [
+    2.96,
+    10.35
+   ],
+   "n": 541
+  }
+ },
+ "provenance": {
+  "jellyfish": {
+   "n_empty": 0,
+   "n_fake_next_turn": 388,
+   "n_hit_max_len": 523,
+   "gpu": "NVIDIA L40S, GPU-8eeb18fc-5638-5adc-4304-1202728df19d, 580.82.07",
+   "ifeval_sha": "041338718b4e8151372fd63677104c65b73a0a4e"
+  },
+  "phoenix": {
+   "n_empty": 0,
+   "n_fake_next_turn": 237,
+   "n_hit_max_len": 171,
+   "gpu": "NVIDIA L40S, GPU-8eeb18fc-5638-5adc-4304-1202728df19d, 580.82.07",
+   "ifeval_sha": "041338718b4e8151372fd63677104c65b73a0a4e"
+  },
+  "starling": {
+   "n_empty": 0,
+   "n_fake_next_turn": 382,
+   "n_hit_max_len": 154,
+   "gpu": "NVIDIA L40S, GPU-8eeb18fc-5638-5adc-4304-1202728df19d, 580.82.07",
+   "ifeval_sha": "041338718b4e8151372fd63677104c65b73a0a4e"
+  },
+  "deeper-starling": {
+   "n_empty": 0,
+   "n_fake_next_turn": 388,
+   "n_hit_max_len": 139,
+   "gpu": "NVIDIA L40S, GPU-8eeb18fc-5638-5adc-4304-1202728df19d, 580.82.07",
+   "ifeval_sha": "041338718b4e8151372fd63677104c65b73a0a4e"
+  }
+ },
+ "trigger_step5": {
+  "criterion": ">= +5pp and CI excludes 0",
+  "delta_pp": 11.83,
+  "ci95": [
+   8.13,
+   15.71
+  ],
+  "fired": true
+ }
+}

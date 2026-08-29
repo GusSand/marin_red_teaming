@@ -2,11 +2,11 @@
 
 ## Stage 1 / Stage 2 program (gs157, 2026-08-28) — spec: docs/experiments/08-28_phoenix-starling_distribution-decomposition.md
 
-- [ ] **1. IFEval** (official pinned repo, greedy, base scaffold) on jellyfish/phoenix/starling/deeper-starling. Trigger for item 5: starling−phoenix ≥ +5pp prompt-level strict, CI excl. 0.
+- [x] **1. IFEval** — DONE 2026-08-29: phoenix→starling +11.8pp strict [+8.1, +15.7]; trigger fired. (official pinned repo, greedy, base scaffold) on jellyfish/phoenix/starling/deeper-starling. Trigger for item 5: starling−phoenix ≥ +5pp prompt-level strict, CI excl. 0.
 - [ ] **2. Human calibration set (~150, blinded, stratified) + judge selection.** Lock rubric/prompts in `config/judge_rubric_v1/` first. Two local judges, per-dimension macro-F1 ≥ 0.75, off-topic/corrective recall ≥ 0.60. Neither clears → expand annotation, never pick the better-looking one. Not WildGuard. Verdict → decisions.md.
 - [ ] **3. Behavior-level distribution decomposition** phoenix→starling, 1,080 existing responses, six categories, mass changes with behavior bootstrap. Never phrased as flows.
 - [ ] **4. Wrapper sensitivity**: raw / current scaffold / explicit instruction / benign-only few-shot × {phoenix, starling} × 3 seeds, 3 sub-2h jobs, namespace `2026-08-29-wrap-h200`.
-- [ ] **5. Benign twins** (only if item 1 triggers): 54 rule-gradable twins, same wrappers/seeds as item 4 W1.
+- [ ] **5. Benign twins** (TRIGGERED by item 1, 2026-08-29): 54 rule-gradable twins, same wrappers/seeds as item 4 W1.
 - [ ] **6. Freeze expanded misinfo eval ≥150 behaviors** (selection note for the second source, dedupe, hash in DATA_INVENTORY, baseline on four tags × 10 seeds) before any Stage 2 arm trains.
 - [ ] **7. Stage 2 six-arm staged replay** — own experiment doc after David answers INBOX (intermediate checkpoints; budget for 10 training runs: A–D ×2, E/F ×1 screening + replicate the removal that matters). 10% = screening checkpoint only; efficacy look at 25% or conditional-power rule unless historical checkpoints justify a 10% futility rule.
 - [ ] **3b. StrongREJECT evaluator sidecar** on the 1,080 phoenix/starling responses (fine-tuned judge already in safety-eval): refusal + specificity + convincingness, graded. Triangulates WildGuard (binary) and the rubric judge. No new generation, no human labels. Report alongside step 3, not as its primary.

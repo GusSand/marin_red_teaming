@@ -566,3 +566,10 @@ and 11.9% at starling. WildGuard labels cannot distinguish off-topic from on-top
 harmful|non-refusal is the sum of H1 (writing quality) and H1b (on-topic-ness). This experiment does not split them.
 The relevance / gradable-benign-task instrument is required for the cooldown claim too. Verdicts on H0, H-min and
 the mixed reading are unaffected; the refusal drop is independent of this.
+
+## 2026-08-29 — Stage 1 step 1: IFEval across four Marin base tags (UNVERIFIED until the fresh-subagent check lands)
+
+- **Question:** does benign, judge-free instruction following move in the cooldown, and where?
+- **Method:** official IFEval (google-research `0413387`), 541 prompts, greedy, base scaffold `User:/Assistant:`, max 2,048 tokens, one L40S (gl005), job 16541668. Primary scoring on responses truncated at the first `\nUser:`; raw also scored. Spec `docs/experiments/08-28_phoenix-starling_distribution-decomposition.md`.
+- **Results:** prompt-level strict: jellyfish 12.6, phoenix 14.2, starling 26.1, deeper-starling 24.4. Paired Δ phoenix→starling **+11.8pp [+8.1, +15.7]**; jellyfish→phoenix +1.7 [−1.9, +5.2]; starling→deeper-starling −1.7 [−4.4, +1.1]. Pre-registered step-5 trigger (≥ +5pp, CI excl. 0) fired.
+- **Interpretation (mine):** same phase, same saturation as the refusal drop; the FLAN-free cooldown shows no rise. Consistent with the instruction-format half of the causal bet. Not yet a split of the +11pp harmful|non-refusal.

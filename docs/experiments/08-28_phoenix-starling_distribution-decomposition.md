@@ -192,7 +192,36 @@ three sub-2h jobs plus judging. Step 5: 6 runs. Step 6: baseline 4 tags × 10 se
 
 ## Results
 
-(empty until run)
+### Step 1 — IFEval (2026-08-29, job 16541668, one L40S gl005, greedy; verification: see below)
+
+Prompt-level strict, responses truncated at the first `\nUser:` (primary) / raw:
+
+| tag | strict % (trunc) | strict % (raw) | instr-level strict (trunc) | fake next turn | hit 2048 tokens |
+|---|---|---|---|---|---|
+| jellyfish | 12.6 | 15.0 | 22.3 | 388/541 | 523/541 |
+| phoenix | 14.2 | 16.6 | 23.4 | 237/541 | 171/541 |
+| starling | **26.1** | 23.7 | 39.3 | 382/541 | 154/541 |
+| deeper-starling | 24.4 | 23.3 | 37.9 | 388/541 | 139/541 |
+
+Paired over the 541 prompts, bootstrap 95% CI (10k, seed 20260828):
+
+| contrast | Δ strict pp (trunc) | Δ strict pp (raw) |
+|---|---|---|
+| jellyfish → phoenix | +1.7 [−1.9, +5.2] | +1.7 [−1.7, +5.0] |
+| **phoenix → starling** | **+11.8 [+8.1, +15.7]** | +7.0 [+3.3, +10.7] |
+| starling → deeper-starling | −1.7 [−4.4, +1.1] | −0.4 [−3.0, +2.2] |
+| phoenix → deeper-starling | +10.2 [+6.5, +14.1] | +6.7 [+3.0, +10.4] |
+
+**Trigger for step 5: FIRED** (+11.8pp ≥ +5pp, CI excludes 0). Benign twins are built.
+
+No interpretation here beyond the pre-registered reading: instruction following, on a benign verifiable
+benchmark with no judge, rises in the same phase (phoenix→starling) and saturates at the same place
+(starling ≈ deeper-starling) as the refusal drop. The FLAN-free cooldown (jellyfish) shows no such rise
+over phoenix. Raw file: `docs/results/08-28_stage1/ifeval_summary.json`; per-prompt outputs on Torch under
+`runs/ifeval/2026-08-29-ifeval-h200/`.
+
+Caveat: jellyfish hits the 2,048-token cap on 523/541 prompts (rambles), so its strict score is
+depressed by format failures more than the others'; the phoenix→starling contrast is unaffected.
 
 ## Run log
 
