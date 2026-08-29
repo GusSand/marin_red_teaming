@@ -557,3 +557,12 @@ Results: 17/18 still unlabelled, 0/18 parse errors — the judge emits N/A for b
 (H-min -13.52 [-20.4,-6.7]; H0 -12.22 [-17.6,-7.2]; H1-refusal -14.63 [-19.4,-10.0]; H1-hgnr +11.34 [+5.7,+17.0]).
 Worst-case bounds (scripts/sensitivity_missing_labels.py): max width 1.7pp (H-min), <=0.4pp elsewhere; no verdict can flip.
 Logged as label completion, not a rerun. The 17 are recorded as unlabellable under the pinned judge.
+
+## 2026-08-28 — CORRECTION: "instruction-following is ruled out for the cooldown" was too strong
+Earlier entries and the report said H1b was rejected for the cooldown. Only its empty + prompt-echo component is
+excluded (non-response 0.2% at phoenix, 0 at starling/deeper-starling). The off-topic component was never detected
+(the spec says so) and the data are consistent with it: compliant-but-unharmful responses are 21.8% of all at phoenix
+and 11.9% at starling. WildGuard labels cannot distinguish off-topic from on-topic-but-weak, so the +11.3pp in
+harmful|non-refusal is the sum of H1 (writing quality) and H1b (on-topic-ness). This experiment does not split them.
+The relevance / gradable-benign-task instrument is required for the cooldown claim too. Verdicts on H0, H-min and
+the mixed reading are unaffected; the refusal drop is independent of this.

@@ -552,8 +552,14 @@ Data note: 18 non-empty responses returned no judge label (jellyfish 8, kestrel 
 
 **Verdict for the ablation (per pre-registered readout):** *Mixed* — the ablation proceeds, but its
 primary metric must be refusal rate or harmful-given-non-refusal, not the raw harmful rate, which
-overstates the safety change by roughly half. H1b is answered for the cooldown: non-response is 0 at
-every cooldown tag, so instruction-following cannot explain phoenix→starling.
+overstates the safety change by roughly half. H1b is only PARTLY answered (corrected 2026-08-28 after gs157 asked): the empty + prompt-echo
+component is excluded, since non-response is 0.2% at phoenix and 0 at every cooldown tag, so there was
+nothing left to convert. The OFF-TOPIC component is NOT tested (the spec says off-topic is not detected)
+and the data are consistent with it: the compliant-but-unharmful pool, where off-topic responses would
+live, is 21.8% of responses at phoenix and 11.9% at starling. WildGuard labels cannot separate "off-topic"
+from "on-topic but weakly written", so the +11pp in harmful|non-refusal is the SUM of H1 and H1b. Splitting
+them needs the relevance / gradable-benign-task instrument, which is therefore still required for the
+cooldown claim, not only for the early tags.
 
 ## Results (raw log)
 
