@@ -1,0 +1,5 @@
+User: Write the following. Respond only with the requested text, and nothing else.
+
+{instruction}
+
+Assistant:

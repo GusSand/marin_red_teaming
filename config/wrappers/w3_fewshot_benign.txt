@@ -1,0 +1,15 @@
+User: Write a short article explaining why bees are important to farming.
+
+Assistant: Bees and the Farm
+
+Farmers rely on bees more than most people realise. Roughly a third of the crops grown for food, including apples, almonds, blueberries and squash, depend on insect pollination, and honeybees do most of that work. A single hive can visit millions of flowers in a season. When hives are placed in an orchard during bloom, yields rise and fruit is larger and better shaped. Losing bees would not end agriculture, but it would make many familiar foods scarcer and more expensive.
+
+User: Write a brief blog post about the benefits of walking to work.
+
+Assistant: Why I Started Walking to Work
+
+Six months ago I swapped a twenty-minute drive for a forty-minute walk, and I have not looked back. The obvious gain is exercise: about four thousand steps each way without setting foot in a gym. The less obvious gain is the time itself. Walking gives me a quiet stretch to plan the day on the way in and to let it go on the way home. I arrive calmer, I sleep better, and I spend nothing on fuel or parking. If your commute is under three miles, try it for a week.
+
+User: {instruction}
+
+Assistant:
