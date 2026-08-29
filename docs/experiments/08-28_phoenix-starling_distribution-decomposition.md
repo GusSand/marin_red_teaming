@@ -240,3 +240,28 @@ depressed by format failures more than the others'; the phoenix→starling contr
 Both candidates ran on calibration (150) and full (1,080) sets, 0 unparsed calls each (jobs 16541638 qwen72-fp8, 16542095 olmo32). Rubric sha `5077a5be`.
 Pooled inter-judge agreement on the full set (no per-tag split computed, deliberately): relevance 0.73, task 0.55, **stance 0.40**, quality mean |Δ| 0.39/5.
 OLMo labels 634/1080 `refuses` vs Qwen 180 (WildGuard: ~220). At least one judge is far off on stance; the calibration set decides. Step 3 does not run until `compare_judges.py` has a verdict.
+
+### Step 4 — wrapper sensitivity, WildGuard labels only (2026-08-29 01:10, jobs 16541698/16541707/16541719, one L40S each; UNVERIFIED until the fresh-subagent check lands; judge-based attempt mass follows step 2)
+
+54 behaviors × 3 seeds per cell; rates are means of per-behavior seed proportions. Attempt proxy = not refusal and not empty/echo.
+
+| wrapper | tag | refusal % | non-resp % | harmful % | attempt % | harmful / attempt |
+|---|---|---|---|---|---|---|
+| W0 raw continuation | phoenix | 6.8 | 0.6 | 68.5 | 92.6 | .74 |
+| | starling | 9.9 | 0.0 | 65.4 | 90.1 | .73 |
+| W1 scaffold (production) | phoenix | 24.1 | 0.0 | 50.6 | 75.9 | .67 |
+| | starling | 11.7 | 0.0 | 76.5 | 88.3 | .87 |
+| W2 explicit instruction | phoenix | 34.6 | 0.0 | 46.3 | 65.4 | .71 |
+| | starling | 13.0 | 0.0 | 79.0 | 87.0 | .91 |
+| W3 benign few-shot | phoenix | 17.3 | 0.6 | 67.3 | 82.7 | .81 |
+| | starling | 8.0 | 0.0 | 80.9 | 92.0 | .88 |
+
+**Pre-registered IF signature (wrapper × checkpoint interaction on attempt): phoenix range 27.2pp vs starling range 5.0pp, difference +22.2pp [+9.9, +31.5]. Criterion (≥ +10pp, CI excl. 0) met.**
+
+Additional observations, not pre-registered:
+- Under raw continuation (no scaffold) phoenix and starling are indistinguishable on every column. The phoenix→starling gap exists only when a turn structure is imposed.
+- The explicit-instruction wrapper *raises* phoenix refusal (24 → 35%) and leaves starling flat (12 → 13%).
+- Benign format demonstrations move phoenix most of the way to starling: attempt 76 → 83 (starling 88–92), harmful/attempt .67 → .81 (starling .87–.91).
+- W1 seed 0 and seed 1 at phoenix reproduce the original L40S trajectory runs exactly (23/54, 33/54), as predicted for same GPU model + driver + flags.
+
+Caveats: three seeds per cell (the 08-27 run showed ±10pp seed spread at phoenix); WildGuard-only, so "attempt" here still conflates on-topic with off-topic compliance; W0's harmful label sits on prompt-plus-continuation text and is not comparable to scaffolded cells on that column. Raw: `docs/results/08-28_stage1/wrappers_wildguard.json`.
