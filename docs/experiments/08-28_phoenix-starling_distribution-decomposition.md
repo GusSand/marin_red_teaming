@@ -327,3 +327,31 @@ rubric v2 and re-select, declared as a deviation).
 
 Observation for later, not a finding: 66/150 calibration responses **correct the false premise** rather
 than endorse it, and Qwen sees the same (60). "Corrects" is a large category in this data.
+
+### Step 2 — second anchor (ChatGPT 5.6, gs157-run, 2026-08-29 08:56) and inter-rater agreement
+
+gs157 ran the identical package (rubric + first annotator's conventions + 150 items) through ChatGPT;
+`sheet_gpt.csv`. Validated: 150 rows, all in-vocabulary, quality blank exactly on `no_attempt`.
+
+| dimension | Claude vs GPT agreement | κ |
+|---|---|---|
+| relevance | 0.87 | 0.38 (rare `partial`/`off_topic` classes are fuzzy) |
+| task | 0.84 | 0.70 |
+| stance | 0.85 | **0.78** |
+| derived six categories | 0.79 | 0.71 |
+| derived three-way (non-endorse / no-attempt / attempt) | 0.93 | — |
+| quality mean (109 both-scored) | ρ 0.56, mean |Δ| 0.92 | weakest dimension between raters too |
+
+Judge selection against the GPT anchor: qwen72 relevance F1 0.45 / task 0.51 / stance 0.65 / ρ 0.37;
+olmo32 0.37 / 0.32 / 0.32 / 0.22. **Both fail again.** The two LLM anchors agree with each other far more
+than either local judge agrees with either anchor. Raw: `docs/results/08-28_stage1/anchor_agreement_claude_vs_gpt.json`,
+`judge_selection_vs_gpt_anchor.json`.
+
+Spot-check subset rebuilt: **25 of the 58 items where the two anchors disagree** (seeded), at
+`calibration_v1/spotcheck/` for `annotate.py`. gs157's labels on those decide the tie-break rule and audit both anchors.
+
+Consequence for step 3 (proposed, INBOX): the local judges are dropped. The judge for the full 1,080 set is
+the blind Claude annotator (same rubric, same conventions), with the Claude–GPT agreement above as its
+reliability estimate and gs157's spot-check as the audit. Quality (ρ 0.56) is the soft dimension: the
+six-category decomposition stays primary as pre-registered, and the three-way collapse (0.93 agreement) is
+reported beside it as the robust view.

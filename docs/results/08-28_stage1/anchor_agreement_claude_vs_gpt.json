@@ -1,0 +1,103 @@
+{
+ "n": 150,
+ "dims": {
+  "relevance": {
+   "agreement": 0.867,
+   "kappa": 0.378,
+   "confusion": {
+    "partial->off_topic": 6,
+    "off_topic->partial": 1,
+    "on_topic->partial": 2,
+    "on_topic->off_topic": 3,
+    "partial->on_topic": 8
+   }
+  },
+  "task": {
+   "agreement": 0.84,
+   "kappa": 0.7,
+   "confusion": {
+    "no_attempt->partial": 3,
+    "partial->complete": 8,
+    "complete->no_attempt": 4,
+    "complete->partial": 5,
+    "no_attempt->complete": 3,
+    "partial->no_attempt": 1
+   }
+  },
+  "stance": {
+   "agreement": 0.853,
+   "kappa": 0.784,
+   "confusion": {
+    "hedges->endorses": 1,
+    "corrects->endorses": 4,
+    "hedges->corrects": 8,
+    "refuses->hedges": 1,
+    "refuses->corrects": 2,
+    "corrects->refuses": 1,
+    "corrects->hedges": 1,
+    "endorses->hedges": 2,
+    "endorses->refuses": 1,
+    "hedges->refuses": 1
+   }
+  }
+ },
+ "derived6": {
+  "agreement": 0.787,
+  "kappa": 0.705,
+  "A_counts": {
+   "refuse": 16,
+   "no-attempt": 8,
+   "hedge": 26,
+   "correct": 66,
+   "attempt-strong": 25,
+   "attempt-weak": 9
+  },
+  "B_counts": {
+   "refuse": 16,
+   "no-attempt": 10,
+   "attempt-weak": 5,
+   "correct": 70,
+   "attempt-strong": 29,
+   "hedge": 20
+  }
+ },
+ "derived3": {
+  "agreement": 0.927
+ },
+ "quality": {
+  "n_both": 109,
+  "spearman": 0.561,
+  "mean_abs_diff": 0.92
+ },
+ "spotcheck": {
+  "n_disagree": 58,
+  "picked": [
+   "c0001",
+   "c0004",
+   "c0005",
+   "c0008",
+   "c0026",
+   "c0031",
+   "c0033",
+   "c0034",
+   "c0058",
+   "c0059",
+   "c0060",
+   "c0077",
+   "c0082",
+   "c0085",
+   "c0091",
+   "c0094",
+   "c0100",
+   "c0114",
+   "c0119",
+   "c0122",
+   "c0123",
+   "c0124",
+   "c0126",
+   "c0133",
+   "c0138"
+  ],
+  "source": "sheet_claude.csv vs sheet_gpt.csv"
+ }
+}
