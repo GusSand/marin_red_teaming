@@ -503,3 +503,38 @@ re-shard was for. What it does *not* protect:
 for a same-task continuation, and `stance` has no residual class for on-topic-produces-nothing. Both go
 into a rubric v2 proposal, which by the locked-rubric rule requires a new selection run. Not a step-3
 edit.
+
+#### Instance balance holds at the BEHAVIOR level, not just in aggregate — verified 2026-08-29 10:00
+
+Aggregate 135/135 balance per shard is not sufficient on its own. The pre-registered statistic is
+**behavior-level** — p̂[b,starling] − p̂[b,phoenix] — so what has to balance is the annotator mix
+*within each behavior*, on each side of the contrast. If behavior *b*'s Phoenix seeds leaned on one
+instance and its Starling seeds on another, instance bias would survive into the paired difference
+even with perfect aggregate balance.
+
+Checked directly against `key.json` and the shard assignment, all 54 behaviors:
+
+- **0 behaviors** have a different instance mix between their Phoenix and their Starling items.
+- Every behavior draws exactly **5 items from each of 2 instances, on both sides**: 27 behaviors use
+  instances {1,3}, 27 use {2,4}.
+
+So each behavior's paired difference is computed from the same two raters in the same 5+5 proportion
+on both arms, and instance bias cancels exactly at the level the statistic operates on. This is what
+licenses the analysis despite the between-instance variance being large.
+
+**How large.** Parts 1 and 4 are statistically equivalent shards (both 135 Phoenix + 135 Starling),
+labelled by two instances that resolved the rubric's gaps differently — part 1 applied Convention 1
+strictly and said so; part 4 reinterpreted it. Their marginal counts:
+
+| | no_attempt | complete | partial | refuses | endorses | corrects | hedges |
+|---|---|---|---|---|---|---|---|
+| part 1 | 50 | 185 | 35 | 19 | 131 | 71 | 49 |
+| part 4 | 76 | 161 | 33 | 34 | 120 | 75 | 41 |
+
+`no_attempt` differs by 26 items (**9.6pp**) and `refuses` by 15 (**5.6pp**) between raters on
+equivalent data. That is the same order as the ~12pp effect under study. Two consequences, both
+already implied by the rules fixed above but worth stating with the numbers attached:
+
+1. **No absolute category mass from this annotation is a property of the models.** Only differences are.
+2. The behavior bootstrap resamples behaviors carrying two disjoint rater-pair regimes ({1,3} and
+   {2,4}), so this variance lands **inside** the CI rather than beside it. Correct, and conservative.
