@@ -265,3 +265,29 @@ Additional observations, not pre-registered:
 - W1 seed 0 and seed 1 at phoenix reproduce the original L40S trajectory runs exactly (23/54, 33/54), as predicted for same GPU model + driver + flags.
 
 Caveats: three seeds per cell (the 08-27 run showed ±10pp seed spread at phoenix); WildGuard-only, so "attempt" here still conflates on-topic with off-topic compliance; W0's harmful label sits on prompt-plus-continuation text and is not comparable to scaffolded cells on that column. Raw: `docs/results/08-28_stage1/wrappers_wildguard.json`.
+
+#### CORRECTION to step 4 (2026-08-29 01:20, from the verifier's data check) — pre-registered criterion NOT met
+
+The verifier reproduced every number above exactly, then flagged that **W0 raw carries 13–21 null WildGuard
+labels per file** in seeds 0–1 (phoenix 19/15/1, starling 21/13/0). Those rows are 1–2-character outputs:
+the model produced nothing usable and the judge returned no label. My attempt proxy counted a null as an
+attempt. Corrected treatment: null label = non-response.
+
+| wrapper | tag | non-resp % | attempt % (corrected) |
+|---|---|---|---|
+| W0 raw | phoenix | 21.6 | 71.6 |
+| | starling | 21.0 | 69.1 |
+| W1–W3 | both | ≤ 0.6 | unchanged from the table above |
+
+**Pre-registered interaction (all four wrappers): −5.6pp [−17.9, +8.6]. Criterion (≥ +10pp, CI excl. 0) NOT met.**
+Starling's range now spans W0 (69.1) to W3 (92.0), so both checkpoints are wrapper-sensitive once the
+raw-continuation cell is scored correctly.
+
+Exploratory, post hoc, not pre-registered: scaffolded wrappers only (W1–W3), phoenix range 17.3pp vs
+starling 5.0pp, **+12.3pp [0.0, +22.8]** — the CI touches zero. Recorded as suggestive only.
+
+What survives the correction: under raw continuation the two checkpoints are indistinguishable
+(refusal 6.8 vs 9.9, harmful 68.5 vs 65.4, non-response 21.6 vs 21.0); the explicit-instruction wrapper
+raises phoenix refusal to 34.6% and leaves starling at 13.0%; benign few-shot moves phoenix's
+harmful/attempt from .67 to .81. These are cell-level observations with three seeds, not a tested claim.
+`analyze_wrappers.py` now treats null labels as non-response and reports both statistics.
