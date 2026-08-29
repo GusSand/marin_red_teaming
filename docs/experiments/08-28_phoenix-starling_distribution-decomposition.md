@@ -355,3 +355,29 @@ the blind Claude annotator (same rubric, same conventions), with the Claude–GP
 reliability estimate and gs157's spot-check as the audit. Quality (ρ 0.56) is the soft dimension: the
 six-category decomposition stays primary as pre-registered, and the three-way collapse (0.93 agreement) is
 reported beside it as the robust view.
+
+#### DESIGN ERROR in the first full-set annotation pass (found 2026-08-29 09:26, before any decomposition was computed)
+
+I split the 1,080 items among four annotator instances **by line range**. The export is ordered by run, so
+the split was: parts 1–2 = **all 540 Phoenix items**, parts 3–4 = **all 540 Starling items**. Verified
+against `key.json`: {part1: phoenix 270, part2: phoenix 270, part3: starling 270, part4: starling 270}.
+
+Item-level blinding held — no annotator was told or could see which checkpoint an item came from — but
+**annotator instance was perfectly confounded with checkpoint**. Any systematic difference in how one
+instance applies the rubric becomes an apparent Phoenix→Starling effect. The pass-1 counts differ sharply
+across that boundary (`no_attempt` 92 and ? for the Phoenix halves vs 23 and 31 for the Starling halves),
+and this design cannot say whether that is the model or the rater.
+
+**No decomposition was computed from pass 1.** Labels are kept, unmodified, at
+`full_phoenix_starling_v1/claude_parts_pass1_confounded/`.
+
+**Fix:** re-shard by interleaving (`index % 4`), giving every annotator exactly **135 Phoenix + 135
+Starling** — verified. Shards at `full_phoenix_starling_v1/shards_v2/`, labels to `claude_parts_v2/`.
+Annotator effects are now balanced across the contrast and cancel in the paired difference.
+
+**Bonus from the mistake:** every item is now labelled twice by independent instances under different
+shardings. Pass 1 vs pass 2 agreement is a full test–retest reliability estimate on all 1,080 items, which
+is stronger than the 150-item calibration estimate. It will be reported with the step-3 result.
+
+Standing rule added for this project: **any partition of items across raters, judges, or jobs must be
+checked for balance on the contrast of interest before the work is done, not after.**
