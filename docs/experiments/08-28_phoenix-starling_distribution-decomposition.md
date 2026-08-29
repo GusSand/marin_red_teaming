@@ -203,3 +203,5 @@ three sub-2h jobs plus judging. Step 5: 6 runs. Step 6: baseline 4 tags × 10 se
 | 2026-08-28 23:48 | 2 calibration set | — | login (CPU, seconds) | 150 items → `marin-misinfo-labels/calibration_v1/`; INBOX asks gs157 to annotate |
 | 2026-08-29 00:05 | 2/3 judges | see below | h200_tandon | qwen72 (fp8) and olmo32 on calibration + full set, one job each, est. <1h |
 | 2026-08-28 23:55 | 4 wrappers | 16541569 / 16541576 / 16541617 | h200_tandon | one seed per job, 8 runs each, est. ~50 min each |
+| 2026-08-29 00:20 | 1, 4 resubmitted | 16541668 (ifeval), 16541698/16541707/16541719 (wrap s0/s1/s2) | h200_tandon,h200_public,l40s_public | h200_tandon had 146 pending; original jobs cancelled unstarted. Multi-partition submission. Every comparison in these steps is **within one job on one GPU**, so the GPU model is a nuisance factor recorded in provenance, not a confound. IFEval + wrap s0 started on L40S (gl005, gl004) at once. |
+| 2026-08-29 00:05 | 2/3 judges | 16541638 (qwen72), 16541645 (olmo32) | h200_tandon | stay on H200 (72B fp8 / 32B bf16 need it) |
