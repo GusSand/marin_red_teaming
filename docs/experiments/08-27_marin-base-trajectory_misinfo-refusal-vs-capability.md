@@ -561,6 +561,38 @@ from "on-topic but weakly written", so the +11pp in harmful|non-refusal is the S
 them needs the relevance / gradable-benign-task instrument, which is therefore still required for the
 cooldown claim, not only for the early tags.
 
+## Post-hoc: a natural experiment in Marin's own cooldown mixtures (2026-08-28, exploratory, NOT pre-registered)
+
+Prompted by gs157's causal bet: *structured/instruction-like data explains much of the refusal drop; structured
+expository data plus the deep cooldown explains the more polished harmful answers.* Marin's public retro
+(`docs/reports/marin-8b-retro.md` in marin-community/marin) gives the exact mixtures, which turns the six tags into
+a crude natural experiment:
+
+| phase | data change | refusal % | harmful\|non-ref % |
+|---|---|---|---|
+| ocelot | DCLM web | 19.1 | 74.1 |
+| **jellyfish** = cooldown 1 | 70% Dolmino DCLM-HQ + 30% expository HQ (peS2o, arXiv, StackExchange, wiki, FineMath). **FLAN deliberately excluded** ("suspicious of its repetitive templating"); synthetic math excluded | 22.8 (**up**) | 83.9 (**up**) |
+| phoenix | 6.3T of Nemotron-CC web, reheated | 26.5 (up) | 70.3 (**down**) |
+| **starling** = cooldown 2 | 70% Nemotron-CC + 30% HQ: same expository sources (now markdownified Wikipedia/StackExchange/arXiv) **plus Dolmino FLAN 3.0% at 10x, Dolmino Math (GSM8K, MetaMath, Tulu Math, SynthMath) 0.8% at 10x, Datashop Science QA** | 14.3 (**down 12pp**) | 86.2 (up) |
+| deeper-starling | 0.3T "dessert" at fixed LR 1.7e-5 | 11.9 | 83.7 |
+
+Reading (mine, exploratory): the two halves DISSOCIATE across the two cooldowns.
+- **Polish (harmful|non-refusal) rises in BOTH cooldowns** (74→84, 70→86) and falls back in the web phase. It tracks
+  expository HQ data, present in both. The **"deep cooldown" adds nothing**: deeper-starling is flat on every series.
+- **Refusal drops ONLY in the cooldown that contains instruction-formatted data** (FLAN 10x, Tulu/GSM8K math, Science
+  QA). The FLAN-free cooldown moved refusal UP. That is consistent with the first half of the bet, with the
+  instruction-shaped sources named. Confound: cooldown 2 sits on a different base state (after 6.3T web).
+- Refusal drop is larger on imperative "write an article / make a claim" prompts (25→11) than on contextual edit
+  prompts (28→17); n=27 each, weak but in the expected direction.
+- Truncation is 0% everywhere, so length effects are not max-token artifacts. Assistant-style refusal phrasing
+  ("As an AI…") is 10–19% of base-model refusals at every tag, so Phoenix's refusals are mostly hedges/declines in
+  character, not ChatGPT-contamination refusals; the contamination-dilution alternative is not obviously supported.
+
+Implication for the ablation: the natural unit to ablate is FORMAT, not source. Arms: (i) instruction-formatted
+subset out (FLAN + Dolmino Math + Science QA, ~3.9% of tokens, 10x oversampled), (ii) expository markdown subset
+out, (iii) both, plus the matched-volume and LR-schedule controls already designed. Prediction from the bet: (i)
+restores refusal without touching polish; (ii) reduces polish without restoring refusal.
+
 ## Results (raw log)
 
 (empty; fill after the run)
