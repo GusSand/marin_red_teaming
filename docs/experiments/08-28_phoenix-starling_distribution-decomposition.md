@@ -436,3 +436,30 @@ restricted to a rubric-defined subset, never as independent rubric evidence.
 
 `quality_given_both_attempt_ge7of10` was empty under random labels (n=0), as expected; it should
 populate with real ones.
+
+#### How the test–retest feeds the step-3 readout — fixed 2026-08-29 10:35, before any pass-2 label was read
+
+The pass-1 vs pass-2 comparison is a reliability *diagnostic*, not a second estimate. Pre-registering
+what it can and cannot do, now, so it is not over-read afterwards:
+
+**What it supports.** Item-level agreement between the two passes is a legitimate inter-instance
+reliability estimate: each item carries one pass-1 label and one pass-2 label from instances that never
+saw each other's work. This is the headline number to report beside the decomposition, on 810 items.
+
+**What it does not support, and why.** Pass 1 was the confounded design — its Phoenix labels come from
+one instance, its Starling labels from two others. Two consequences:
+
+1. The **per-checkpoint reliability breakdown** is confounded with instance identity. "Reliability is
+   lower on Phoenix" and "that one instance was noisier" are not separable. Report the breakdown, but
+   never as a statement about the checkpoints.
+2. A **sign disagreement between the two passes' pooled category deltas** conflates rater noise with
+   the pass-1 design error, which is a known contaminant of pass 1's deltas specifically. It can
+   therefore flag a category as unstable but **cannot certify any category as stable**.
+
+**Pre-registered rule.** A category whose pooled mass delta has **opposite signs in the two passes** is
+reported as `rater-unstable` and **may not carry a pre-registered reading** (IF signature, EXP
+signature, soft-refusal note), whatever its pass-2 CI says. The converse does not hold: sign agreement
+buys nothing, for the reason in (2). The rule is one-directional on purpose.
+
+**Pass 2 alone is the estimate.** Every number in the step-3 result comes from pass-2 labels only. Pass 1
+never enters the decomposition — it is quarantined and stays quarantined.
