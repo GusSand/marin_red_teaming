@@ -683,3 +683,48 @@ full-set labels, since the calibration 150 sit inside the 1,080. Both now stated
 
 **Not verified.** This is a sensitivity analysis on existing labels via an existing script, not a new
 finding, so no fresh-subagent reproduction was run. The step-3 result it supports was verified on 08-29.
+
+---
+
+## 2026-08-31 · Stage 1 step 3e — out-of-sample GPT rater check on the step-3 labels
+
+**Research question.** The step-3 decomposition rests on one rater (blind Claude Fable 5, pass 2). Are
+those labels rater-specific? Prior evidence covered self-consistency and Δ-replication, but had no
+out-of-sample, convention-matched second frontier rater.
+
+**Method.** 150 items drawn from the 930 full-set items the calibration 150 never touched, 75/75 by arm,
+seed 20260831, re-cid'd `g####` to block the run-ordered-id arm leak. Conventions from
+`config/annotator_conventions_v1.md` in full, including convention 1, so the rater operates under the
+same rules as the pass-2 labels it is compared against. Labelled by gs157 in ChatGPT. Sheet md5
+`790ab77f1b2008a571bec840ff8a293c`; `shard_tool.py check` passed 150/150 with no missing quality cells.
+Compared with `compare_anchors.py`. Criteria pre-registered before any label existed:
+`docs/experiments/08-31_gpt_out-of-sample_rater-check.md`.
+
+**Results.** Stance κ 0.705, agreement 0.800. Six-category agreement 0.733, κ 0.655. Three-way
+agreement 0.867. Per-class `correct`: F1 0.864 (Claude 37, GPT 44, both 35). Per-class `hedge`: F1 0.449.
+Other categories: attempt-strong 0.820, refuse 0.710, attempt-weak 0.625, no-attempt 0.609. Quality
+Spearman ρ 0.495, mean |Δ| 0.84, n=98. Largest confusions: task `complete->partial` 16; stance
+`endorses->hedges` 8, `hedges->corrects` 6, `refuses->hedges` 6, `hedges->endorses` 5. Recomputed on the
+calibration 150 (different convention, in-sample): stance κ 0.784, six-category 0.787, three-way 0.927.
+
+**Verdict against the pre-registered rule: MODERATE.** `supports` required all three thresholds; stance κ
+cleared 0.70, six-category (0.733 vs 0.75) and three-way (0.867 vs 0.90) did not. Nothing approached the
+`undermines` floor. Consequence as written: the step-3 verdict stands unchanged, the rater-dependence
+caveat is strengthened and quoted with these numbers. The secondary criterion (`corrects` ≥ 0.70) is met.
+
+**Interpretation (mine).** The categories step 3 turns on are the ones the two raters agree about —
+`correct` is the single best-agreed category. What they do not agree about is `hedge`, and specifically
+the endorse/hedge and refuse/hedge boundaries: GPT reads 9 of Claude's 20 refusals as something softer.
+The three-way collapse at 0.867 is the number closest to the +28.5pp headline and the one that missed by
+the most, so it should travel with that figure. Agreement is lower out-of-sample than on the calibration
+150 despite conventions now matching, but in-sample/out-of-sample, the convention, and class composition
+(`correct` 44% there vs 25% here) all differ at once, and κ depends on the marginals — the design cannot
+separate them. Not a second estimate of +28.5pp; 1.4 items per behavior per arm cannot carry the
+behavior-level bootstrap.
+
+**Verification.** Headline numbers recomputed on an independent path — sheets parsed from scratch, κ from
+sklearn `cohen_kappa_score` rather than the hand-rolled estimator, six-category rule re-derived rather
+than imported. All five matched exactly (`scripts/verify_gpt_rater_check.py`). `compare_anchors.py` was
+patched additively (`per_class`, `--no-write`); the freeze holds — it still reproduces every field of the
+recorded `calibration_v1/anchor_agreement.json` exactly. The fresh-subagent reproduction was not run this
+session.

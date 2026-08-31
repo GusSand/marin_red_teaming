@@ -1,6 +1,15 @@
 # INBOX — things needing gs157 (newest on top). Append `→ answer:` inline when you reply.
 
-- **[2026-08-31 10:42] GPT slice ready to run — two files, ~150 items.** Upload
+- **[2026-08-31 11:15] GPT slice DONE — verdict MODERATE, nothing changes.** Your sheet validated 150/150.
+  stance κ **0.705** (bar 0.70, cleared), six-category **0.733** (bar 0.75, missed), three-way **0.867**
+  (bar 0.90, missed). Pre-registered consequence: step-3 verdict **stands as written**, caveat
+  strengthened and quoted with those numbers. Good news underneath: `corrects` is the best-agreed
+  category (F1 0.864), so the "correct is real and large" reading holds. The two of you disagree about
+  `hedge` (F1 0.449) — GPT reads 9 of Claude's 20 refusals as softer. **One thing to carry:** quote the
+  three-way 0.867 whenever +28.5pp leaves this repo; it is the collapse closest to the headline and the
+  one that missed by the most. No action needed.
+
+- **[2026-08-31 10:42] GPT slice ready to run — two files, ~150 items.** → answer: DONE 2026-08-31 11:15, see top. Upload
   `PROMPT.md` + `items.jsonl` from `/scratch/gs157/marin-misinfo-labels/gpt_slice_v1/upload/` (also
   mirrored locally in this session's scratchpad). Ask for one CSV, exact header, 150 rows, then drop it at
   `gpt_slice_v1/sheet_gpt.csv` and I'll validate and compare. Differs from Friday's run in two ways:
@@ -27,7 +36,7 @@
   `repro-olmo3-safety/.venv-safety-eval/` and `repro-olmo3-safety/safety-eval/`, which is what the sbatch
   files already use. Corrected in place with a dated note.
 
-- **STALE — please triage.** Four items below are waiting on you: the 25-item spot-check (09:05), the
+- **STALE — please triage.** Three items below are waiting on you (the GPT slice came back 08-31): the 25-item spot-check (09:05), the
   judge-selection decision (08:40, which I have provisionally acted on per my own recommendation), the
   two Stage 2 questions for David (08-28), and the HF gate immediately below. Nothing is idle — step 3
   annotation is running and other work is proceeding — but the spot-check is the audit for the whole

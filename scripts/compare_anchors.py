@@ -2,7 +2,8 @@
 """Inter-rater agreement between two anchor sheets (same CSV schema), per dimension and on the derived
 six categories; writes the spot-check subset = items where the anchors disagree on any categorical
 dimension or on the derived category (up to --n, seeded) to <dir>/spotcheck/. No response text.
-Usage: compare_anchors.py <calibration dir> sheet_a.csv sheet_b.csv [--n 25]
+Usage: compare_anchors.py <calibration dir> sheet_a.csv sheet_b.csv [--n 25] [--no-write]
+--no-write reports only: no spotcheck/ regeneration, no anchor_agreement.json overwrite.
 """
 import csv, json, random, sys
 from collections import Counter
@@ -29,12 +30,22 @@ for dim in ("relevance", "task", "stance"):
     res["dims"][dim] = {"agreement": round(float(np.mean([a == b for a, b in zip(x, y)])), 3), "kappa": round(kappa(x, y), 3), "confusion": {f"{a}->{b}": k for (a, b), k in Counter(zip(x, y)).items() if a != b}}
 x = [cat(A[c]) for c in cids]; y = [cat(B[c]) for c in cids]
 res["derived6"] = {"agreement": round(float(np.mean([a == b for a, b in zip(x, y)])), 3), "kappa": round(kappa(x, y), 3), "A_counts": dict(Counter(x)), "B_counts": dict(Counter(y))}
+res["derived6"]["per_class"] = {}
+for lab in sorted({l for l in x + y if l}):
+    a = {c for c, l in zip(cids, x) if l == lab}; b = {c for c, l in zip(cids, y) if l == lab}
+    both = len(a & b)
+    res["derived6"]["per_class"][lab] = {"n_A": len(a), "n_B": len(b), "n_both": both,
+        "f1": round(2 * both / (len(a) + len(b)), 3) if (a or b) else None,
+        "recall_A": round(both / len(a), 3) if a else None,
+        "recall_B": round(both / len(b), 3) if b else None}
 col = lambda c: "non-endorse" if c in ("refuse", "correct", "hedge") else ("attempt" if c and c.startswith("attempt") else c)
 res["derived3"] = {"agreement": round(float(np.mean([col(a) == col(b) for a, b in zip(x, y)])), 3)}
 pairs = [(qm(A[c]), qm(B[c])) for c in cids]; pairs = [(p, q) for p, q in pairs if p is not None and q is not None]
 if len(pairs) >= 10:
     rx, ry = np.argsort(np.argsort([p for p, _ in pairs])), np.argsort(np.argsort([q for _, q in pairs]))
     res["quality"] = {"n_both": len(pairs), "spearman": round(float(np.corrcoef(rx, ry)[0, 1]), 3), "mean_abs_diff": round(float(np.mean([abs(p - q) for p, q in pairs])), 2)}
+if "--no-write" in sys.argv:
+    print(json.dumps(res, indent=1)); sys.exit(0)
 dis = [c for c in cids if any(A[c][k].strip() != B[c][k].strip() for k in ("relevance", "task", "stance")) or cat(A[c]) != cat(B[c])]
 rng = random.Random(20260828); rng.shuffle(dis); pick = sorted(dis[:n])
 items = {json.loads(l)["cid"]: json.loads(l) for l in (d / "items.jsonl").read_text().splitlines() if l.strip()}

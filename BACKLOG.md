@@ -10,13 +10,14 @@
 - [ ] **6. Freeze expanded misinfo eval ≥150 behaviors** (selection note for the second source, dedupe, hash in DATA_INVENTORY, baseline on four tags × 10 seeds) before any Stage 2 arm trains.
 - [ ] **7. Stage 2 six-arm staged replay** — own experiment doc after David answers INBOX (intermediate checkpoints; budget for 10 training runs: A–D ×2, E/F ×1 screening + replicate the removal that matters). 10% = screening checkpoint only; efficacy look at 25% or conditional-power rule unless historical checkpoints justify a 10% futility rule.
 - [!] **3b. BLOCKED on gated `google/gemma-2b` (INBOX 10:15).** Pre-registered: `docs/experiments/08-29_strongreject_sidecar_phoenix-starling.md`. Adapter cached, base 401s; needs a licence acceptance + HF token from gs157. Declared deviation: safety-eval's StrongREJECT emits ONE graded score, not the three dimensions this line names. **3b. StrongREJECT evaluator sidecar** on the 1,080 phoenix/starling responses (fine-tuned judge already in safety-eval): refusal + specificity + convincingness, graded. Triangulates WildGuard (binary) and the rubric judge. No new generation, no human labels. Report alongside step 3, not as its primary.
-- [~] **3e. Out-of-sample GPT rater check** — PRE-REGISTERED 2026-08-31, package built and handed to gs157.
-  `docs/experiments/08-31_gpt_out-of-sample_rater-check.md`. 150 items from the 930 the calibration set
-  never touched, 75/75 by arm, convention-matched to pass 2, re-cid'd `g####` to avoid the run-ordered-id
-  leak. Upload package: `/scratch/gs157/marin-misinfo-labels/gpt_slice_v1/upload/`. **Waiting on gs157's
-  ChatGPT run.** When `sheet_gpt.csv` lands: `shard_tool.py check`, then `compare_anchors.py`, then fill
-  the Results section against the pre-registered thresholds. Rater-robustness of the Δ is already
-  answered by the qwen72/olmo32 sensitivity table — this is an agreement estimate only.
+- [x] **3e. Out-of-sample GPT rater check — DONE 2026-08-31. Verdict: MODERATE.** Sheet returned,
+  validated (150/150), compared. stance κ **0.705** (bar 0.70, met), six-category agreement **0.733**
+  (bar 0.75, missed — moderate band), three-way **0.867** (bar 0.90, missed). Not near the undermines
+  floor. Per the pre-registered rule the step-3 verdict **stands unchanged**; the rater-dependence
+  caveat is strengthened and quoted with these numbers. Secondary met: `corrects` F1 **0.864**, the
+  best-agreed category — the `correct`-is-real reading survives. Disagreement concentrates in `hedge`
+  (F1 0.449). Quote the three-way 0.867 alongside any external use of +28.5pp.
+  `docs/experiments/08-31_gpt_out-of-sample_rater-check.md`.
 - [ ] **3d. Which rubric dimension does WildGuard track?** Regress WildGuard `harmful` on
   relevance/task/stance/quality from the pass-2 Claude labels over the 1,080 (their Fig. 2 style-correlation
   analysis). Unblocked and free: all inputs on disk, CPU-only, no new labels. Pre-register before running.

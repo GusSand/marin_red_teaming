@@ -130,3 +130,20 @@ to local `repro-olmo3-safety/runs/` before the remote is shut down (fresh-instan
   deltas (a category whose sign flips between passes is not safely measurable with this rater).
   Verified by an identity self-check: pass 1 against itself gives 1.000 on every dimension.
   `python scripts/retest_agreement.py --pass1 <dir> --pass2 <dir> --key key.json --out <file.json>`
+
+### 2026-08-31 additions (Stage 1 step 3e — out-of-sample GPT rater check)
+
+- `verify_gpt_rater_check.py` — independent recomputation of the 08-31 rater-check headline numbers.
+  Parses the two sheets from scratch, takes kappa from sklearn's `cohen_kappa_score` instead of the
+  hand-rolled estimator, and re-derives the six-category rule from the rubric rather than importing
+  it. Deliberately shares no code with `compare_anchors.py` — rerunning that script would only
+  reproduce its own bugs. Run in the safety-eval venv:
+  `python scripts/verify_gpt_rater_check.py $LABELS/gpt_slice_v1`
+- `compare_anchors.py` gained two **additive** fields/flags on 2026-08-31: `derived6.per_class`
+  (n_A / n_B / n_both / F1 / both recalls per category, for the pre-registered per-class criterion)
+  and `--no-write`, which reports without regenerating `spotcheck/` or overwriting
+  `anchor_agreement.json`. `--no-write` exists because recomputing on `calibration_v1` would
+  otherwise clobber the 25-item spot-check subset gs157 has not yet run. The freeze noted above is
+  intact: rerunning it on `calibration_v1` reproduces every field of the recorded
+  `anchor_agreement.json` exactly (stance 0.853/0.784, task 0.84/0.700, relevance 0.867/0.378,
+  derived6 0.787/0.705, derived3 0.927, quality n=109 rho=0.561).

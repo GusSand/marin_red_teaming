@@ -1,10 +1,8 @@
 # CLAUDE.md — 
 
-<!-- Fill in the one-liner: what this project studies and the primary model(s). -->
-**Project:** WE are doing some Red Teaming on open models. 
+**Project:** WE are doing some Red Teaming on open models.
 
-Primary model: `marin-community/marin-8b-base` 
-Repo branch: 
+Primary model: `marin-community/marin-8b-base`
 
 This file is the entry point. Detailed docs live in `docs/`. Keep this file short.
 
@@ -74,34 +72,6 @@ One persona used to check the other's work. Keep that check — separate the *do
   - Split? ~20% held-out test, or k-fold. Never trained on eval data.
 
 Limitation: a subagent shares some of your blind spots, so this is weaker than a truly independent reviewer. Its job is to decide what's solid enough to auto-log vs. what gets escalated to me — I'm still the final check on flagged items.
-
----
-
-## Compute boundary — local GPU (Slurm deferred)
-
-**Slurm is not in use for now (2026-07-07).** All compute runs on the local GPU:
-one **NVIDIA A100 80GB**. Run training/inference as background processes
-(`nohup python … > logs/… 2>&1 &`), poll with `ps`/log tails, never inline in the
-session. Re-enable the Slurm workflow below if/when we move to the cluster.
-
-Model training and inference run on the GPU, not inline in your session.
-
-**You may do yourself:**
-- Edit code, write/modify run scripts.
-- Launch background jobs on the local A100, poll status (`ps`, `nvidia-smi`), read
-  job logs, summarize outcomes. (Slurm `sbatch`/`squeue`/`sacct` — deferred.)
-- Run small, fast local checks (data shape, tokenizer sanity, a few-step smoke test) that finish in seconds.
-
-**Never do unattended:**
-- Interactive `srun` / anything that blocks waiting on a terminal — it hangs you. Batch only.
-- Delete checkpoints, datasets, or logs. Change access/sharing.
-- Anything under "Research integrity" above.
-
-**Log discipline (so I can reconstruct the night):**
-- Every job writes to a known path: `logs/<jobid>_<short-name>.log`.
-- Every job gets one line in the journal: jobid, config file, partition, status, key metric or error.
-- Compute: **NYU Torch** as of 2026-08-27. See the Compute section below. The old
-  paperspace A100 80GB is gone; anything that still hardcodes `/home/paperspace` is broken.
 
 ---
 
@@ -186,12 +156,19 @@ Rules that follow:
 - **Token-exact equality is the harshest test and the least informative alone.** Always compare
   labels and the reported rate alongside it.
 
+### Log discipline (so I can reconstruct the night)
+
+- Every job writes to a known path: `logs/<jobid>_<short-name>.log`.
+- Every job gets one line in the journal: jobid, config file, partition, status, key metric or error.
+
 ### Never-dos on Torch
 
 - No compute on login nodes. sbatch only, and never interactive `srun`: it blocks and hangs you.
 - Never edit files directly on Torch. **This repo is the source of truth**; rsync up.
 - Do not attempt ssh auth yourself. The Duo flow is Gus-only.
 - Large transfers go through `torch-dtn`, not the login node.
+- Never delete checkpoints, datasets, or logs. Never change access/sharing.
+- Never do anything under "Research integrity" above unattended.
 
 ---
 
@@ -209,9 +186,8 @@ Rules that follow:
 
 When a task needs prior-work or novelty checking — does this exist, who's done it, is my angle actually new — do a real source-grounded pass, not a guess from memory.
 
-- **Tool:** `paperclip` (local CLI) for lit review.
-  <!-- Fill in the exact invocation once, so you don't reason it out each time: -->
-  - Invocation: `TODO` (e.g. `paperclip <subcommand> "query"`)
+- **Tool:** `paperclip` — MCP server (`mcp__paperclip__paperclip`), configured at user scope.
+  Run `paperclip skill` first to load its docs, per the server's own instructions.
 - **Output goes to `outputs/`, never into the memory files.** Anything citable → `refs.bib` (or the relevant experiment file). Findings are reference material, not project state.
 - **Isolation (non-negotiable):** run `paperclip` — or any external research agent — from a throwaway working dir with no write access to the repo root. It must never be able to touch `BACKLOG.md`, `INBOX.md`, or the journal. If a research run and the memory files ever end up in the same writable space, that's the bug that lets a hallucinating subagent overwrite your state.
 
