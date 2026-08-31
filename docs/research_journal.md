@@ -641,3 +641,45 @@ post-treatment variable. Design is behavior-paired, not seed-paired. Sign agreem
 certifies nothing, since pass 1 carries the annotator×checkpoint confound. A permutation-p implementation
 difference on the three null rows (ours the more conservative) is logged, changes no verdict, and is
 queued as a script follow-up.
+
+## 2026-08-31 — Step 3 rater-robustness: the decomposition direction replicates under all three raters
+
+**Research question.** The step-3 labels come from one rater (blind Claude Fable 5, pass 2). Are they
+rater-specific? Raised by gs157, who asked why there was no GPT file on the full set.
+
+**Method.** No new generation, no new labels. (a) Checked whether the calibration 150 overlap the 1,080
+by exact request+response match. (b) Re-ran `decompose_distribution.py` unchanged — same key, same
+bootstrap seed 20260828, `--judge` swapped — on `qwen72.jsonl` and `olmo32.jsonl`, which already
+labelled all 1,080 during judge selection and both failed it.
+
+**Results (no interpretation).** Overlap: 150/150 calibration items are inside the 1,080, including all
+25 spot-check items (14 phoenix, 11 starling).
+
+| Δ pp, phoenix→starling | Claude (primary) | qwen72 | olmo32 |
+|---|---|---|---|
+| refuse | −12.2 | −16.3 | −8.9 |
+| correct | −12.2 | −8.5 | −9.1 |
+| hedge | −3.1 n.s. | −6.1 | +10.4 |
+| no-attempt | −1.5 n.s. | −0.9 n.s. | −0.4 n.s. |
+| attempt-weak | +0.6 n.s. | +2.6 | +0.0 |
+| attempt-strong | +28.5 [+22.2, +34.6] | +29.3 [+23.9, +34.3] | +8.0 [+5.0, +11.3] |
+| quality given attempt | +0.12 p=0.198 | −0.03 p=0.602 | −0.05 p=0.631 |
+
+olmo32 assigns 63.1% of phoenix to `refuse` against Claude's 18.0%. Raw:
+`docs/results/08-28_stage1/judge_sensitivity/`.
+
+**Interpretation (mine).** Sign and significance on refuse / correct / attempt-strong hold under all
+three raters, so the effect is not an artefact of the Claude annotator. qwen72 lands at +29.3 against
+Claude's +28.5 despite failing selection on macro-F1 — selection failure was driven by ~0 recall on the
+`partial` classes, which the six-category ladder mostly does not use. `quality_given_attempt` is flat or
+negative under every rater, making "not a capability shift" the most rater-robust half of the claim.
+olmo32 disagrees on `hedge` (+10.4 vs −3.1 / −6.1); its stance column is the one that failed hardest in
+selection, and I am not explaining the disagreement away.
+
+**Corrections to how step 3 was previously written up, no numbers affected.** (1) The test–retest figures
+are same-rater self-consistency and were phrased in a way that could be read as inter-rater; they bound
+rater noise, not rater bias. (2) The step-2 Claude-vs-GPT agreement is an in-sample estimate for the
+full-set labels, since the calibration 150 sit inside the 1,080. Both now stated in the experiment doc.
+
+**Not verified.** This is a sensitivity analysis on existing labels via an existing script, not a new
+finding, so no fresh-subagent reproduction was run. The step-3 result it supports was verified on 08-29.

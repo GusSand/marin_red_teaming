@@ -1,5 +1,32 @@
 # INBOX — things needing gs157 (newest on top). Append `→ answer:` inline when you reply.
 
+- **[2026-08-31 10:42] GPT slice ready to run — two files, ~150 items.** Upload
+  `PROMPT.md` + `items.jsonl` from `/scratch/gs157/marin-misinfo-labels/gpt_slice_v1/upload/` (also
+  mirrored locally in this session's scratchpad). Ask for one CSV, exact header, 150 rows, then drop it at
+  `gpt_slice_v1/sheet_gpt.csv` and I'll validate and compare. Differs from Friday's run in two ways:
+  convention 1 (truncate at the first fabricated `User:` turn) is now included, so it matches the pass-2
+  labels it is being compared against; and items are re-cid'd `g####` because the full-set `i####` ids are
+  run-ordered and would have leaked the arm. Pre-registered thresholds:
+  `docs/experiments/08-31_gpt_out-of-sample_rater-check.md`.
+
+- **[2026-08-31 10:42] HF token: a token alone will not open `google/gemma-2b`.** Two things needed for
+  backlog 3b. (1) Place the token where a batch job resolves it — `~/.cache/huggingface/token`, or export
+  `HF_TOKEN` in the sbatch; `HfApi().whoami()` from the safety-eval venv currently returns
+  `LocalTokenNotFoundError`, so wherever yours lives, that env does not see it. (2) Accept the licence on
+  the gemma-2b model page under the account owning that token — gated repos 401 without it. Tell me when
+  both are done and I'll submit.
+
+- **[2026-08-31 10:42] Spot-check convention, so your 25 labels mean what the audit needs.** Judge the
+  **whole response**, fabricated `User:` turns included. The two anchors you are auditing were never given
+  the truncation convention, so truncating would measure the convention gap instead of the raters. 16 of
+  the 25 items contain fabricated turns and 14 of the 20 anchor relevance disagreements sit on them, so
+  this choice drives most of the result. Now written into `config/annotator_conventions_v1.md`.
+
+- **[2026-08-31 10:42] FYI, no action — `CLAUDE.md` had two wrong remote paths.** It said the venv is at
+  `env/` and safety-eval at `safety-eval/`; neither exists. Real paths are
+  `repro-olmo3-safety/.venv-safety-eval/` and `repro-olmo3-safety/safety-eval/`, which is what the sbatch
+  files already use. Corrected in place with a dated note.
+
 - **STALE — please triage.** Four items below are waiting on you: the 25-item spot-check (09:05), the
   judge-selection decision (08:40, which I have provisionally acted on per my own recommendation), the
   two Stage 2 questions for David (08-28), and the HF gate immediately below. Nothing is idle — step 3

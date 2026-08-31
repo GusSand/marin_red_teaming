@@ -128,8 +128,10 @@ are fallbacks when tandon stalls, not defaults. QoS=normal, walltime cap 48h.
 before submitting.
 
 **Remote workspace**: `/scratch/gs157/marin-red-teaming` (created 2026-08-27), with the venv at
-`env/`, the HF cache at `hf_cache/`, the vendored safety-eval checkout at `safety-eval/`, run
-artifacts at `runs/`, and job logs at `logs/`. Per-instance labels go to the sibling
+`repro-olmo3-safety/.venv-safety-eval/`, the HF cache at `hf_cache/`, the vendored safety-eval
+checkout at `repro-olmo3-safety/safety-eval/`, run artifacts at `runs/`, and job logs at `logs/`.
+(Corrected 2026-08-31: this line said `env/` and `safety-eval/`; neither path exists. Use
+`repro-olmo3-safety/.venv-safety-eval/bin/python`, which is what the sbatch files already use.) Per-instance labels go to the sibling
 `/scratch/gs157/marin-misinfo-labels/`, deliberately outside the repo tree.
 
 Scratch quota is **5TB, 18% used**, and it is **not backed up and is flushed**. Anything that

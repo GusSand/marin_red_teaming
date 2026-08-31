@@ -10,8 +10,18 @@
 - [ ] **6. Freeze expanded misinfo eval ≥150 behaviors** (selection note for the second source, dedupe, hash in DATA_INVENTORY, baseline on four tags × 10 seeds) before any Stage 2 arm trains.
 - [ ] **7. Stage 2 six-arm staged replay** — own experiment doc after David answers INBOX (intermediate checkpoints; budget for 10 training runs: A–D ×2, E/F ×1 screening + replicate the removal that matters). 10% = screening checkpoint only; efficacy look at 25% or conditional-power rule unless historical checkpoints justify a 10% futility rule.
 - [!] **3b. BLOCKED on gated `google/gemma-2b` (INBOX 10:15).** Pre-registered: `docs/experiments/08-29_strongreject_sidecar_phoenix-starling.md`. Adapter cached, base 401s; needs a licence acceptance + HF token from gs157. Declared deviation: safety-eval's StrongREJECT emits ONE graded score, not the three dimensions this line names. **3b. StrongREJECT evaluator sidecar** on the 1,080 phoenix/starling responses (fine-tuned judge already in safety-eval): refusal + specificity + convincingness, graded. Triangulates WildGuard (binary) and the rubric judge. No new generation, no human labels. Report alongside step 3, not as its primary.
+- [~] **3e. Out-of-sample GPT rater check** — PRE-REGISTERED 2026-08-31, package built and handed to gs157.
+  `docs/experiments/08-31_gpt_out-of-sample_rater-check.md`. 150 items from the 930 the calibration set
+  never touched, 75/75 by arm, convention-matched to pass 2, re-cid'd `g####` to avoid the run-ordered-id
+  leak. Upload package: `/scratch/gs157/marin-misinfo-labels/gpt_slice_v1/upload/`. **Waiting on gs157's
+  ChatGPT run.** When `sheet_gpt.csv` lands: `shard_tool.py check`, then `compare_anchors.py`, then fill
+  the Results section against the pre-registered thresholds. Rater-robustness of the Δ is already
+  answered by the qwen72/olmo32 sensitivity table — this is an agreement estimate only.
+- [ ] **3d. Which rubric dimension does WildGuard track?** Regress WildGuard `harmful` on
+  relevance/task/stance/quality from the pass-2 Claude labels over the 1,080 (their Fig. 2 style-correlation
+  analysis). Unblocked and free: all inputs on disk, CPU-only, no new labels. Pre-register before running.
+  Announced as "picking up now" on 08-31 10:15 and then not started — it is next.
 - [ ] **3c. Style-perturbation test of WildGuard** — PRE-REGISTERED 2026-08-29: `docs/experiments/08-29_wildguard_style-perturbation.md`. Runs after the step-3 annotator is fixed (it supplies the rewriter). Rewrite Starling `harmful` responses to be blander/shorter with identical claims, and Phoenix compliant-`unharmful` responses more polished with identical claims; re-judge with the pinned WildGuard; count label flips = judge style sensitivity in pp. Rewriter = selected local judge with a claim-preservation prompt + fidelity check before counting. Pre-register flip-rate criteria before running. Direct H1 test, ~1 h GPU.
-- [ ] **3d. Which rubric dimension does WildGuard track?** Regress WildGuard `harmful` on relevance/task/stance/quality from the selected judge (their Fig. 2 style-correlation analysis). Free after step 2.
 - [ ] **Bibliography hypothesis matrix** (parallel, non-gating): convert `outputs/2026-08-28_lit_refusal_vs_polish.md` to base/aligned · pretrain/CPT/SFT · content vs format · refusal/task/judge-harm · transferable-causal columns.
 
 - [x] ~~H1b instrument~~ → superseded by Stage 1 items 1, 2, 5 above (2026-08-28). **H1b instrument: relevance / task-success scorer (or gradable benign task).** Needed to split the +11pp harmful|non-refusal rise into writing quality (H1) vs on-topic-ness (H1b) in the cooldown. Candidates: an LLM relevance grader on (behavior, response) with a held-out human-labelled set; or a benign task with objective grading. Selection experiment; pre-register before running.

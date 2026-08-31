@@ -661,3 +661,51 @@ Monte-Carlo noise from `decompose_distribution.py` (hedge 0.216 vs 0.257; no-att
 attempt-weak 0.726 vs 0.777) — a tie-handling / `>=` vs `>` implementation difference. Our script is the
 **more conservative** side on every null row. No row changes significance status, and no significant row
 is affected. Not fixed under the result; flagged for a follow-up pass on the script.
+
+### Step 3 rater-robustness (2026-08-31, post hoc but anticipated by the execution note of 08-29)
+
+Prompted by a question from gs157: the step-3 labels come from **one rater**. Three clarifications and
+one new analysis.
+
+**1. The test–retest figures are self-consistency, not inter-rater.** Pass 1 vs pass 2 (relevance 0.941,
+task 0.860, stance 0.809 / κ 0.710) is the same model annotating twice. It bounds rater *noise*; it says
+nothing about rater *bias*. Earlier phrasings in this file that read as an inter-rater estimate should be
+read this way instead.
+
+**2. The calibration 150 are a subset of the 1,080.** Verified by exact request+response match: 150/150,
+including all 25 spot-check items (14 phoenix, 11 starling). So the Claude-vs-GPT agreement reported in
+step 2 is an **in-sample** estimate for the full-set labels, not independent evidence about them. Not a
+train/test leak — no judge was selected, and the anchor is the same rater throughout — but it must not be
+quoted as out-of-sample reliability.
+
+**3. Sensitivity: the identical decomposition under the two local judges**, which labelled all 1,080 and
+failed judge selection. Same script, same key, same bootstrap seed. Raw:
+`docs/results/08-28_stage1/judge_sensitivity/`.
+
+| Δ pp, phoenix→starling | Claude (primary) | qwen72 | olmo32 |
+|---|---|---|---|
+| refuse | −12.2 | −16.3 | −8.9 |
+| correct | −12.2 | −8.5 | −9.1 |
+| hedge | −3.1 n.s. | −6.1 | **+10.4** |
+| no-attempt | −1.5 n.s. | −0.9 n.s. | −0.4 n.s. |
+| attempt-weak | +0.6 n.s. | +2.6 | +0.0 |
+| **attempt-strong** | **+28.5** [+22.2, +34.6] | **+29.3** [+23.9, +34.3] | **+8.0** [+5.0, +11.3] |
+| quality given attempt | +0.12 p=0.198 | −0.03 p=0.602 | −0.05 p=0.631 |
+
+The direction replicates under all three raters on refuse / correct / attempt-strong, each significant.
+`quality_given_attempt` is flat or slightly negative under all three — the "not a capability shift" half
+is the most rater-robust part of the result, since it survives raters that disagree about everything else.
+Absolute masses differ wildly (olmo32 puts 63.1% of phoenix in `refuse` against Claude's 18.0%, its known
+endorses-recall-0.02 failure), which is why the pre-registered caveat defends only differences.
+
+**Disagreement, stated not explained away:** olmo32 sends `hedge` **up** +10.4 where Claude and qwen72
+send it down. `hedge` is a stance category and olmo32's stance column is the least trustworthy of the
+three. No verdict changes, but the three raters do not line up here.
+
+**Does not change:** the step-3 verdict, any pre-registered reading, or any number in the result above.
+Reported as sensitivity, exactly as the 08-29 execution note provided for.
+
+**Follow-on:** an out-of-sample, convention-matched GPT rater check is pre-registered at
+`docs/experiments/08-31_gpt_out-of-sample_rater-check.md` and is gs157's to run. It yields an agreement
+estimate only — 150 items over 54 behaviors is too thin for the behavior bootstrap — so the Δ-replication
+question is answered by the table above, not by that experiment.
