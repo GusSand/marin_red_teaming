@@ -4,8 +4,8 @@
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
 - **Current task:** `S1-3D`
-- **Task status:** `READY`
-- **Next checkpoint:** Pre-register and run the CPU-only WildGuard-versus-rubric analysis.
+- **Task status:** `IN_PROGRESS`
+- **Next checkpoint:** Run the frozen WildGuard-versus-rubric regression, then verify it independently.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-08-31`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
@@ -78,6 +78,7 @@ without updating this file and the active backlog table in the same commit.
 | Phoenix→Starling trajectory | `docs/results/08-27_misinfo_rvc/analysis.md` |
 | Stage 1 decomposition | `docs/experiments/08-28_phoenix-starling_distribution-decomposition.md` |
 | GPT out-of-sample rater check | `docs/experiments/08-31_gpt_out-of-sample_rater-check.md` |
+| WildGuard-versus-rubric preregistration | `docs/experiments/08-31_wildguard_rubric-dimension-regression.md` |
 | Settled choices | `docs/decisions.md` |
 | Full experimental chronology | `docs/research_journal.md` |
 | Canonical living report | `docs/reports/phoenix-starling/index.html` |
