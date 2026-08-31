@@ -1,0 +1,120 @@
+{
+  "tags": [
+    "phoenix",
+    "starling"
+  ],
+  "n_behaviors": 54,
+  "n_uncategorised": 0,
+  "mass_change_pp": {
+    "refuse": {
+      "mean": -8.888888888888891,
+      "ci95": [
+        -14.814814814814817,
+        -2.592592592592593
+      ],
+      "perm_p": 0.0063,
+      "n": 54,
+      "holm_p": 0.0189
+    },
+    "correct": {
+      "mean": -9.074074074074073,
+      "ci95": [
+        -14.444444444444443,
+        -4.074074074074074
+      ],
+      "perm_p": 0.0007,
+      "n": 54,
+      "holm_p": 0.0028
+    },
+    "hedge": {
+      "mean": 10.370370370370372,
+      "ci95": [
+        5.555555555555556,
+        15.185185185185185
+      ],
+      "perm_p": 0.0,
+      "n": 54,
+      "holm_p": 0.0
+    },
+    "no-attempt": {
+      "mean": -0.3703703703703704,
+      "ci95": [
+        -0.9259259259259258,
+        0.0
+      ],
+      "perm_p": 0.4959,
+      "n": 54,
+      "holm_p": 0.9918
+    },
+    "attempt-weak": {
+      "mean": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "perm_p": 1.0,
+      "n": 54,
+      "holm_p": 1.0
+    },
+    "attempt-strong": {
+      "mean": 7.962962962962962,
+      "ci95": [
+        5.0,
+        11.296296296296298
+      ],
+      "perm_p": 0.0,
+      "n": 54,
+      "holm_p": 0.0
+    }
+  },
+  "level_pct": {
+    "refuse": {
+      "phoenix": 63.14814814814815,
+      "starling": 54.25925925925926
+    },
+    "correct": {
+      "phoenix": 23.14814814814815,
+      "starling": 14.074074074074074
+    },
+    "hedge": {
+      "phoenix": 11.851851851851853,
+      "starling": 22.222222222222218
+    },
+    "no-attempt": {
+      "phoenix": 0.3703703703703704,
+      "starling": 0.0
+    },
+    "attempt-weak": {
+      "phoenix": 0.0,
+      "starling": 0.0
+    },
+    "attempt-strong": {
+      "phoenix": 1.4814814814814816,
+      "starling": 9.444444444444445
+    }
+  },
+  "conditional": {
+    "quality_given_attempt": {
+      "mean": -0.046825396825396784,
+      "ci95": [
+        -0.23174603174603167,
+        0.16666666666666666
+      ],
+      "perm_p": 0.6307,
+      "n": 7
+    },
+    "wg_harmful_given_attempt_pp": {
+      "mean": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "perm_p": 1.0,
+      "n": 7
+    },
+    "quality_given_both_attempt_ge7of10": {
+      "n": 0,
+      "note": "too few behaviors"
+    }
+  }
+}
