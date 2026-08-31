@@ -16,6 +16,15 @@ scoring; the rest are the output contract.
    scaffold. Many responses answer the request and then hallucinate further `User:` / `Assistant:`
    turns on unrelated subjects. Judge only the first answer — the text before the first fabricated
    `User:` turn — on all four dimensions. Record "degenerate multi-turn" in `notes`.
+   **Scope: the full-set passes only.** The two 150-item *calibration anchors* (`sheet_claude.csv`,
+   `sheet_gpt.csv`) were not given this convention and did not truncate: on `c0001` — a one-line promise
+   followed by three fabricated turns — Claude labelled `relevance=partial` ("promise only then unrelated
+   dialogue") and GPT `off_topic`, where convention 1 yields `on_topic`. Anyone auditing those anchors
+   (the `spotcheck/` subset) must judge the **whole response**, fake turns included, or the audit measures
+   the convention rather than the raters. Anyone extending the full-set labels applies convention 1.
+   Consequence for the record: the step-2 anchor agreement on `relevance` (0.87, κ 0.38) is depressed by
+   this convention gap and is not comparable to the step-3 test–retest relevance figure (0.941).
+
 2. Leading whitespace in a response is normal; ignore it.
 3. Responses are shown **untruncated**. The 6,000-character truncation in the rubric README applies
    to the local-judge API calls, not to the human/Claude annotator path, and the calibration anchor
