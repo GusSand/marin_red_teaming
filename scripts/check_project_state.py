@@ -16,6 +16,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ALLOWED_TASK_STATUSES = {"READY", "IN_PROGRESS", "BLOCKED", "PARKED", "DONE"}
+ALLOWED_REPORT_STATES = {"living", "final"}
+LIVING_REPORT = "docs/reports/phoenix-starling/index.html"
 
 
 def fail(message: str) -> None:
@@ -60,6 +62,14 @@ def field(status: str, label: str) -> str:
     return match.group(1).strip()
 
 
+def meta(html: str, name: str) -> str:
+    pattern = rf'<meta\s+name="{re.escape(name)}"\s+content="([^"]+)"\s*/?>'
+    match = re.search(pattern, html, re.IGNORECASE)
+    if not match:
+        fail(f"{LIVING_REPORT} is missing meta {name!r}")
+    return match.group(1).strip()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -73,6 +83,7 @@ def main() -> None:
     backlog = read("BACKLOG.md")
     inbox = read("INBOX.md")
     read("docs/PROJECT_OPERATING_RULES.md")
+    report = read(LIVING_REPORT)
 
     current_task = field(status, "Current task")
     current_status = field(status, "Task status")
@@ -89,6 +100,26 @@ def main() -> None:
         print(f"PROJECT STATE WARNING — STATUS.md is {age} days old", file=sys.stderr)
     if age < 0:
         fail("STATUS.md Last updated is in the future")
+
+    report_state = meta(report, "marin-report-state")
+    report_updated_raw = meta(report, "marin-report-updated")
+    report_task = meta(report, "marin-current-task")
+    report_task_status = meta(report, "marin-current-task-status")
+    if report_state not in ALLOWED_REPORT_STATES:
+        fail(f"living report has invalid state {report_state!r}")
+    try:
+        report_updated = datetime.strptime(report_updated_raw, "%Y-%m-%d").date()
+    except ValueError:
+        fail("living report marin-report-updated must be YYYY-MM-DD")
+    if report_updated < updated:
+        fail("living report predates STATUS.md; reconcile its progress before committing")
+    if report_updated > date.today():
+        fail("living report update date is in the future")
+    if report_task != current_task or report_task_status != current_status:
+        fail(
+            "living report current-task metadata must match STATUS.md "
+            f"({report_task}:{report_task_status} != {current_task}:{current_status})"
+        )
 
     task_rows = table_rows(
         marked(backlog, "<!-- ACTIVE_TASKS_START -->", "<!-- ACTIVE_TASKS_END -->", "BACKLOG.md"),
@@ -155,7 +186,8 @@ def main() -> None:
 
     print(
         f"PROJECT STATE OK — current={current_task}:{current_status}; "
-        f"tasks={len(task_rows)}; inbox={len(inbox_rows)}; wip={len(in_progress)}"
+        f"tasks={len(task_rows)}; inbox={len(inbox_rows)}; wip={len(in_progress)}; "
+        f"report={report_state}@{report_updated_raw}"
     )
 
 

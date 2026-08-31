@@ -6,6 +6,7 @@
 - **Current task:** `S1-3D`
 - **Task status:** `READY`
 - **Next checkpoint:** Pre-register and run the CPU-only WildGuard-versus-rubric analysis.
+- **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-08-31`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
 holds live requests for Gus. `docs/research_journal.md` and the legacy sections of the backlog and
@@ -79,3 +80,4 @@ without updating this file and the active backlog table in the same commit.
 | GPT out-of-sample rater check | `docs/experiments/08-31_gpt_out-of-sample_rater-check.md` |
 | Settled choices | `docs/decisions.md` |
 | Full experimental chronology | `docs/research_journal.md` |
+| Canonical living report | `docs/reports/phoenix-starling/index.html` |

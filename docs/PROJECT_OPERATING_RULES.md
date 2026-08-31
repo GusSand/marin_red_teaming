@@ -56,13 +56,29 @@ A result-producing task becomes `DONE` only when the same change set contains:
 2. independent verification, or an explicit `UNVERIFIED` label approved through INBOX;
 3. a research-journal entry;
 4. a decision-log entry when a choice was settled;
-5. updated active backlog and `STATUS.md` pointers;
-6. a descriptive commit.
+5. an updated living-report progress pointer and any affected claim, figure, limitation, or next step;
+6. updated active backlog and `STATUS.md` pointers;
+7. a descriptive commit.
 
 Update the state last, after the evidence exists. Never mark done because a job finished successfully.
 
 The evidence, verification status, journal and decision updates, task closure, and next-task promotion form one
 close transaction. A null result or failed hypothesis closes in exactly the same way as a positive result.
+
+## Living-report discipline
+
+- `docs/reports/phoenix-starling/index.html` is the canonical reader-facing synthesis.
+- It contains only verified findings in the main narrative. Unverified work may appear only as explicitly
+  labelled progress.
+- Its current-task metadata and visible progress table change whenever `STATUS.md` changes.
+- A verified result that changes the reader's belief updates the claim, figure, caveat, and recommendation it
+  affects in the same close transaction.
+- The report is downstream of evidence. Never repair a disagreement by changing a result artifact or historical
+  journal entry to match the prose.
+- The final report is a reviewed, frozen state of the living report. Publish an immutable dated snapshot and a
+  stable `latest` alias from the same source; never hand-edit the hosted copy.
+
+Detailed report rules live in `docs/reports/README.md`.
 
 ## Inbox discipline
 

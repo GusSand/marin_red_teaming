@@ -8,7 +8,8 @@ their own subdir and are not committed.
 ## Current scripts
 - `check_project_state.py` — validates `STATUS.md` against the machine-marked active tables in
   `BACKLOG.md` and `INBOX.md`, enforces the one-task WIP limit, and checks that blocked tasks name
-  live INBOX IDs. Run before commits. `submit.sh` runs it with `--require-in-progress` before any GPU
+  live INBOX IDs. It also requires the canonical living report's task pointer and update date to agree
+  with `STATUS.md`. Run before commits. `submit.sh` runs it with `--require-in-progress` before any GPU
   submission, so a merely queued or stale task cannot consume compute.
 - `setup_safety_eval.sh` — Gate 1: build isolated venv `.venv-safety-eval`, `pip install -e .`
   + requirements + `vllm==0.11.0`; print torch/transformers/vllm/GPU provenance to

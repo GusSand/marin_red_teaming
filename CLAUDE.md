@@ -48,7 +48,8 @@ Treat each experiment as one explicit state transaction:
 4. **Verify.** Keep the result `UNVERIFIED` until an independent path reproduces the headline numbers against
    the frozen plan.
 5. **Close.** In one change set, add durable evidence, verification status, journal and decision entries as
-   applicable, mark the task `DONE`, and promote the next `READY` task in `STATUS.md`.
+   applicable, update the living report, mark the task `DONE`, and promote the next `READY` task in
+   `STATUS.md`.
 
 If work becomes blocked, change it to `BLOCKED`, add a named request to `INBOX.md`, and promote the next
 unblocked task. A null or failed hypothesis is still a completed result when it is documented and verified.
@@ -82,7 +83,7 @@ Attention-friendly prose, everywhere: chat, journal, reports, INBOX, commit mess
 
 Test: could a skilled colleague read it once, fast, and know what to do? If they have to reread, it is too long.
 
-Reports follow the Open Athena review template (see `docs/reports/`): masthead, title, one-line deck, motivation with fact tiles, setup, claims with `RESULT:` lines, figures, recommendations, Q&A, reference grid. Reports live in `docs/reports/` beside the commit that produced the numbers. The wiki gets a pointer, never a copy.
+Reports follow the Open Athena review template (see `docs/reports/`): masthead, title, one-line deck, motivation with fact tiles, setup, claims with `RESULT:` lines, figures, recommendations, Q&A, reference grid. `docs/reports/phoenix-starling/index.html` is the canonical living report for this program. Update its progress state whenever `STATUS.md` changes and update its narrative whenever a verified result changes the reader's belief. The report synthesizes evidence; it never replaces the experiment file, journal, or decision log. The wiki gets a pointer, never a copy.
 
 ---
 
@@ -223,7 +224,9 @@ Rules that follow:
 
 A task is not `DONE` when a job ends. Close it only when durable evidence, independent verification (or
 an approved `UNVERIFIED` label), the journal entry, any decision entry, `STATUS.md`, and the active backlog
-row agree in the same commit. Do not create new `RESUME HERE` journal entries; update `STATUS.md` instead.
+row agree in the same commit. The living report's progress pointer must agree too. If the result changes a
+claim, limitation, figure, or next step, update that content in the same close transaction. Do not create new
+`RESUME HERE` journal entries; update `STATUS.md` instead.
 
 ---
 

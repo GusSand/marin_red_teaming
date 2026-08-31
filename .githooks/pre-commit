@@ -3,7 +3,7 @@ set -eu
 
 repo_root=$(git rev-parse --show-toplevel)
 
-if ! git -C "$repo_root" diff --quiet -- STATUS.md BACKLOG.md INBOX.md docs/PROJECT_OPERATING_RULES.md; then
+if ! git -C "$repo_root" diff --quiet -- STATUS.md BACKLOG.md INBOX.md docs/PROJECT_OPERATING_RULES.md docs/reports/phoenix-starling/index.html; then
     echo "PROJECT STATE FAILED — stage all control-file changes together before committing" >&2
     exit 1
 fi

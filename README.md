@@ -4,6 +4,9 @@
 > table at the top of [`BACKLOG.md`](BACKLOG.md); only live requests for Gus appear at the top of
 > [`INBOX.md`](INBOX.md). Historical sections are evidence, not execution queues.
 
+> **Living report:** [`docs/reports/phoenix-starling/index.html`](docs/reports/phoenix-starling/index.html)
+> is the continuously updated reader-facing account of the Phoenix-to-Starling investigation.
+
 ## TL;DR
 
 I red-teamed **[Marin-8B](https://huggingface.co/marin-community/marin-8b-base)** against **[Olmo-3-7B-Instruct](https://huggingface.co/allenai/Olmo-3-7B-Instruct)** as a reference, then asked the question that matters for an *open* model: does its safety survive someone fine-tuning the weights?

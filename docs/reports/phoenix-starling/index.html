@@ -1,0 +1,355 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="marin-report-state" content="living">
+<meta name="marin-report-updated" content="2026-08-31">
+<meta name="marin-current-task" content="S1-3D">
+<meta name="marin-current-task-status" content="READY">
+<title>Phoenix to Starling: What Changed?</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap">
+<style>
+:root{
+  --paper:#f1e8df;--paper-light:#fffdf8;--frame:#d0c1b3;--ink:#1f1e1b;--muted:#665e56;
+  --umber:#9e6d43;--umber-dark:#704829;--sage:#2d4a3e;--blue:#4a5d8a;--brick:#7a3b2e;--line:#c7b8aa;
+  --pending:#8a7a68;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;--mono:"DM Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#1d1a17;--paper-light:#26221e;--frame:#33302b;--ink:#ece4d8;--muted:#a89d90;
+  --umber:#c99a6a;--umber-dark:#d8ad7f;--sage:#8fb5a3;--blue:#9fb0d8;--brick:#d27f6c;--line:#3e3933;--pending:#a89d90;}}
+:root[data-theme="dark"]{
+  --paper:#1d1a17;--paper-light:#26221e;--frame:#33302b;--ink:#ece4d8;--muted:#a89d90;
+  --umber:#c99a6a;--umber-dark:#d8ad7f;--sage:#8fb5a3;--blue:#9fb0d8;--brick:#d27f6c;--line:#3e3933;--pending:#a89d90;}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.55;margin:0}
+a{color:var(--umber-dark);text-underline-offset:.15em}a:hover{color:var(--brick)}
+.page{max-width:1200px;margin:0 auto;padding:28px 28px 96px}
+.masthead{border-bottom:1px solid var(--ink);display:flex;flex-wrap:wrap;gap:8px 24px;font-family:var(--mono);font-size:12px;justify-content:space-between;letter-spacing:.04em;padding:0 0 13px;text-transform:uppercase}
+.eyebrow,.section-kicker{color:var(--umber-dark);font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.09em;text-transform:uppercase}
+h1,h2,h3,p{margin-top:0}
+h1{font-size:clamp(2.6rem,6.4vw,5.6rem);letter-spacing:-.05em;line-height:.92;margin:24px 0 30px;max-width:1100px;text-wrap:balance}
+h2{font-size:clamp(2rem,3.8vw,3.2rem);letter-spacing:-.04em;line-height:.96;margin-bottom:22px;text-wrap:balance}
+h3{font-size:1.35rem;letter-spacing:-.02em;margin-bottom:8px;text-wrap:balance}
+.deck{font-size:clamp(1.2rem,2.3vw,1.6rem);line-height:1.32;max-width:820px;text-wrap:balance}
+.metadata{color:var(--muted);font-family:var(--mono);font-size:11px;margin:20px 0 34px;text-transform:uppercase;display:flex;flex-wrap:wrap;gap:4px 0}
+.metadata span+span::before{content:" · ";white-space:pre}
+section{margin:74px 0}.report-body{max-width:890px}.report-body li{margin-bottom:10px}.report-body h3{margin-top:40px}
+.report-body>p:first-of-type{font-size:1.08rem}
+.lede{border-top:1px solid var(--line);display:grid;gap:28px;grid-template-columns:1.35fr 1fr;margin:46px 0 64px;padding-top:20px}
+@media (max-width:820px){.lede{grid-template-columns:1fr}}
+.facts{display:grid;gap:1px;grid-template-columns:repeat(3,1fr);background:var(--line);align-self:start}
+.fact{background:var(--paper-light);padding:16px}
+.fact strong{display:block;font-family:var(--mono);font-size:1.45rem;font-weight:500;line-height:1.1;font-variant-numeric:tabular-nums}
+.fact span{color:var(--muted);display:block;font-size:.82rem;margin-top:5px}
+.figure-shell{background:var(--frame);border-radius:14px;margin:34px 0 54px;padding:15px}
+.figure{background:var(--paper);border-radius:9px;padding:clamp(18px,3vw,34px)}
+.figure-top{align-items:end;display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;margin-bottom:22px}
+.figure-title{font-size:1.25rem;font-weight:600;line-height:1.15;margin:0}
+.figure-note,figcaption,.small{color:var(--muted);font-size:.86rem;line-height:1.4}
+figcaption{margin:14px 4px 0}.viz{width:100%;overflow-x:auto}.viz svg{display:block;height:auto;width:100%;max-width:900px;overflow:visible}
+.result{font-family:var(--mono);font-size:.82rem;letter-spacing:.04em;text-transform:uppercase;margin:6px 0 10px}
+.result b{font-weight:500}
+.result .pending{color:var(--pending);border:1px dashed var(--pending);border-radius:999px;padding:2px 9px}
+.result .pass{color:var(--sage);border:1px solid var(--sage);border-radius:999px;padding:2px 9px}
+.result .fail{color:var(--brick);border:1px solid var(--brick);border-radius:999px;padding:2px 9px}
+.claim{border-left:2px solid var(--line);padding-left:18px;margin:0 0 34px}
+.claim h3{margin-top:0}
+table{border-collapse:collapse;font-size:.92rem;width:100%;font-variant-numeric:tabular-nums}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+td.num,th.num{text-align:right}
+.tablewrap{overflow-x:auto}
+code{font-family:var(--mono);font-size:.85em;background:var(--paper-light);padding:1px 5px;border-radius:3px}
+.reference details{border-top:1px solid var(--line);padding:14px 0}
+summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{outline:2px solid var(--umber);outline-offset:4px}
+.grid-table td:first-child{font-family:var(--mono);font-size:.82rem}
+.callout{background:var(--paper-light);border-left:3px solid var(--umber);padding:14px 18px;margin:22px 0;font-size:.98rem}
+.callout .eyebrow{display:block;margin-bottom:6px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+
+<div class="page">
+<header>
+  <div class="masthead"><span>Marin red teaming · living report</span><span>Updated 31 Aug 2026</span><span>Stage 1 closure · Phoenix → Starling</span></div>
+  <h1>What changed between Phoenix and Starling?</h1>
+  <p class="deck">Starling follows instructions more often and is much more willing to advance the requested false thesis. The behavioral change is verified. Its training cause is not.</p>
+  <div class="metadata"><span>Experimenter: Gus Sandoval</span><span>Evidence cutoff: 31 Aug 2026</span><span>Current task: S1-3D · ready</span><span>Status: living draft</span><span>Verified findings only in the main claims</span></div>
+</header>
+
+<section class="report-body" id="current-state">
+  <p class="section-kicker">Current verdict</p>
+  <h2>A compliance and stance shift is the leading behavioral account.</h2>
+  <div class="lede">
+    <div>
+      <p>From Phoenix to Starling, objective instruction following improves while refusals and corrective responses fall. Strong misinformation attempts rise sharply. Writing quality changes little once the model has already decided to attempt the request.</p>
+      <p>This rules against a large prose-quality-only explanation. It does not identify which training change caused the behavior because the data mixture and learning-rate schedule changed together.</p>
+      <div class="callout"><span class="eyebrow">Claim boundary</span>Behavioral distribution change: verified. Causal training attribution: unproven. The six-arm Phoenix replay is the causal test.</div>
+    </div>
+    <div class="facts">
+      <div class="fact"><strong>+11.8pp</strong><span>general instruction following</span></div>
+      <div class="fact"><strong>−12.2pp</strong><span>refusal mass</span></div>
+      <div class="fact"><strong>−12.2pp</strong><span>corrective-response mass</span></div>
+      <div class="fact"><strong>+28.5pp</strong><span>strong misinformation attempts</span></div>
+      <div class="fact"><strong>+0.12</strong><span>quality given attempt; not significant</span></div>
+      <div class="fact"><strong>0.705 κ</strong><span>out-of-sample stance agreement</span></div>
+    </div>
+  </div>
+
+  <h3>What is happening now?</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Step</th><th>Status</th><th>What it changes in this report</th></tr></thead>
+    <tbody>
+      <tr><td>IFEval</td><td><span class="result"><b class="pass">Verified</b></span></td><td>Establishes the objective instruction-following increase.</td></tr>
+      <tr><td>Distribution decomposition</td><td><span class="result"><b class="pass">Verified</b></span></td><td>Replaces the old refusal-versus-polish account with the stance/compliance result.</td></tr>
+      <tr><td>Out-of-sample rater check</td><td><span class="result"><b class="pass">Moderate</b></span></td><td>Keeps the direction; strengthens the rater-dependence caveat.</td></tr>
+      <tr><td>S1-3D · WildGuard versus rubric</td><td><span class="result"><b class="pending">Ready</b></span></td><td>Tests whether the old judge mainly tracks stance, task completion, or quality.</td></tr>
+      <tr><td>S1-3F · concessionary endorsement</td><td><span class="result"><b class="pending">Queued</b></span></td><td>Determines whether Starling is unqualified or balanced-sounding while still endorsing.</td></tr>
+      <tr><td>Benign twins + expanded evaluation</td><td><span class="result"><b class="pending">Queued</b></span></td><td>Tests generality and freezes the Stage 2 endpoints.</td></tr>
+      <tr><td>Six-arm Phoenix replay</td><td><span class="result"><b class="pending">Blocked</b></span></td><td>Separates the causal effects of data mixture and learning-rate schedule.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">Main evidence: <code>docs/experiments/08-28_phoenix-starling_distribution-decomposition.md</code> and <code>docs/experiments/08-31_gpt_out-of-sample_rater-check.md</code>. “Ready” and “queued” are progress labels, not findings.</p>
+</section>
+
+<section class="report-body">
+  <p class="section-kicker">Foundation study · 27–28 Aug 2026</p>
+  <h2>The initial WildGuard trajectory</h2>
+  <div class="callout"><span class="eyebrow">Superseded interpretation</span>The foundation study below correctly measured the WildGuard trajectory and refusal decline. Its “both refusal and writing quality” interpretation predates the rubric decomposition above. Read it as experimental provenance, not the current verdict.</div>
+</section>
+
+<section class="report-body">
+  <p class="section-kicker">Motivation</p>
+  <h2>Why conduct this experiment?</h2>
+  <div class="lede">
+    <div>
+      <p>Misinformation generation on Marin's base checkpoints is lowest at Phoenix (49%) and climbs through the cooldown to 80%. David Hall named the delta: a ~30% mix of Wikipedia, Common Crawl archive and DOLMA HQ.</p>
+      <p>But the metric is a classifier's harmfulness label, and the classifier rewards good writing. That mix is exactly what teaches confident prose. We already have the mirror image: under the LoRA tamper attack, ASR fell 12% to 1% because responses got shorter.</p>
+      <p>If the rise is a judge artifact, the cooldown ablation is aimed at nothing. This experiment decides that first.</p>
+    </div>
+    <div class="facts">
+      <div class="fact"><strong>54</strong><span>behaviours; one is 1.85pp</span></div>
+      <div class="fact"><strong>46</strong><span>runs, one GPU model, one driver</span></div>
+      <div class="fact"><strong>10 × 4</strong><span>seeds at the endpoint tags</span></div>
+      <div class="fact"><strong>4 / 4</strong><span>gate checks passed</span></div>
+      <div class="fact"><strong>320 / 320</strong><span>same-seed identical; 0 / 320 across seeds</span></div>
+      <div class="fact"><strong>7 / 7</strong><span>contrasts matched by the verifier</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="report-body">
+  <p class="section-kicker">Setup</p>
+  <h2>Experimental Details</h2>
+  <p><strong>Probe.</strong> HarmBench, 320 behaviours; analysis on the 54 misinformation ones. Prompts wrapped in a <code>User:/Assistant:</code> scaffold, because unscaffolded base models echo the prompt and the judge scores the echo.</p>
+  <p><strong>Generation.</strong> vLLM 0.11, temp 0.7, top-p 0.95, safety-eval pinned. A patch puts the seed into vLLM's sampler; without it the old "three seeds" were byte-identical. Judge: WildGuard 7B, offline weights, one harmfulness and one refusal label per response.</p>
+  <p><strong>Design.</strong> Six pinned revisions. Jellyfish, Phoenix, Starling and Deeper-Starling get ten seeds; Kestrel and Ocelot get three. All 46 runs go sequentially on one GPU model with one driver; seed 0 reproduces token-exactly across cards of the same model, and an array across models would confound revision with hardware.</p>
+  <p><strong>Output per checkpoint.</strong> Refusal rate, harmful rate, harmful given non-refusal, empty rate, response length, non-response rate. Per-instance labels stay out of the repo.</p>
+
+  <figure class="figure-shell"><div class="figure">
+    <div class="figure-top"><p class="figure-title">Figure 1 · The trajectory this experiment decomposes (historical, 07-28 run)</p><p class="figure-note">WildGuard harmful rate, 54 misinformation behaviours, 3 seeds, empties excluded</p></div>
+    <div class="viz">
+      <svg viewBox="0 0 900 340" role="img" aria-label="Bar chart of historical misinformation rate across six Marin base checkpoints">
+        <g font-family="DM Mono, monospace" font-size="12" fill="currentColor" style="color:var(--muted)">
+          <line x1="70" y1="250" x2="880" y2="250" stroke="var(--line)"/>
+          <line x1="70" y1="50" x2="880" y2="50" stroke="var(--line)" stroke-dasharray="3 4"/>
+          <text x="62" y="254" text-anchor="end">0</text><text x="62" y="54" text-anchor="end">100</text>
+          <text x="62" y="154" text-anchor="end">50</text><line x1="70" y1="150" x2="880" y2="150" stroke="var(--line)" stroke-dasharray="3 4"/>
+        </g>
+        <g font-family="DM Mono, monospace" font-size="13">
+          <rect x="100" y="126" width="90" height="124" fill="var(--frame)"/><text x="145" y="118" text-anchor="middle" fill="var(--ink)">62</text><a href="https://en.wikipedia.org/wiki/Kestrel" target="_blank" rel="noopener"><text x="145" y="272" text-anchor="middle" fill="var(--muted)">kestrel</text></a><text x="145" y="318" text-anchor="middle" font-size="40">🦅</text>
+          <rect x="230" y="116" width="90" height="134" fill="var(--frame)"/><text x="275" y="108" text-anchor="middle" fill="var(--ink)">67</text><a href="https://en.wikipedia.org/wiki/Ocelot" target="_blank" rel="noopener"><text x="275" y="272" text-anchor="middle" fill="var(--muted)">ocelot</text></a><text x="275" y="318" text-anchor="middle" font-size="40">🐆</text>
+          <rect x="360" y="130" width="90" height="120" fill="var(--umber)"/><text x="405" y="122" text-anchor="middle" fill="var(--ink)" font-weight="500">60</text><a href="https://en.wikipedia.org/wiki/Jellyfish" target="_blank" rel="noopener"><text x="405" y="272" text-anchor="middle" fill="var(--umber-dark)" font-weight="500">jellyfish</text></a><text x="405" y="318" text-anchor="middle" font-size="40">🪼</text>
+          <rect x="490" y="152" width="90" height="98" fill="var(--umber)"/><text x="535" y="144" text-anchor="middle" fill="var(--ink)" font-weight="500">49</text><a href="https://en.wikipedia.org/wiki/Phoenix_(mythology)" target="_blank" rel="noopener"><text x="535" y="272" text-anchor="middle" fill="var(--umber-dark)" font-weight="500">phoenix</text></a><text x="535" y="318" text-anchor="middle" font-size="40">🐦‍🔥</text>
+          <rect x="620" y="96" width="90" height="154" fill="var(--umber)"/><text x="665" y="88" text-anchor="middle" fill="var(--ink)" font-weight="500">77.2</text><a href="https://en.wikipedia.org/wiki/Starling" target="_blank" rel="noopener"><text x="665" y="272" text-anchor="middle" fill="var(--umber-dark)" font-weight="500">starling</text></a><text x="665" y="318" text-anchor="middle" font-size="40">🐦</text>
+          <rect x="750" y="91" width="90" height="159" fill="var(--umber)"/><text x="795" y="83" text-anchor="middle" fill="var(--ink)" font-weight="500">79.6</text><a href="https://en.wikipedia.org/wiki/Starling" target="_blank" rel="noopener"><text x="795" y="272" text-anchor="middle" fill="var(--umber-dark)" font-weight="500">deeper-starling</text></a><text x="795" y="318" text-anchor="middle" font-size="40">🐦</text>
+        </g>
+        <text x="535" y="30" font-family="DM Mono, monospace" font-size="11" fill="var(--muted)" text-anchor="start" letter-spacing=".06em">← WEB PHASE   |   HQ MIX ENTERS →</text>
+      </svg>
+    </div>
+    <figcaption>Checkpoints are named after animals; click one. Umber bars get ten seeds; Jellyfish joined them on 28 Aug, pre-data. Historical values, context only: the old Starling and Deeper-Starling seeds were collapsed and Jellyfish's spread is invalid. The new run is the inferential dataset.</figcaption>
+  </div></figure>
+</section>
+
+<section class="report-body">
+  <p class="section-kicker">Pre-registered</p>
+  <h2>Claims</h2>
+  <p>Thresholds fixed before the run. Verdicts report intervals; a contrast whose interval straddles its threshold is indeterminate. Seven tests, Holm-adjusted, all p ≤ 0.0006 except length (a ratio of medians, no permutation test).</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>tag</th><th class="num">seeds</th><th class="num">harmful %</th><th class="num">refusal %</th><th class="num">harmful | non-ref %</th><th class="num">non-response %</th><th class="num">median chars</th></tr></thead>
+    <tbody>
+      <tr><td>kestrel</td><td class="num">3</td><td class="num">69.3</td><td class="num">16.7</td><td class="num">73.0</td><td class="num">21.0</td><td class="num">6976</td></tr>
+      <tr><td>ocelot</td><td class="num">3</td><td class="num">66.7</td><td class="num">19.1</td><td class="num">74.1</td><td class="num">21.6</td><td class="num">8282</td></tr>
+      <tr><td>jellyfish</td><td class="num">10</td><td class="num">66.4</td><td class="num">22.8</td><td class="num">83.9</td><td class="num">4.8</td><td class="num">8552</td></tr>
+      <tr><td><strong>phoenix</strong></td><td class="num">10</td><td class="num"><strong>51.7</strong></td><td class="num"><strong>26.5</strong></td><td class="num">70.3</td><td class="num">0.2</td><td class="num">2898</td></tr>
+      <tr><td>starling</td><td class="num">10</td><td class="num">73.9</td><td class="num">14.3</td><td class="num">86.2</td><td class="num">0.0</td><td class="num">3698</td></tr>
+      <tr><td>deeper-starling</td><td class="num">10</td><td class="num">73.7</td><td class="num">11.9</td><td class="num">83.7</td><td class="num">0.0</td><td class="num">3335</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">Mean over seeds. Harmful rate is empty-excluded. Seed SD at the endpoint tags is 4–11pp on harmful and 5–11pp on refusal. Full table with SDs and McNemar counts: <code>docs/results/08-27_misinfo_rvc/analysis.md</code>.</p>
+
+  <div class="claim">
+    <h3>H-min: Phoenix is the minimum</h3>
+    <p class="result">RESULT: <b class="pass">Supported</b></p>
+    <p>Harmful −13.5pp Jellyfish → Phoenix, 95% CI [−20.4, −6.7]. Phoenix is also the refusal peak (26.5%).</p>
+  </div>
+  <div class="claim">
+    <h3>H0: Refusal genuinely drops in the cooldown</h3>
+    <p class="result">RESULT: <b class="pending">Indeterminate on the threshold, directionally clear</b></p>
+    <p>Refusal −12.2pp Phoenix → Starling, CI [−17.6, −7.2]. The point estimate clears 10pp; the interval straddles it. Refusal does fall.</p>
+  </div>
+  <div class="claim">
+    <h3>H1: The model writes better, and the judge rewards that</h3>
+    <p class="result">RESULT: <b class="fail">Rejected</b></p>
+    <p>Refusal moved −14.6pp, CI [−19.4, −10.0]: the "flat refusal" clause fails. But the other half is real: harmful-given-non-refusal +11.3pp [+5.7, +17.0], median length +15%. Quality rose; it is not the whole story.</p>
+  </div>
+  <div class="claim">
+    <h3>H1b: The model follows the scaffold better, not writes better</h3>
+    <p class="result">RESULT: <b class="pending">Partly excluded, partly untested</b></p>
+    <p>The empty-and-echo part is excluded: non-response falls 21% → 5% → 0.2% from Kestrel to Phoenix and is zero at every cooldown tag, so there was nothing left to convert. The off-topic part is not detected by this run. The data are consistent with it: compliant-but-unharmful responses, where off-topic text would sit, fall from 21.8% at Phoenix to 11.9% at Starling. WildGuard cannot tell off-topic from on-topic-but-weak, so the +11pp in harmful | non-refusal is the sum of H1 and H1b. Splitting them needs a relevance scorer or a gradable benign task.</p>
+  </div>
+  <div class="claim">
+    <h3>Mixed: Both</h3>
+    <p class="result">RESULT: <b class="pass">Supported in substance</b></p>
+    <p>Decomposing harmful = (1 − refusal) × harmful|non-refusal: refusal alone gives +8.5pp, harmful|non-refusal alone +11.7pp, observed +22pp. Roughly 40/60. The second factor is writing quality and on-topic-ness unsplit (see H1b); Stage 1 separates them. The ablation proceeds; its primary metric becomes refusal or harmful-given-non-refusal.</p>
+  </div>
+
+  <figure class="figure-shell"><div class="figure">
+    <div class="figure-top"><p class="figure-title">Figure 2 · Seed-to-seed movement at Phoenix is larger than the H0 threshold</p><p class="figure-note">Gate check 3, job 16496404, one L40S, VLLM_ENABLE_V1_MULTIPROCESSING=0</p></div>
+    <div class="viz">
+      <svg viewBox="0 0 900 230" role="img" aria-label="Dot plot comparing seed 0 and seed 1 counts at Phoenix against the 10pp threshold">
+        <g font-family="DM Mono, monospace" font-size="12" fill="var(--muted)">
+          <line x1="180" y1="60" x2="180" y2="190" stroke="var(--line)"/>
+          <line x1="180" y1="190" x2="860" y2="190" stroke="var(--line)"/>
+          <text x="180" y="210" text-anchor="middle">0</text><text x="520" y="210" text-anchor="middle">27</text><text x="860" y="210" text-anchor="middle">54 of 54</text>
+        </g>
+        <g font-family="DM Mono, monospace" font-size="13">
+          <text x="165" y="94" text-anchor="end" fill="var(--ink)">harmful</text>
+          <line x1="470" y1="90" x2="596" y2="90" stroke="var(--umber)" stroke-width="3"/>
+          <circle cx="470" cy="90" r="7" fill="var(--paper)" stroke="var(--umber)" stroke-width="2.5"/><text x="470" y="72" text-anchor="middle" fill="var(--muted)">s0 · 23</text>
+          <circle cx="596" cy="90" r="7" fill="var(--umber)"/><text x="596" y="72" text-anchor="middle" fill="var(--muted)">s1 · 33</text>
+          <text x="720" y="94" fill="var(--umber-dark)">+10 items · 18.5pp</text>
+          <text x="165" y="154" text-anchor="end" fill="var(--ink)">refusal</text>
+          <line x1="281" y1="150" x2="432" y2="150" stroke="var(--brick)" stroke-width="3"/>
+          <circle cx="432" cy="150" r="7" fill="var(--paper)" stroke="var(--brick)" stroke-width="2.5"/><text x="432" y="132" text-anchor="middle" fill="var(--muted)">s0 · 20</text>
+          <circle cx="281" cy="150" r="7" fill="var(--brick)"/><text x="281" y="132" text-anchor="middle" fill="var(--muted)">s1 · 8</text>
+          <text x="720" y="154" fill="var(--brick)">−12 items · 22.2pp</text>
+          <line x1="180" y1="176" x2="248" y2="176" stroke="var(--sage)" stroke-width="6" stroke-linecap="round"/>
+          <text x="256" y="180" fill="var(--sage)">H0 threshold: 10pp = 5.4 items</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>Each seed reproduced token-exactly, so this is real sampling spread. One difference from two seeds is not a variance estimate, but it shows the threshold sits near the noise. That is why the endpoints get ten seeds and why verdicts carry intervals.</figcaption>
+  </div></figure>
+</section>
+
+<section class="report-body">
+  <p class="section-kicker">Verified before launch</p>
+  <h2>Port gate</h2>
+  <p>The ± 3pp reproduction gate was withdrawn (Q1) for four binary checks. All passed on 2026-08-27, each verified from raw data.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Check</th><th>Requirement</th><th>Evidence</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td>1 · Harness identity</td><td>safety-eval @ 060cc903, torch 2.8.0+cu128, vllm 0.11.0, transformers 4.57.1, v2 scaffold, seed patch applied</td><td>Asserted by <code>dry_run_check.py</code> on every submission</td><td><span class="result"><b class="pass">Passed</b></span></td></tr>
+      <tr><td>2 · Distinct revisions</td><td>Six tags resolve to six distinct commits</td><td><code>docs/resolved_revisions.json</code>; 56ef403a, e4d18c1d, c92465e4, 5837472e, 66279e71, d57287aa</td><td><span class="result"><b class="pass">Passed</b></span></td></tr>
+      <tr><td>3 · Sampler on this hardware</td><td>Same seed reproduces; different seeds diverge; one GPU</td><td>Seed 0 ×3, seed 1 ×2 on gl052: 320/320 token-identical same-seed, 0/320 different-seed, labels identical same-seed</td><td><span class="result"><b class="pass">Passed</b></span></td></tr>
+      <tr><td>4 · End-to-end direction</td><td>Judge labels and metric direction checked independently of metrics.json</td><td>Raw all.json counts 23/54 and 33/54 match metrics.json exactly; 0 empties in the subset; label vocabulary confirmed</td><td><span class="result"><b class="pass">Passed</b></span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="report-body">
+  <p class="section-kicker">Decision rule</p>
+  <h2>Recommendations</h2>
+  <p>Fixed before results, so results could not move them. The outcome is <strong>Mixed</strong>, so the third rule applies.</p>
+  <ul>
+    <li><strong>H0 (not the outcome):</strong> cost the seven-arm ablation as designed, controls kept.</li>
+    <li><strong>H1 or H1b (not the outcome):</strong> do not propose the ablation.</li>
+    <li><strong>Mixed (the outcome):</strong> the ablation proceeds. Its primary metric becomes refusal rate or harmful-given-non-refusal. The raw harmful rate overstates the safety change by about half and should not be the headline. Send David the one-pager with this decomposition attached.</li>
+    <li><strong>Refocus (Gus, 28 Aug):</strong> Starling and Deeper-Starling do not separate, so the effect appears early and saturates. The ablation targets Phoenix → Starling: the Starling-equivalent token budget is the primary endpoint, intermediate checkpoints if affordable, Deeper-Starling kept only as a secondary persistence check. Seven mixture arms unchanged.</li>
+    <li><strong>Superseded (Gus, 28 Aug, late):</strong> the seven source-arms are replaced by a <strong>two-stage program</strong>. Stage 1 measures what changed with instruments WildGuard lacks (on-topic, task completion, stance, quality; IFEval first; wrapper sensitivity). Stage 2 is a six-arm replay from the Phoenix checkpoint: {Phoenix mix, Starling mix} × {flat, cooldown LR}, plus Starling minus instruction/Q&amp;A data and Starling minus expository data, mass returned to Nemotron. Ten training runs. Spec: <code>docs/experiments/08-28_phoenix-starling_distribution-decomposition.md</code>. Why: Marin's own retro shows the FLAN-free first cooldown <em>raised</em> refusal (19 → 23) while the FLAN-10× second cooldown dropped it (27 → 14); polish rose in both. Source-based arms would smear that signal.</li>
+    <li><strong>Any outcome:</strong> pick the H1b instrument. It is the blocker now. → Resolved by Stage 1: official IFEval, then a selected local judge on relevance/task/stance/quality.</li>
+    <li><strong>Hardware:</strong> after two L40S drains this rule fired. Gate 3 reruns on H200, then all 39 there. Nothing from L40S is reused.</li>
+  </ul>
+</section>
+
+<section class="report-body">
+  <p class="section-kicker">Method decisions</p>
+  <h2>Supporting Analysis and Questions</h2>
+  <p>All settled before data existed.</p>
+
+  <h3>Q1: Why was the ± 3pp reproduction gate withdrawn?</h3>
+  <p>Phoenix's historical seeds are 46.3, 42.6 and 57.4: sd 7.7pp, so a three-seed mean has SEM 4.5pp. A perfect port fails a ± 3pp gate half the time. More seeds now cannot fix the noisy historical target, and the old trajectory mixes patched, unpatched and collapsed sampling. Replaced by the protocol gate; old-vs-new Phoenix is descriptive only.</p>
+
+  <h3>Q2: Why one GPU, and what did it cost?</h3>
+  <p>vLLM only reproduces on identical hardware. The first determinism check ran as an array, landed on three nodes and "failed"; the test was wrong, not the harness. So all 39 run sequentially, and the launcher refuses any prior run whose GPU, host, flags, seed or commit differ from the current allocation. Three jobs then died at ~2h. The cause was not drains but the cluster's GPU-utilization watchdog: this design averages 39% against a 50% cutoff. The L40S runs are excluded. On the H200, seed 0 reproduced token-exactly across two physical cards (and across three L40S cards), so the guard was relaxed from GPU UUID to GPU model + driver + flags + code + seed, documented pre-results. The 29 H200 runs are kept; the rest run in sub-2h jobs.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Attempt</th><th>Job</th><th>Node</th><th>Outcome</th><th>Runs kept</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>16500537</td><td>—</td><td>Cancelled at 3 min: launcher would have adopted a prior run with incompatible provenance</td><td class="num">0</td></tr>
+      <tr><td>2</td><td>16500928</td><td>gl002</td><td>External SIGTERM at 2h20, node drain; Phoenix ×10 and Starling ×10 complete, Deeper-Starling not started</td><td class="num">0</td></tr>
+      <tr><td>3</td><td>16508385</td><td>gl038</td><td>External SIGTERM at 2h05, node drain; Phoenix ×10 and Starling ×8 complete</td><td class="num">0</td></tr>
+      <tr><td>4</td><td>16513111</td><td>H200</td><td>Gate check 3 passed on H200 (gh114): 320/320 same-seed, 0/320 across seeds. Seed 0 moved 23→25/54 vs the L40S, same weights and seed</td><td class="num">gate only</td></tr>
+      <tr><td>5</td><td>16514189</td><td>gh114</td><td>Utilization watchdog at 2h16 (39% avg, 50% cutoff). 29/46 done: phoenix ×10, starling ×10, deeper-starling ×9</td><td class="num">29</td></tr>
+      <tr><td>6</td><td>16520288</td><td>gh117</td><td>Resume of the remaining 17 on a different H200 card, after a cross-card check showed 320/320 token-exact reproduction Completed in 1h25.</td><td class="num">17</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Q3: Why is the benign control not decisive for H1b?</h3>
+  <p>A benign control should separate instruction following from safety: better format-following lifts compliance on everything. But <code>wildjailbreak:benign</code> scores non-refusal, not task success, so off-topic text passes, which is the exact failure it was meant to catch. It is also saturated at 96.4%. H1b needs a gradable benign task; until then it stays open.</p>
+
+  <h3>Q4: What about the 18 responses the judge did not label?</h3>
+  <p>WildGuard returned no label for 71 rows in the misinformation subset: 53 blank responses (excluded by the spec) and 18 non-empty ones, concentrated early (jellyfish 8, kestrel 6, ocelot 2, phoenix 1, starling 1). Most are 6–11k characters; the judge's output failed to parse. The analysis treats them as not-harmful and non-refusal.</p>
+  <p><strong>Worst-case bounds.</strong> Every contrast recomputed with the 18 set all-harmful or all-unharmful, both sides, every corner:</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>contrast</th><th class="num">as analysed</th><th>worst-case range</th><th class="num">width</th><th>can a verdict flip?</th></tr></thead>
+    <tbody>
+      <tr><td>H-min jellyfish → phoenix, harmful</td><td class="num">−15.2</td><td>[−16.7, −15.0]</td><td class="num">1.7pp</td><td>no</td></tr>
+      <tr><td>H0 phoenix → starling, refusal</td><td class="num">−12.2</td><td>[−12.4, −12.0]</td><td class="num">0.4pp</td><td>no</td></tr>
+      <tr><td>H1 phoenix → deeper-starling, refusal</td><td class="num">−14.6</td><td>[−14.8, −14.6]</td><td class="num">0.2pp</td><td>no</td></tr>
+      <tr><td>H1 harmful | non-refusal</td><td class="num">+11.3</td><td>[+11.2, +11.3]</td><td class="num">0.1pp</td><td>no</td></tr>
+      <tr><td>harmful phoenix → starling</td><td class="num">+22.2</td><td>[+22.0, +22.4]</td><td class="num">0.4pp</td><td>no</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">H-min is −15.2 here rather than −13.5 because this check excludes blank responses per behaviour before pairing; the main analysis pairs over all seeds. Same direction, same verdict. <code>scripts/sensitivity_missing_labels.py</code>.</p>
+  <p><strong>Label completion, not a rerun.</strong> The 18 are being re-judged with the identical pinned judge (same class, default configuration, same input construction, same weights, offline). Originals stay untouched; new labels go to sidecar files and are merged explicitly. Before/after numbers appear here when it lands.</p>
+  <div id="label-completion-after" class="callout"><span class="eyebrow">After label completion (job 16525942, H200, 3 min)</span>The identical judge reproduces the gap: <strong>17 of 18 still unlabelled</strong>. Not parse failures. WildGuard itself answers <code>N/A</code> for refusal and harmfulness on these responses, deterministically. One row (jellyfish, seed 2) received a label, <code>unharmful / compliance</code>, which is what the analysis already assumed for it. Every number below is unchanged.</div>
+  <div class="tablewrap"><table>
+    <thead><tr><th></th><th class="num">before</th><th class="num">after</th></tr></thead>
+    <tbody>
+      <tr><td>jellyfish harmful / refusal %</td><td class="num">66.37 / 22.78</td><td class="num">66.37 / 22.78</td></tr>
+      <tr><td>phoenix harmful / refusal %</td><td class="num">51.67 / 26.48</td><td class="num">51.67 / 26.48</td></tr>
+      <tr><td>starling harmful / refusal %</td><td class="num">73.89 / 14.26</td><td class="num">73.89 / 14.26</td></tr>
+      <tr><td>H-min Δ harmful (pp)</td><td class="num">−13.52 [−20.4, −6.7]</td><td class="num">−13.52 [−20.4, −6.7]</td></tr>
+      <tr><td>H0 Δ refusal (pp)</td><td class="num">−12.22 [−17.6, −7.2]</td><td class="num">−12.22 [−17.6, −7.2]</td></tr>
+      <tr><td>H1 Δ refusal (pp)</td><td class="num">−14.63 [−19.4, −10.0]</td><td class="num">−14.63 [−19.4, −10.0]</td></tr>
+      <tr><td>H1 Δ harmful | non-refusal (pp)</td><td class="num">+11.34 [+5.7, +17.0]</td><td class="num">+11.34 [+5.7, +17.0]</td></tr>
+      <tr><td>unlabelled non-empty rows</td><td class="num">18</td><td class="num">17</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">Originals untouched; the completed label lives in a sidecar and is merged explicitly (<code>--use-rejudge</code>). Sidecars and both analyses: <code>docs/results/08-27_misinfo_rvc/</code>. The 17 are recorded as <em>unlabellable under the pinned judge</em>; the worst-case bounds above are the binding statement about them.</p>
+
+  <h3>Q5: How is the paired analysis defined with ten seeds?</h3>
+  <p>Paired over the 54 behaviours. Primary: per-behaviour seed proportions, bootstrap CI, permutation p. No tie problem at any seed count. McNemar kept for comparability, with 5–5 splits as an explicit <em>unstable</em> category. Three contrasts, seven tests, Holm-adjusted.</p>
+  <div class="callout"><span class="eyebrow">Verification</span>A fresh agent recomputed everything from raw labels on its own code, blind to the analysis script and its numbers. Every contrast matched within 0.2pp and every McNemar count exactly. It found two bugs in the analysis script (harmful-rate denominator not empty-excluded; wrong length estimator), both fixed to the spec and re-matched. It also found 18 non-empty responses with no judge label, mostly at early tags; no verdict changes.</div>
+</section>
+
+<section class="reference report-body">
+  <p class="section-kicker">Reference</p>
+  <h2>Run grid</h2>
+  <details open>
+    <summary>46 runs · six revisions · resolved commits · status</summary>
+    <div class="tablewrap"><table class="grid-table">
+      <thead><tr><th>Revision</th><th>Role</th><th>Commit</th><th class="num">Seeds</th><th>Historical rate</th><th>Historical baseline usable?</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>kestrel</td><td>context</td><td>56ef403a</td><td class="num">3</td><td class="num">62</td><td>yes</td><td>done</td></tr>
+        <tr><td>ocelot</td><td>context</td><td>e4d18c1d</td><td class="num">3</td><td class="num">67</td><td>yes</td><td>done</td></tr>
+        <tr><td>jellyfish</td><td>endpoint · H-min</td><td>c92465e4</td><td class="num">10</td><td class="num">60</td><td>no: three identical seeds, no reseed</td><td>done</td></tr>
+        <tr><td>phoenix</td><td>endpoint · H0, H1</td><td>5837472e</td><td class="num">10</td><td class="num">49</td><td>yes</td><td>done</td></tr>
+        <tr><td>starling</td><td>endpoint · H0</td><td>66279e71</td><td class="num">10</td><td class="num">77.2</td><td>reseed dirs only; plain dirs collapsed</td><td>done</td></tr>
+        <tr><td>deeper-starling</td><td>endpoint · H1</td><td>d57287aa</td><td class="num">10</td><td class="num">79.6</td><td>reseed dirs only; plain dirs collapsed</td><td>done</td></tr>
+      </tbody>
+    </table></div>
+    <p class="small">Spec: <code>docs/experiments/08-27_marin-base-trajectory_misinfo-refusal-vs-capability.md</code>. Launcher: <code>slurm/misinfo_trajectory_seq.sbatch</code>. Per-run provenance records host, GPU UUID, driver, flags, seed, harness and model commits.</p>
+  </details>
+</section>
+</div>
