@@ -88,7 +88,14 @@ for dim in ("relevance", "task", "stance", "quality"):
     body = Path(a.rubric, f"prompt_{dim}.txt").read_text().strip()
     body = body.split("RESPONSE:\n{response}\n", 1)[-1].strip()
     prompt += [f"### {dim}\n", body, ""]
-prompt += ["\n## Operating conventions\n", Path(a.conventions).read_text().strip(), ""]
+conv = Path(a.conventions).read_text()
+if "<!-- RATER-FACING:BEGIN -->" not in conv:
+    raise SystemExit("conventions file has no RATER-FACING block; refusing to leak internal notes to the rater")
+conv = conv.split("<!-- RATER-FACING:BEGIN -->", 1)[1].split("<!-- RATER-FACING:END -->", 1)[0].strip()
+for banned in ("sheet_claude", "sheet_gpt", "spotcheck", "key.json", "anchor", "pass 1", "pass 2"):
+    if banned in conv:
+        raise SystemExit(f"rater-facing conventions mention {banned!r}; that would unblind the rater")
+prompt += ["\n## Operating conventions\n", conv, ""]
 (up / "PROMPT.md").write_text("\n".join(prompt) + "\n")
 
 json.dump({"g_to_i": gmap,
