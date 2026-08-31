@@ -732,3 +732,65 @@ than imported. All five matched exactly (`scripts/verify_gpt_rater_check.py`). `
 patched additively (`per_class`, `--no-write`); the freeze holds — it still reproduces every field of the
 recorded `calibration_v1/anchor_agreement.json` exactly. The fresh-subagent reproduction was not run this
 session.
+
+---
+
+## 2026-08-31 · S1-3D · Which rubric dimension does WildGuard's `harmful` label track?
+
+**Research question.** WildGuard emits one binary `harmful` label; the locked rubric rates four
+independent dimensions. Which does the label actually track on the 1,080 Phoenix/Starling responses?
+Observational counterpart to item 3c (perturbational, PARKED). Method after Feuer et al.,
+*Style Outweighs Substance* (arXiv 2409.15268), their Fig. 2 style-correlation analysis. Pre-registered
+in `docs/experiments/08-31_wildguard_rubric-dimension-regression.md`, frozen at commit `f4b2eac` before
+any model was fitted or any joint distribution inspected.
+
+**Method.** Existing labels only, no new generation, no new labels, CPU, no Slurm. Outcome `y = 1` iff
+`wg_harm == "harmful"` from `key.json`. Predictors from the pass-2 blind Claude labels: relevance, task
+and stance one-hot, quality = mean of specificity/coherence/persuasiveness, standardized. L2 logistic
+regression, `C = 1.0`, chosen in advance because stance nearly separates the outcome. Primary metric is
+each dimension's unique out-of-fold AUC contribution under 6-fold CV **grouped by BehaviorID**, so the 10
+seeds and both checkpoints of a behavior never straddle a fold. Materiality bar 0.02 with a 10k
+behavior-level bootstrap CI excluding 0. Set P = rows with quality defined (n = 814); set S = all
+labelled rows, quality omitted (n = 1,080).
+
+**Results.** All standing gates pass: 1,080 unique cids, no cid mismatch, no out-of-vocabulary values,
+no quality-null rule violations, 54 behaviors in 6 folds of 9, both outcome classes in P above the 50-row
+power gate. Set P full-model out-of-fold AUC 0.8845 [0.846, 0.918], log-loss 0.3564 against 0.6217
+intercept-only. Unique ΔAUC: stance +0.4037 [+0.332, +0.467]; quality +0.0085 [−0.0019, +0.0210]; task
+−0.0012 [−0.0067, +0.0031]; relevance −0.0003 [−0.0026, +0.0022]. Marginal AUC alone: stance 0.8747,
+quality 0.5156, task 0.4200, relevance 0.3997. Set S full-model AUC 0.8611; stance +0.2972, relevance
++0.0148 [+0.0003, +0.0302], task +0.0014. WildGuard harmful rate by stance class: endorses 96.4%
+(n = 469), hedges 59.7% (201), refuses 28.9% (128), corrects 24.5% (282). Harmful rate by quality bin is
+non-monotone: 88.2% / 58.4% / 69.4% / 90.2% across 1.0–2.0, 2.0–3.0, 3.0–4.0, 4.0–5.0. Quality mean 3.020
+harmful against 2.907 unharmful. Iron-Law tripwire did not fire: no AUC anywhere reaches 0.98.
+
+**Verdict against the pre-registered rule: SUBSTANCE-LED (branch 2).** Stance is material. Quality fails
+materiality on both legs — 0.0085 is under the 0.02 bar and its CI includes 0. Relevance and task are not
+material on either set; relevance on S clears the CI leg and fails the effect-size leg. Consequence as
+written: the label tracks what the response asserts, not how well it is written; H1-as-judge-artifact is
+not supported observationally; `S1-3C` stays a confirmatory sidecar rather than being promoted.
+
+**Verification.** MATCHED. Fresh subagent given only the two raw label files, the locked rubric and the
+preregistration, and denied every analysis script in the repo. It wrote its own path, then cross-checked
+itself with a second implementation (hand-rolled IRLS L2 logistic regression, Mann-Whitney rank AUC, no
+scikit-learn). Every number agrees within **0.0005** against a pre-registered tolerance of 0.02. Code
+preserved at `docs/results/08-31_wildguard_rubric/verifier_verify.py` and `verifier_indep.py`.
+
+**Declared deviation.** The verifier found 2 of 1,080 key items carry `wg_harm == null`, a class the
+preregistration did not anticipate. The frozen rule "y = 1 iff harmful, else 0" scored both 0; one falls
+in P. Both paths applied it identically. Sensitivity dropping the two rows: P full AUC 0.8871, stance
++0.4096, quality +0.0069. Verdict unchanged. The script now counts null outcomes as a standing gate.
+
+**Interpretation (mine).** The stance number is mostly construct overlap and should not be sold as a
+discovery: `harmful` and `stance` both encode "did the response supply the requested false thesis", so a
+large ΔAUC was near-guaranteed. The load-bearing half is the negative — quality adds 0.009 AUC with a CI
+spanning zero, and the harmful rate by quality bin has no rising gradient, it is U-shaped. That is a
+well-powered null on the one dimension P actually tests properly. Practical consequence: a WildGuard
+harmful rate in this project is closer to a stance rate than a harm-severity rate, which is how Stage 2
+endpoints should describe it. Three things bound the reading. Set P is degenerate — `relevance =
+off_topic` and `task = no_attempt` are **empty by construction** in P, and `stance = refuses` has n = 6,
+so P's relevance and task nulls are uninformative rather than evidence of blindness. The two label
+sources disagree on a convention: pass-2 truncates at the first fabricated `User:` turn and WildGuard did
+not, which plausibly drives part of the 28.9% harmful rate among rubric-`refuses` rows, so those cells
+are not a clean WildGuard error rate. And this is observational — quality and harmfulness can share a
+content cause, so it cannot distinguish style-blindness from confounding. Item 3c remains the causal test.

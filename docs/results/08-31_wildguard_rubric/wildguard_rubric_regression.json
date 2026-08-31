@@ -1,0 +1,519 @@
+{
+  "experiment": "docs/experiments/08-31_wildguard_rubric-dimension-regression.md",
+  "seed": 20260828,
+  "nboot": 10000,
+  "nfold": 6,
+  "materiality_delta_auc": 0.02,
+  "iron_law_auc": 0.98,
+  "versions": {
+    "numpy": "2.5.2",
+    "sklearn": "1.9.0",
+    "python": "3.14.6"
+  },
+  "gates": {
+    "n_key": 1080,
+    "n_judge": 1080,
+    "judge_cids_missing_from_key": [],
+    "key_cids_without_judge_label": 0,
+    "out_of_vocabulary_values": {},
+    "quality_null_rule_violations": {},
+    "wg_harm_values": {
+      "unharmful": 400,
+      "harmful": 678,
+      "null": 2
+    },
+    "n_wg_harm_null": 2,
+    "n_behaviors": 54,
+    "n_set_S": 1080,
+    "n_set_P": 814,
+    "class_balance_S": {
+      "harmful": 678,
+      "unharmful": 402
+    },
+    "class_balance_P": {
+      "harmful": 559,
+      "unharmful": 255
+    },
+    "fold_sizes_behaviors": [
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "behavior_in_one_fold_only": true
+  },
+  "power_gate_P": "ok",
+  "primary": {
+    "set": "P (quality defined)",
+    "n": 814,
+    "dims": [
+      "relevance",
+      "task",
+      "stance",
+      "quality"
+    ],
+    "harmful": 559,
+    "unharmful": 255,
+    "auc_full": 0.8845,
+    "auc_full_ci": [
+      0.846,
+      0.9177
+    ],
+    "logloss_full": 0.3564,
+    "logloss_intercept_only": 0.6217,
+    "unique": {
+      "relevance": {
+        "delta_auc": -0.0003,
+        "auc_without": 0.8848,
+        "ci": [
+          -0.0026,
+          0.0022
+        ]
+      },
+      "task": {
+        "delta_auc": -0.0011,
+        "auc_without": 0.8856,
+        "ci": [
+          -0.0067,
+          0.0031
+        ]
+      },
+      "stance": {
+        "delta_auc": 0.404,
+        "auc_without": 0.4805,
+        "ci": [
+          0.3339,
+          0.4682
+        ]
+      },
+      "quality": {
+        "delta_auc": 0.0085,
+        "auc_without": 0.876,
+        "ci": [
+          -0.0019,
+          0.021
+        ]
+      }
+    },
+    "marginal": {
+      "relevance": {
+        "auc_alone": 0.3997,
+        "ci": [
+          0.3199,
+          0.4851
+        ]
+      },
+      "task": {
+        "auc_alone": 0.42,
+        "ci": [
+          0.3483,
+          0.4989
+        ]
+      },
+      "stance": {
+        "auc_alone": 0.8747,
+        "ci": [
+          0.8317,
+          0.911
+        ]
+      },
+      "quality": {
+        "auc_alone": 0.5156,
+        "ci": [
+          0.4608,
+          0.5727
+        ]
+      }
+    },
+    "coefficients_full_data": {
+      "relevance=partial": -0.401,
+      "relevance=off_topic": 0.0,
+      "task=partial": 0.188,
+      "task=no_attempt": 0.0,
+      "stance=refuses": -0.482,
+      "stance=corrects": -4.284,
+      "stance=hedges": -2.334,
+      "quality_z": 0.145
+    },
+    "intercept_full_data": 2.921
+  },
+  "secondary": {
+    "set": "S (all labelled rows)",
+    "n": 1080,
+    "dims": [
+      "relevance",
+      "task",
+      "stance"
+    ],
+    "harmful": 678,
+    "unharmful": 402,
+    "auc_full": 0.8611,
+    "auc_full_ci": [
+      0.824,
+      0.8939
+    ],
+    "logloss_full": 0.4088,
+    "logloss_intercept_only": 0.6601,
+    "unique": {
+      "relevance": {
+        "delta_auc": 0.0148,
+        "auc_without": 0.8463,
+        "ci": [
+          0.0003,
+          0.0302
+        ]
+      },
+      "task": {
+        "delta_auc": 0.0014,
+        "auc_without": 0.8597,
+        "ci": [
+          -0.0039,
+          0.0077
+        ]
+      },
+      "stance": {
+        "delta_auc": 0.2972,
+        "auc_without": 0.5639,
+        "ci": [
+          0.2289,
+          0.3629
+        ]
+      }
+    },
+    "marginal": {
+      "relevance": {
+        "auc_alone": 0.4373,
+        "ci": [
+          0.367,
+          0.5105
+        ]
+      },
+      "task": {
+        "auc_alone": 0.5506,
+        "ci": [
+          0.4886,
+          0.6164
+        ]
+      },
+      "stance": {
+        "auc_alone": 0.8468,
+        "ci": [
+          0.8082,
+          0.8829
+        ]
+      }
+    },
+    "coefficients_full_data": {
+      "relevance=partial": 0.695,
+      "relevance=off_topic": 2.109,
+      "task=partial": 0.048,
+      "task=no_attempt": -0.169,
+      "stance=refuses": -3.787,
+      "stance=corrects": -3.903,
+      "stance=hedges": -2.408
+    },
+    "intercept_full_data": 2.792
+  },
+  "crosstabs": {
+    "relevance": {
+      "on_topic": {
+        "n": 1003,
+        "harmful_rate_pct": 62.21
+      },
+      "partial": {
+        "n": 49,
+        "harmful_rate_pct": 63.27
+      },
+      "off_topic": {
+        "n": 28,
+        "harmful_rate_pct": 82.14
+      }
+    },
+    "task": {
+      "complete": {
+        "n": 691,
+        "harmful_rate_pct": 69.61
+      },
+      "partial": {
+        "n": 123,
+        "harmful_rate_pct": 63.41
+      },
+      "no_attempt": {
+        "n": 266,
+        "harmful_rate_pct": 44.74
+      }
+    },
+    "stance": {
+      "refuses": {
+        "n": 128,
+        "harmful_rate_pct": 28.91
+      },
+      "corrects": {
+        "n": 282,
+        "harmful_rate_pct": 24.47
+      },
+      "hedges": {
+        "n": 201,
+        "harmful_rate_pct": 59.7
+      },
+      "endorses": {
+        "n": 469,
+        "harmful_rate_pct": 96.38
+      }
+    },
+    "quality_bin": {
+      "1.0-2.0": {
+        "n": 34,
+        "harmful_rate_pct": 88.24
+      },
+      "2.0-3.0": {
+        "n": 226,
+        "harmful_rate_pct": 58.41
+      },
+      "3.0-4.0": {
+        "n": 493,
+        "harmful_rate_pct": 69.37
+      },
+      "4.0-5.0": {
+        "n": 61,
+        "harmful_rate_pct": 90.16
+      }
+    }
+  },
+  "crosstabs_primary_set": {
+    "relevance": {
+      "on_topic": {
+        "n": 788,
+        "harmful_rate_pct": 69.04
+      },
+      "partial": {
+        "n": 26,
+        "harmful_rate_pct": 57.69
+      },
+      "off_topic": {
+        "n": 0,
+        "harmful_rate_pct": null
+      }
+    },
+    "task": {
+      "complete": {
+        "n": 691,
+        "harmful_rate_pct": 69.61
+      },
+      "partial": {
+        "n": 123,
+        "harmful_rate_pct": 63.41
+      },
+      "no_attempt": {
+        "n": 0,
+        "harmful_rate_pct": null
+      }
+    },
+    "stance": {
+      "refuses": {
+        "n": 6,
+        "harmful_rate_pct": 83.33
+      },
+      "corrects": {
+        "n": 217,
+        "harmful_rate_pct": 18.89
+      },
+      "hedges": {
+        "n": 166,
+        "harmful_rate_pct": 61.45
+      },
+      "endorses": {
+        "n": 425,
+        "harmful_rate_pct": 96.71
+      }
+    }
+  },
+  "degenerate_levels_in_P": [
+    "relevance=off_topic",
+    "task=no_attempt"
+  ],
+  "sensitivity_drop_null_outcome": {
+    "note": "rows with wg_harm == null excluded; registered analysis scores them 0",
+    "primary": {
+      "set": "P minus null-outcome rows",
+      "n": 813,
+      "dims": [
+        "relevance",
+        "task",
+        "stance",
+        "quality"
+      ],
+      "harmful": 559,
+      "unharmful": 254,
+      "auc_full": 0.8871,
+      "auc_full_ci": [
+        0.8488,
+        0.9199
+      ],
+      "logloss_full": 0.3525,
+      "logloss_intercept_only": 0.621,
+      "unique": {
+        "relevance": {
+          "delta_auc": 0.0011,
+          "auc_without": 0.886,
+          "ci": [
+            -0.0015,
+            0.0041
+          ]
+        },
+        "task": {
+          "delta_auc": 0.0023,
+          "auc_without": 0.8848,
+          "ci": [
+            -0.0015,
+            0.0068
+          ]
+        },
+        "stance": {
+          "delta_auc": 0.4096,
+          "auc_without": 0.4775,
+          "ci": [
+            0.3381,
+            0.4748
+          ]
+        },
+        "quality": {
+          "delta_auc": 0.0069,
+          "auc_without": 0.8802,
+          "ci": [
+            -0.0026,
+            0.0184
+          ]
+        }
+      },
+      "marginal": {
+        "relevance": {
+          "auc_alone": 0.3986,
+          "ci": [
+            0.319,
+            0.4845
+          ]
+        },
+        "task": {
+          "auc_alone": 0.418,
+          "ci": [
+            0.3456,
+            0.497
+          ]
+        },
+        "stance": {
+          "auc_alone": 0.8771,
+          "ci": [
+            0.8355,
+            0.9125
+          ]
+        },
+        "quality": {
+          "auc_alone": 0.5116,
+          "ci": [
+            0.4554,
+            0.5697
+          ]
+        }
+      },
+      "coefficients_full_data": {
+        "relevance=partial": -0.443,
+        "relevance=off_topic": 0.0,
+        "task=partial": 0.247,
+        "task=no_attempt": 0.0,
+        "stance=refuses": -0.497,
+        "stance=corrects": -4.33,
+        "stance=hedges": -2.389,
+        "quality_z": 0.14
+      },
+      "intercept_full_data": 2.96
+    },
+    "secondary": {
+      "set": "S minus null-outcome rows",
+      "n": 1078,
+      "dims": [
+        "relevance",
+        "task",
+        "stance"
+      ],
+      "harmful": 678,
+      "unharmful": 400,
+      "auc_full": 0.8633,
+      "auc_full_ci": [
+        0.8267,
+        0.8958
+      ],
+      "logloss_full": 0.4058,
+      "logloss_intercept_only": 0.6595,
+      "unique": {
+        "relevance": {
+          "delta_auc": 0.0137,
+          "auc_without": 0.8496,
+          "ci": [
+            -0.0,
+            0.0285
+          ]
+        },
+        "task": {
+          "delta_auc": 0.0029,
+          "auc_without": 0.8603,
+          "ci": [
+            -0.0026,
+            0.0093
+          ]
+        },
+        "stance": {
+          "delta_auc": 0.3029,
+          "auc_without": 0.5604,
+          "ci": [
+            0.2368,
+            0.3681
+          ]
+        }
+      },
+      "marginal": {
+        "relevance": {
+          "auc_alone": 0.44,
+          "ci": [
+            0.3714,
+            0.5105
+          ]
+        },
+        "task": {
+          "auc_alone": 0.5463,
+          "ci": [
+            0.4847,
+            0.6121
+          ]
+        },
+        "stance": {
+          "auc_alone": 0.848,
+          "ci": [
+            0.8097,
+            0.8837
+          ]
+        }
+      },
+      "coefficients_full_data": {
+        "relevance=partial": 0.714,
+        "relevance=off_topic": 2.103,
+        "task=partial": 0.095,
+        "task=no_attempt": -0.164,
+        "stance=refuses": -3.809,
+        "stance=corrects": -3.939,
+        "stance=hedges": -2.45
+      },
+      "intercept_full_data": 2.822
+    }
+  },
+  "material": {
+    "relevance": false,
+    "task": false,
+    "stance": true,
+    "quality": false
+  },
+  "verdict": "SUBSTANCE-LED \u2014 quality not material; H1-as-judge-artifact not supported observationally",
+  "iron_law_tripped": false
+}

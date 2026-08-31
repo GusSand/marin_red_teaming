@@ -152,3 +152,19 @@ to local `repro-olmo3-safety/runs/` before the remote is shut down (fresh-instan
   intact: rerunning it on `calibration_v1` reproduces every field of the recorded
   `anchor_agreement.json` exactly (stance 0.853/0.784, task 0.84/0.700, relevance 0.867/0.378,
   derived6 0.787/0.705, derived3 0.927, quality n=109 rho=0.561).
+
+### 2026-08-31 additions (Stage 1 step 3d / `S1-3D` — WildGuard versus the rubric)
+
+- `wildguard_rubric_regression.py` — **the S1-3D analysis path.** Regresses WildGuard's binary
+  `harmful` label on the four locked rubric dimensions over the existing 1,080 Phoenix/Starling
+  responses. Primary metric is each dimension's *unique* out-of-fold AUC contribution under 6-fold
+  cross-validation **grouped by `BehaviorID`**, so the 10 seeds and both checkpoints of one behavior
+  never straddle a fold. Fold assignment is frozen: sorted BehaviorIDs, `random.Random(20260828)`
+  shuffle, six contiguous blocks of nine. L2 logistic regression at `C=1.0`, chosen in advance because
+  stance nearly separates the outcome. Also emits marginal AUC per dimension, full-data coefficients
+  for direction only, harmful-rate cross-tabs, every standing data gate, and the pre-registered
+  verdict branch. CPU only, no GPU, no Slurm. Needs numpy + scikit-learn:
+  `python scripts/wildguard_rubric_regression.py --labels <dir with key.json and claude_fable_pass2.jsonl> --out docs/results/08-31_wildguard_rubric`
+  Reads only `key.json` and `judge/claude_fable_pass2.jsonl`; it never opens `items.jsonl`, so no
+  response text is touched. Pre-registration:
+  `docs/experiments/08-31_wildguard_rubric-dimension-regression.md`.

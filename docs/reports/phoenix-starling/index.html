@@ -3,8 +3,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="marin-report-state" content="living">
 <meta name="marin-report-updated" content="2026-08-31">
-<meta name="marin-current-task" content="S1-3D">
-<meta name="marin-current-task-status" content="IN_PROGRESS">
+<meta name="marin-current-task" content="S1-3F">
+<meta name="marin-current-task-status" content="READY">
 <title>Phoenix to Starling: What Changed?</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap">
 <style>
@@ -73,7 +73,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <div class="masthead"><span>Marin red teaming · living report</span><span>Updated 31 Aug 2026</span><span>Stage 1 closure · Phoenix → Starling</span></div>
   <h1>What changed between Phoenix and Starling?</h1>
   <p class="deck">Starling follows instructions more often and is much more willing to advance the requested false thesis. The behavioral change is verified. Its training cause is not.</p>
-  <div class="metadata"><span>Experimenter: Gus Sandoval</span><span>Evidence cutoff: 31 Aug 2026</span><span>Current task: S1-3D · in progress</span><span>Status: living draft</span><span>Verified findings only in the main claims</span></div>
+  <div class="metadata"><span>Experimenter: Gus Sandoval</span><span>Evidence cutoff: 31 Aug 2026</span><span>Current task: S1-3F · ready</span><span>Status: living draft</span><span>Verified findings only in the main claims</span></div>
 </header>
 
 <section class="report-body" id="current-state">
@@ -83,6 +83,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
     <div>
       <p>From Phoenix to Starling, objective instruction following improves while refusals and corrective responses fall. Strong misinformation attempts rise sharply. Writing quality changes little once the model has already decided to attempt the request.</p>
       <p>This rules against a large prose-quality-only explanation. It does not identify which training change caused the behavior because the data mixture and learning-rate schedule changed together.</p>
+      <p>The instrument now has a measured character. Regressing WildGuard’s harmful label on the four rated dimensions, <strong>stance carries it and rated writing quality adds nothing</strong>: unique out-of-fold AUC contribution +0.404 for stance against +0.009 for quality, whose interval spans zero. Read a WildGuard harmful rate in this program as closer to a stance rate than a harm-severity rate.</p>
       <div class="callout"><span class="eyebrow">Claim boundary</span>Behavioral distribution change: verified. Causal training attribution: unproven. The six-arm Phoenix replay is the causal test.</div>
     </div>
     <div class="facts">
@@ -92,6 +93,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
       <div class="fact"><strong>+28.5pp</strong><span>strong misinformation attempts</span></div>
       <div class="fact"><strong>+0.12</strong><span>quality given attempt; not significant</span></div>
       <div class="fact"><strong>0.705 κ</strong><span>out-of-sample stance agreement</span></div>
+      <div class="fact"><strong>+0.009</strong><span>quality’s unique contribution to WildGuard; CI spans zero</span></div>
     </div>
   </div>
 
@@ -102,8 +104,8 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
       <tr><td>IFEval</td><td><span class="result"><b class="pass">Verified</b></span></td><td>Establishes the objective instruction-following increase.</td></tr>
       <tr><td>Distribution decomposition</td><td><span class="result"><b class="pass">Verified</b></span></td><td>Replaces the old refusal-versus-polish account with the stance/compliance result.</td></tr>
       <tr><td>Out-of-sample rater check</td><td><span class="result"><b class="pass">Moderate</b></span></td><td>Keeps the direction; strengthens the rater-dependence caveat.</td></tr>
-      <tr><td>S1-3D · WildGuard versus rubric</td><td><span class="result"><b class="pending">Running</b></span></td><td>Tests whether the old judge mainly tracks stance, task completion, or quality.</td></tr>
-      <tr><td>S1-3F · concessionary endorsement</td><td><span class="result"><b class="pending">Queued</b></span></td><td>Determines whether Starling is unqualified or balanced-sounding while still endorsing.</td></tr>
+      <tr><td>S1-3D · WildGuard versus rubric</td><td><span class="result"><b class="pass">Verified</b></span></td><td>The old judge tracks stance. Rated writing quality adds nothing measurable.</td></tr>
+      <tr><td>S1-3F · concessionary endorsement</td><td><span class="result"><b class="pending">Ready</b></span></td><td>Determines whether Starling is unqualified or balanced-sounding while still endorsing.</td></tr>
       <tr><td>Benign twins + expanded evaluation</td><td><span class="result"><b class="pending">Queued</b></span></td><td>Tests generality and freezes the Stage 2 endpoints.</td></tr>
       <tr><td>Six-arm Phoenix replay</td><td><span class="result"><b class="pending">Blocked</b></span></td><td>Separates the causal effects of data mixture and learning-rate schedule.</td></tr>
     </tbody>
@@ -208,6 +210,11 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
     <p>The empty-and-echo part is excluded: non-response falls 21% → 5% → 0.2% from Kestrel to Phoenix and is zero at every cooldown tag, so there was nothing left to convert. The off-topic part is not detected by this run. The data are consistent with it: compliant-but-unharmful responses, where off-topic text would sit, fall from 21.8% at Phoenix to 11.9% at Starling. WildGuard cannot tell off-topic from on-topic-but-weak, so the +11pp in harmful | non-refusal is the sum of H1 and H1b. Splitting them needs a relevance scorer or a gradable benign task.</p>
   </div>
   <div class="claim">
+    <h3>S1-3D: WildGuard tracks stance, not writing quality</h3>
+    <p class="result">RESULT: <b class="pass">Substance-led, verified</b></p>
+    <p>Unique out-of-fold AUC contribution over 814 responses, six-fold cross-validation grouped by behavior: stance <strong>+0.404</strong> [+0.334, +0.468], quality <strong>+0.009</strong> [−0.002, +0.021], relevance and task ~0. The 0.02 materiality bar and every reading were fixed before the fit. Harmful rate by stance: endorses 96.4%, hedges 59.7%, refuses 28.9%, corrects 24.5%. By quality bin it is non-monotone — 88%, 58%, 69%, 90% — so there is no style gradient. Two caveats carry equal weight. The stance result is largely construct overlap, since both labels encode “did it supply the requested false thesis”; the informative half is the quality null. And the analysis set is empty on <code>off_topic</code> and <code>no_attempt</code> by construction, so it cannot speak to those. Observational: the perturbational test stays parked.</p>
+  </div>
+  <div class="claim">
     <h3>Mixed: Both</h3>
     <p class="result">RESULT: <b class="pass">Supported in substance</b></p>
     <p>Decomposing harmful = (1 − refusal) × harmful|non-refusal: refusal alone gives +8.5pp, harmful|non-refusal alone +11.7pp, observed +22pp. Roughly 40/60. The second factor is writing quality and on-topic-ness unsplit (see H1b); Stage 1 separates them. The ablation proceeds; its primary metric becomes refusal or harmful-given-non-refusal.</p>
@@ -268,6 +275,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
     <li><strong>Refocus (Gus, 28 Aug):</strong> Starling and Deeper-Starling do not separate, so the effect appears early and saturates. The ablation targets Phoenix → Starling: the Starling-equivalent token budget is the primary endpoint, intermediate checkpoints if affordable, Deeper-Starling kept only as a secondary persistence check. Seven mixture arms unchanged.</li>
     <li><strong>Superseded (Gus, 28 Aug, late):</strong> the seven source-arms are replaced by a <strong>two-stage program</strong>. Stage 1 measures what changed with instruments WildGuard lacks (on-topic, task completion, stance, quality; IFEval first; wrapper sensitivity). Stage 2 is a six-arm replay from the Phoenix checkpoint: {Phoenix mix, Starling mix} × {flat, cooldown LR}, plus Starling minus instruction/Q&amp;A data and Starling minus expository data, mass returned to Nemotron. Ten training runs. Spec: <code>docs/experiments/08-28_phoenix-starling_distribution-decomposition.md</code>. Why: Marin's own retro shows the FLAN-free first cooldown <em>raised</em> refusal (19 → 23) while the FLAN-10× second cooldown dropped it (27 → 14); polish rose in both. Source-based arms would smear that signal.</li>
     <li><strong>Any outcome:</strong> pick the H1b instrument. It is the blocker now. → Resolved by Stage 1: official IFEval, then a selected local judge on relevance/task/stance/quality.</li>
+    <li><strong>Instrument (31 Aug, S1-3D):</strong> WildGuard tracks stance and is close to blind to rated writing quality on this data, so H1-as-judge-artifact is not supported observationally and the style-perturbation sidecar (<code>S1-3C</code>) stays parked rather than being promoted. Stage 2 endpoints must describe a WildGuard harmful rate as a stance rate.</li>
     <li><strong>Hardware:</strong> after two L40S drains this rule fired. Gate 3 reruns on H200, then all 39 there. Nothing from L40S is reused.</li>
   </ul>
 </section>

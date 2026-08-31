@@ -11,14 +11,14 @@ next task. Lifecycle rules: `docs/PROJECT_OPERATING_RULES.md`.
 |---|---|---|---|---|---|
 | `PM-001` | DONE | Codex | Install the project-control reset and validation guardrails. | Run the validator; hand off `S1-3D`. | `STATUS.md`; `docs/PROJECT_OPERATING_RULES.md`; `scripts/check_project_state.py` |
 | `PM-002` | DONE | Codex | Install the canonical living-report path and freshness gate. | Keep it reconciled in every task transition and close transaction. | `docs/reports/phoenix-starling/index.html`; `docs/reports/README.md` |
-| `S1-3D` | IN_PROGRESS | Research agent | Establish which rubric dimensions WildGuard tracks on the existing 1,080 responses. | Preregistration frozen 2026-08-31; run the CPU-only regression, then verify it independently. | `docs/experiments/08-31_wildguard_rubric-dimension-regression.md`; `docs/results/08-31_wildguard_rubric/`; `docs/reports/phoenix-starling/index.html` |
+| `S1-3D` | DONE | Research agent | WildGuard tracks stance, not writing quality: unique ΔAUC stance +0.404, quality +0.009 with CI spanning 0. | Verdict SUBSTANCE-LED, VERIFIED within 0.0005 by two independent paths; no follow-up. | `docs/experiments/08-31_wildguard_rubric-dimension-regression.md`; `docs/results/08-31_wildguard_rubric/` |
 | `S1-3F` | READY | Research agent | Split endorsement into unqualified, concessionary, and misclassified correction/hedge. | Lock the additive blinded rubric before new labels. | Backlog legacy item 3f; `/scratch/gs157/marin-misinfo-labels/full_phoenix_starling_v1/` |
 | `S1-05` | READY | Research agent | Determine whether the compliance change appears on matched benign instructions. | Finalize the 54 rule-gradable twins and pre-register scoring. | `docs/experiments/08-28_phoenix-starling_distribution-decomposition.md` |
 | `S1-06` | READY | Research agent | Freeze and baseline a deduplicated ≥150-behavior misinformation evaluation. | Write the source-selection note, deduplicate, hash, and inventory the set. | `docs/DATA_INVENTORY.md`; Stage 1 spec step 6 |
-| `S1-SYNTH` | BLOCKED | Research agent | Produce the Stage 1 verdict and frozen Stage 2 endpoints. | Complete `S1-3D`, `S1-3F`, `S1-05`, and `S1-06`; resolve `IN-002`. | `STATUS.md` Stage 1 exit criteria |
+| `S1-SYNTH` | BLOCKED | Research agent | Produce the Stage 1 verdict and frozen Stage 2 endpoints. | Complete `S1-3F`, `S1-05`, and `S1-06`; resolve `IN-002`. `S1-3D` is done. | `STATUS.md` Stage 1 exit criteria |
 | `S2-00` | BLOCKED | Gus + David | Finalize the six-arm causal replay and its training allocation. | Resolve `IN-001`, then write the Stage 2 experiment document. | Stage 1 spec step 7; `docs/decisions.md` 2026-08-28 six-arm decision |
 | `S1-3B` | PARKED | Gus | Optional StrongREJECT sidecar, explicitly non-gating. | Resolve `IN-003` only if the sidecar is retained. | `docs/experiments/08-29_strongreject_sidecar_phoenix-starling.md` |
-| `S1-3C` | PARKED | Research agent | Style-sensitivity test with a valid rewriter and fidelity check. | Redesign because no local judge passed selection; do not run current design. | `docs/experiments/08-29_wildguard_style-perturbation.md` |
+| `S1-3C` | PARKED | Research agent | Style-sensitivity test with a valid rewriter and fidelity check. | Stays parked: `S1-3D` found WildGuard tracks stance, not quality, so the style-artifact route is not supported. Also needs a rewriter no local judge passed selection for. | `docs/experiments/08-29_wildguard_style-perturbation.md` |
 <!-- ACTIVE_TASKS_END -->
 
 ## Queue rules
