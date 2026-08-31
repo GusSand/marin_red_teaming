@@ -6,6 +6,10 @@ Only scripts needed to reproduce results live here. Throwaway/temporary scripts 
 their own subdir and are not committed.
 
 ## Current scripts
+- `check_project_state.py` — validates `STATUS.md` against the machine-marked active tables in
+  `BACKLOG.md` and `INBOX.md`, enforces the one-task WIP limit, and checks that blocked tasks name
+  live INBOX IDs. Run before commits. `submit.sh` runs it with `--require-in-progress` before any GPU
+  submission, so a merely queued or stale task cannot consume compute.
 - `setup_safety_eval.sh` — Gate 1: build isolated venv `.venv-safety-eval`, `pip install -e .`
   + requirements + `vllm==0.11.0`; print torch/transformers/vllm/GPU provenance to
   `logs/gate1_setup.log`. Isolated so it never touches the base env (torch 2.10 / transformers 5.0).

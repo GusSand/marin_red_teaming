@@ -26,6 +26,10 @@ fi
 [[ -f "$WORK/$1" || -f "$1" ]] || { echo "no such sbatch file: $1" >&2; exit 2; }
 
 CHECK="$WORK/scripts/dry_run_check.py"
+STATE_CHECK="$WORK/scripts/check_project_state.py"
+
+echo "=== project state: $STATE_CHECK ==="
+python3 "$STATE_CHECK" --require-in-progress
 
 echo "=== preflight: $CHECK ==="
 if [[ ! -x "$PY" ]]; then

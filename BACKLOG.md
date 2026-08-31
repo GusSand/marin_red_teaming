@@ -1,3 +1,40 @@
+# Backlog
+
+`STATUS.md` is the operational source of truth. Only the table below is the active queue. Everything
+after **Legacy backlog and briefs** is preserved research history and must not be used to choose the
+next task. Lifecycle rules: `docs/PROJECT_OPERATING_RULES.md`.
+
+## Active critical path
+
+<!-- ACTIVE_TASKS_START -->
+| ID | Status | Owner | Outcome | Next action | Evidence / specification |
+|---|---|---|---|---|---|
+| `PM-001` | DONE | Codex | Install the project-control reset and validation guardrails. | Run the validator; hand off `S1-3D`. | `STATUS.md`; `docs/PROJECT_OPERATING_RULES.md`; `scripts/check_project_state.py` |
+| `S1-3D` | READY | Research agent | Establish which rubric dimensions WildGuard tracks on the existing 1,080 responses. | Pre-register the regression and run it CPU-only. | `docs/experiments/08-28_phoenix-starling_distribution-decomposition.md`; `docs/results/08-28_stage1/` |
+| `S1-3F` | READY | Research agent | Split endorsement into unqualified, concessionary, and misclassified correction/hedge. | Lock the additive blinded rubric before new labels. | Backlog legacy item 3f; `/scratch/gs157/marin-misinfo-labels/full_phoenix_starling_v1/` |
+| `S1-05` | READY | Research agent | Determine whether the compliance change appears on matched benign instructions. | Finalize the 54 rule-gradable twins and pre-register scoring. | `docs/experiments/08-28_phoenix-starling_distribution-decomposition.md` |
+| `S1-06` | READY | Research agent | Freeze and baseline a deduplicated ≥150-behavior misinformation evaluation. | Write the source-selection note, deduplicate, hash, and inventory the set. | `docs/DATA_INVENTORY.md`; Stage 1 spec step 6 |
+| `S1-SYNTH` | BLOCKED | Research agent | Produce the Stage 1 verdict and frozen Stage 2 endpoints. | Complete `S1-3D`, `S1-3F`, `S1-05`, and `S1-06`; resolve `IN-002`. | `STATUS.md` Stage 1 exit criteria |
+| `S2-00` | BLOCKED | Gus + David | Finalize the six-arm causal replay and its training allocation. | Resolve `IN-001`, then write the Stage 2 experiment document. | Stage 1 spec step 7; `docs/decisions.md` 2026-08-28 six-arm decision |
+| `S1-3B` | PARKED | Gus | Optional StrongREJECT sidecar, explicitly non-gating. | Resolve `IN-003` only if the sidecar is retained. | `docs/experiments/08-29_strongreject_sidecar_phoenix-starling.md` |
+| `S1-3C` | PARKED | Research agent | Style-sensitivity test with a valid rewriter and fidelity check. | Redesign because no local judge passed selection; do not run current design. | `docs/experiments/08-29_wildguard_style-perturbation.md` |
+<!-- ACTIVE_TASKS_END -->
+
+## Queue rules
+
+- WIP limit: at most one `IN_PROGRESS` task.
+- The next task is the first `READY` row unless `STATUS.md` documents a change.
+- A blocked task names its unblock condition and corresponding INBOX ID.
+- New research directions enter as `PARKED`; they do not jump the critical path silently.
+- Run `python3 scripts/check_project_state.py` after every state change.
+
+---
+
+## Legacy backlog and briefs
+
+The material below is preserved for provenance. Status markers below this line are historical and may
+be stale. Do not execute from them without promoting the task into the active table above.
+
 # Task 1: reproduce Olmo 3 7B safety numbers
 
 ## Stage 1 / Stage 2 program (gs157, 2026-08-28) — spec: docs/experiments/08-28_phoenix-starling_distribution-decomposition.md
@@ -18,6 +55,20 @@
   best-agreed category — the `correct`-is-real reading survives. Disagreement concentrates in `hedge`
   (F1 0.449). Quote the three-way 0.867 alongside any external use of +28.5pp.
   `docs/experiments/08-31_gpt_out-of-sample_rater-check.md`.
+- [ ] **3f. Concessionary vs unqualified endorsement audit — POST-HOC FOLLOW-UP (raised 2026-08-31).**
+  Test whether the Phoenix→Starling rise in `attempt-strong` is primarily unequivocal endorsement or
+  "balanced-sounding" / concessionary endorsement that acknowledges harms or counterevidence before
+  ultimately advancing the requested false thesis. Use the existing 1,080 responses; no new generation.
+  Before labelling, lock a blinded additive sub-rubric over the primary-rater `endorses` items with three
+  mutually exclusive outcomes: (a) unqualified endorsement, (b) concessionary endorsement, and (c) net
+  correction/hedge misclassified as endorsement. Apply the same fabricated-turn truncation convention as
+  pass 2. Report Phoenix and Starling mass plus the behavior-paired delta for each subtype, never response
+  "flows". Audit a stratified 150-item slice with a second frontier rater and report agreement, especially
+  on (b) vs (c). Explicitly label the analysis post hoc. **Decision use:** if Starling's gain is mainly (b),
+  describe the result as increased willingness to supply the requested thesis despite concessions; if it is
+  mainly (a), retain the stronger endorsement reading; if (c) is material or rater agreement is poor, weaken
+  the stance-shift claim before Stage 2. This is a cheap Stage 1 closure item, not a gate on freezing the
+  expanded ≥150-behavior evaluation.
 - [ ] **3d. Which rubric dimension does WildGuard track?** Regress WildGuard `harmful` on
   relevance/task/stance/quality from the pass-2 Claude labels over the 1,080 (their Fig. 2 style-correlation
   analysis). Unblocked and free: all inputs on disk, CPU-only, no new labels. Pre-register before running.

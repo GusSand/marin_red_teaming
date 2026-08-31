@@ -1,5 +1,9 @@
 # Research Journal (append-only)
 
+> **Evidence log, not current status.** Operational state and the current task live in `../STATUS.md`.
+> Any `RESUME HERE` entry below is a historical handoff from its date. Do not use it to select work.
+> New handoffs update `STATUS.md`; new experimental evidence is appended here.
+
 One entry per experiment. TLDR level. No goalpost-moving.
 
 ---

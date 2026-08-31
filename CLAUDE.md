@@ -20,12 +20,51 @@ You run mostly unattended, including overnight, on my remote GPU and the rule is
 - I only need in scripts the ones we would use to repro. 
 - Make sure you document all the appropiate scripts in a readme.md inside scripts.
 
-Two plain-text files hold the state — no ID scheme, no ceremony:
+Three short control surfaces hold current state. Read them in this order:
 
-- `BACKLOG.md` — your queue. Checklist of tasks, top = next. You add/reorder/close items freely.
-- `INBOX.md` — my queue. Things needing me: a decision, a credential, an interactive job, a review. One line each, newest on top. Append `→ answer:` inline when I reply.
+- `STATUS.md` — authoritative current phase, current task, blockers, and exit criteria.
+- The active table at the top of `BACKLOG.md` — ordered tasks with stable IDs, owners, next actions, and evidence.
+- The active table at the top of `INBOX.md` — only requests that need a named person.
 
-If 3+ INBOX items sit unanswered, put a one-line `STALE — please triage` note at the top so I see it.
+Historical backlog and inbox entries remain below marked legacy sections for provenance. They are not a
+queue. The research journal is evidence, not a handoff file. Full lifecycle rules live in
+`docs/PROJECT_OPERATING_RULES.md`.
+
+**WIP limit: one.** At most one active task is `IN_PROGRESS`. Sidecars and interesting new directions
+stay `PARKED` unless `STATUS.md` promotes them. Before starting or submitting work, run
+`python3 scripts/check_project_state.py`.
+
+### Mandatory task transition
+
+Treat each experiment as one explicit state transaction:
+
+1. **Reconcile.** At session start, run the state checker and read `STATUS.md`. If the control files
+   disagree, repair them before research work.
+2. **Start.** Change the current task from `READY` to `IN_PROGRESS` in `BACKLOG.md` and `STATUS.md`.
+   Freeze the experiment question, data, analysis, exclusions, success criteria, tolerance, and decision
+   consequences in its experiment file. Commit this pre-result state before running or inspecting new outcomes.
+3. **Run.** Execute only the frozen plan. Preserve raw inputs and outputs. Deviations are new, clearly labelled
+   analyses; they never silently replace the registered analysis.
+4. **Verify.** Keep the result `UNVERIFIED` until an independent path reproduces the headline numbers against
+   the frozen plan.
+5. **Close.** In one change set, add durable evidence, verification status, journal and decision entries as
+   applicable, mark the task `DONE`, and promote the next `READY` task in `STATUS.md`.
+
+If work becomes blocked, change it to `BLOCKED`, add a named request to `INBOX.md`, and promote the next
+unblocked task. A null or failed hypothesis is still a completed result when it is documented and verified.
+
+### Enforcement
+
+- `CLAUDE.md` is the behavioral contract for research agents. Do not bypass it.
+- The tracked `.githooks/pre-commit` runs the project-state checker before every commit. This clone must have
+  `core.hooksPath=.githooks`; restore that setting before work if it is missing.
+- `scripts/submit.sh` runs the stricter checker before GPU submission and refuses to submit unless the current
+  task is `IN_PROGRESS`.
+- Never use `git commit --no-verify`, disable the hook, call `sbatch` around `scripts/submit.sh`, or weaken a
+  check to get work through. Repair the state or record the blocker.
+- Mechanical checks enforce state consistency. They cannot certify that a hypothesis or interpretation is
+  scientifically sound. Pre-registration, independent verification, and Gus's review of flagged judgment calls
+  enforce that layer.
 
 ---
 
@@ -180,6 +219,12 @@ Rules that follow:
 - `docs/decisions.md` — append-only, one line per settled choice (`2026-07-01 · picked model Y over X/Z → experiments/07-01_diffusion_model-selection.md`). **Write a line the moment a selection experiment reaches a verdict** (dataset/model/method chosen) — not while still exploring. Never rewrite past lines. Look here before re-opening a decision.
 - If you create a dataset, add it to `docs/DATA_INVENTORY.md` with how to recreate it, size, and which experiment used it.
 
+### Result lifecycle
+
+A task is not `DONE` when a job ends. Close it only when durable evidence, independent verification (or
+an approved `UNVERIFIED` label), the journal entry, any decision entry, `STATUS.md`, and the active backlog
+row agree in the same commit. Do not create new `RESUME HERE` journal entries; update `STATUS.md` instead.
+
 ---
 
 ## Research & lit review
@@ -197,4 +242,7 @@ When a task needs prior-work or novelty checking — does this exist, who's done
 
 - Commit completed work to `main` with a descriptive message and push it (Gus, 2026-08-27: two-person project, no PR flow needed; supersedes the earlier working-branch rule).
 - `.gitignore` large artifacts (checkpoints, logs, model weights); keep `docs/`, `BACKLOG.md`, `INBOX.md`, journal checked in — that's the project memory.
-- **Treat `research_journal.md`, `BACKLOG.md`, and `INBOX.md` as append-only.** Don't rewrite or overwrite them wholesale. If a subagent or tool touches them, that edit must be a clean git diff I can revert. A bad autonomous run must always be recoverable.
+- **Historical sections are append-only; active control surfaces are maintained.** Do not rewrite historical
+  journal entries, legacy backlog briefs, or historical inbox correspondence. `STATUS.md` and the marked active
+  tables in `BACKLOG.md` / `INBOX.md` must be edited as state changes. Every edit must remain a clean git diff
+  that can be reverted.

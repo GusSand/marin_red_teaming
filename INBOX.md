@@ -1,4 +1,28 @@
-# INBOX — things needing gs157 (newest on top). Append `→ answer:` inline when you reply.
+# Inbox
+
+Only the table below is active. Detailed correspondence below **Historical correspondence** is preserved
+for provenance and may contain resolved or superseded requests. Project status: `STATUS.md`. Lifecycle
+rules: `docs/PROJECT_OPERATING_RULES.md`.
+
+## Active requests
+
+<!-- ACTIVE_INBOX_START -->
+| ID | Priority | Owner | Needed | Blocks | Resolution evidence |
+|---|---|---|---|---|---|
+| `IN-001` | CRITICAL | Gus / David | Confirm which intermediate Starling checkpoints exist and whether the six-arm, 10-training-run screen plus one confirmation run is funded. If not, name the first arms to cut. | `S2-00` | Answer inline here; Stage 2 experiment doc applies it. |
+| `IN-002` | HIGH | Gus | Complete the prepared 25-item spot-check, or explicitly waive it because the convention-matched out-of-sample GPT audit is complete. | `S1-SYNTH` | `/scratch/gs157/marin-misinfo-labels/calibration_v1/spotcheck/sheet.csv` or a decision in `docs/decisions.md` |
+| `IN-003` | OPTIONAL | Gus | If retaining StrongREJECT: accept the `google/gemma-2b` licence and expose a read token to Torch jobs. | `S1-3B` only; not the critical path | Successful read of the gated base from the safety-eval environment. |
+<!-- ACTIVE_INBOX_END -->
+
+When an item resolves, remove its row from this table in the same commit that applies the answer. Keep
+the detailed exchange in the historical section.
+
+---
+
+## Historical correspondence
+
+Original convention: newest on top; append `→ answer:` inline when replying. Entries below are not active
+unless represented in the table above.
 
 - **[2026-08-31 11:15] GPT slice DONE — verdict MODERATE, nothing changes.** Your sheet validated 150/150.
   stance κ **0.705** (bar 0.70, cleared), six-category **0.733** (bar 0.75, missed), three-way **0.867**
