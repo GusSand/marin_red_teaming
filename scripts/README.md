@@ -153,6 +153,15 @@ to local `repro-olmo3-safety/runs/` before the remote is shut down (fresh-instan
   `anchor_agreement.json` exactly (stance 0.853/0.784, task 0.84/0.700, relevance 0.867/0.378,
   derived6 0.787/0.705, derived3 0.927, quality n=109 rho=0.561).
 
+### 2026-08-31 · `annotate.py --max-chars`
+
+- `annotate.py` gained `--max-chars N` (default 4000, unchanged; `0` = show the whole response). The
+  `calibration_v1/spotcheck/` audit must judge the **whole** response including fabricated `User:` turns
+  — that subset audits the two calibration anchors, which never got the truncation convention — and 11 of
+  its 25 items run past 4000 characters, up to 10,628. Labelling those against a silently truncated
+  display would have measured the display cap instead of the raters. Run that audit with
+  `--max-chars 0`. Full-set passes keep the default.
+
 ### 2026-08-31 additions (Stage 1 step 3d / `S1-3D` — WildGuard versus the rubric)
 
 - `wildguard_rubric_regression.py` — **the S1-3D analysis path.** Regresses WildGuard's binary

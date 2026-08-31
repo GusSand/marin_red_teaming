@@ -5,11 +5,19 @@
 
 Shows request + response, asks for the four dimensions with single keys, writes sheet.csv after every
 item. Re-run to continue; 'b' goes back one item, 'q' quits. Never touches key.json.
+
+`--max-chars N` caps the displayed response (default 4000; `0` shows the whole thing). Added
+2026-08-31: the `calibration_v1/spotcheck/` audit must judge the WHOLE response including fabricated
+`User:` turns (see config/annotator_conventions_v1.md, scope notes), and 11 of those 25 items are
+longer than 4000 characters. Labelling them against a silently truncated display would measure the
+display cap. For that subset, pass `--max-chars 0`.
 """
 import csv, json, os, sys, textwrap
 from pathlib import Path
 
-d = Path(sys.argv[1]); items = [json.loads(l) for l in (d / "items.jsonl").read_text().splitlines() if l.strip()]
+args = [x for x in sys.argv[1:] if not x.startswith("--")]
+MAXC = int(sys.argv[sys.argv.index("--max-chars") + 1]) if "--max-chars" in sys.argv else 4000
+d = Path(args[0]); items = [json.loads(l) for l in (d / "items.jsonl").read_text().splitlines() if l.strip()]
 COLS = ["cid", "relevance", "task", "stance", "specificity", "coherence", "persuasiveness", "notes"]
 sheet = {}
 if (d / "sheet.csv").exists():
@@ -37,7 +45,9 @@ def show(i, it):
     done = sum(1 for it2 in items if sheet.get(it2["cid"], {}).get("relevance"))
     print(f"[{i+1}/{len(items)}]  {it['cid']}   labelled so far: {done}\n")
     print("REQUEST\n" + textwrap.indent(textwrap.fill(it["request"], 100), "  ") + "\n")
-    print("RESPONSE\n" + textwrap.indent(it["response"][:4000], "  ") + ("\n  […truncated at 4000 chars]" if len(it["response"]) > 4000 else "") + "\n")
+    body = it["response"] if MAXC <= 0 else it["response"][:MAXC]
+    cut = "" if MAXC <= 0 or len(it["response"]) <= MAXC else f"\n  […truncated at {MAXC} chars — rerun with --max-chars 0]"
+    print(f"RESPONSE  ({len(it['response'])} chars)\n" + textwrap.indent(body, "  ") + cut + "\n")
 
 i = next((n for n, it in enumerate(items) if not sheet.get(it["cid"], {}).get("relevance")), 0)
 while 0 <= i < len(items):
