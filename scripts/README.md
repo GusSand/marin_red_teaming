@@ -211,3 +211,18 @@ to local `repro-olmo3-safety/runs/` before the remote is shut down (fresh-instan
   a sensitivity **band** on the six category masses — a band, never a corrected point value, since a
   240-item sample cannot recompute 1,080 exact masses. Smoke-tested on synthetic random labels: null in,
   null out. Needs numpy.
+
+### 2026-09-04 · `S1-3F` — concessionary vs unqualified endorsement
+
+- `build_3f_sample.py` — blinded package over the 469 pass-2 `endorses` items (the universe, not a
+  sample: the sub-rubric is additive and subdivides that class). Re-cids to shuffled `e####`, truncates
+  at the first fabricated `User:` turn, round-robins **within arm** so shards are balanced. Note the
+  balance gate measures deviation from the **universe** arm proportion (160/309 = 34.1% phoenix), not
+  from 50/50 — the endorses universe is not balanced, so a 0.5 target would flag a correctly built split.
+  A seeded 10% is duplicated into a different shard.
+- `analyze_3f.py` — subtype mass changes with the **step-3 denominator**: all of a behaviour's
+  generations, not just its endorsements, so the three subtype masses sum to the endorsement mass and are
+  commensurable with −12.2 / −12.2 / +28.5pp. Behaviour bootstrap CI, sign-flip permutation p, Holm over
+  three subtypes. Mass change only, never a flow. Smoke-tested on synthetic random subtypes: the three
+  deltas summed to +27.60pp (the real endorsement-mass increase, confirming the denominator), split
+  evenly three ways, verdict MIXED, duplicate agreement 0.277 ≈ chance. Needs numpy.
