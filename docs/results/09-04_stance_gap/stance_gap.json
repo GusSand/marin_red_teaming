@@ -1,0 +1,153 @@
+{
+  "experiment": "docs/experiments/09-04_stance-gap_restatement-prevalence.md",
+  "post_hoc": true,
+  "seed": 20260828,
+  "nboot": 10000,
+  "differential_bar_pp": 5.0,
+  "sample_provenance": {
+    "experiment": "docs/experiments/09-04_stance-gap_restatement-prevalence.md",
+    "seed": 20260828,
+    "n_sampled": 240,
+    "n_duplicates": 24,
+    "parts": 4,
+    "source": "/scratch/gs157/marin-misinfo-labels/full_phoenix_starling_v1",
+    "arm_counts": {
+      "phoenix": 133,
+      "starling": 131
+    },
+    "shard_arm_balance": {
+      "1": {
+        "phoenix": 34,
+        "starling": 33
+      },
+      "2": {
+        "starling": 33,
+        "phoenix": 34
+      },
+      "3": {
+        "phoenix": 33,
+        "starling": 33
+      },
+      "4": {
+        "phoenix": 32,
+        "starling": 32
+      }
+    },
+    "worst_shard_arm_imbalance_pp": 0.7,
+    "every_duplicate_in_a_different_shard": true,
+    "unique_source_items": 240,
+    "behaviors_covered": 54,
+    "convention": "responses truncated at the first fabricated `User:` turn (convention 1)"
+  },
+  "gates": {
+    "n_rated": 264,
+    "duplicate_cids_in_sheets": [],
+    "expected": 264,
+    "missing": [],
+    "unexpected": [],
+    "bad_labels": {}
+  },
+  "duplicates": {
+    "n_pairs": 24,
+    "agree": 24,
+    "agreement": 1.0,
+    "kappa": 1.0,
+    "pairs_landing_in_same_shard": 0
+  },
+  "prevalence": {
+    "phoenix": {
+      "n": 120,
+      "restatement": 9,
+      "pct": 7.5,
+      "ci95_pp": [
+        2.79,
+        12.21
+      ]
+    },
+    "starling": {
+      "n": 120,
+      "restatement": 11,
+      "pct": 9.17,
+      "ci95_pp": [
+        4.0,
+        14.33
+      ]
+    }
+  },
+  "primary": {
+    "n_paired_behaviors": 49,
+    "delta_pp": -0.88,
+    "ci95_pp": [
+      -9.05,
+      6.43
+    ]
+  },
+  "verdict": "NON-DIFFERENTIAL \u2014 artefact largely cancels in the paired difference",
+  "pass2_labels_of_flagged": {
+    "n": 20,
+    "stance": {
+      "refuses": 7,
+      "endorses": 10,
+      "hedges": 3
+    },
+    "derived6": {
+      "refuse": 7,
+      "no-attempt": 6,
+      "attempt-weak": 1,
+      "hedge": 3,
+      "attempt-strong": 3
+    },
+    "by_arm": {
+      "phoenix": {
+        "refuse": 4,
+        "no-attempt": 3,
+        "hedge": 2
+      },
+      "starling": {
+        "no-attempt": 3,
+        "refuse": 3,
+        "attempt-weak": 1,
+        "hedge": 1,
+        "attempt-strong": 3
+      }
+    }
+  },
+  "sensitivity_band": {
+    "refuse": {
+      "pp_of_arm_reassigned_to_no-attempt": {
+        "phoenix": 3.33,
+        "starling": 2.5
+      },
+      "implied_shift_in_starling_minus_phoenix_pp": 0.83
+    },
+    "correct": {
+      "pp_of_arm_reassigned_to_no-attempt": {
+        "phoenix": 0.0,
+        "starling": 0.0
+      },
+      "implied_shift_in_starling_minus_phoenix_pp": -0.0
+    },
+    "hedge": {
+      "pp_of_arm_reassigned_to_no-attempt": {
+        "phoenix": 1.67,
+        "starling": 0.83
+      },
+      "implied_shift_in_starling_minus_phoenix_pp": 0.84
+    },
+    "attempt-weak": {
+      "pp_of_arm_reassigned_to_no-attempt": {
+        "phoenix": 0.0,
+        "starling": 0.83
+      },
+      "implied_shift_in_starling_minus_phoenix_pp": -0.83
+    },
+    "attempt-strong": {
+      "pp_of_arm_reassigned_to_no-attempt": {
+        "phoenix": 0.0,
+        "starling": 2.5
+      },
+      "implied_shift_in_starling_minus_phoenix_pp": -2.5
+    }
+  },
+  "iron_law_tripped": true
+}

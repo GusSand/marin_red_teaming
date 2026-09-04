@@ -3,9 +3,9 @@
 - **Last updated:** `2026-09-04`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
-- **Current task:** `S1-STANCE-GAP`
-- **Task status:** `IN_PROGRESS`
-- **Next checkpoint:** Rate the 240-item blinded sample and report whether the restatement artefact is differential between arms.
+- **Current task:** `S1-3F`
+- **Task status:** `READY`
+- **Next checkpoint:** Run the frozen concessionary-endorsement audit over the 469 `endorses` items.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-04`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
@@ -24,7 +24,8 @@ experiment that separates data-mixture and learning-rate effects.
 54-behavior, 10-seed evaluation, refusal mass fell 12.2pp, corrective mass fell 12.2pp, and
 attempt-strong mass rose 28.5pp. General instruction following improved 11.8pp. Quality given attempt
 moved only +0.12 and was not significant. The direction replicates across raters; the magnitude is
-rater-dependent, and the human spot-check was too small to adjudicate it. **The instrument tracks stance, not prose.** Regressed on the four rated dimensions,
+rater-dependent, and the human spot-check was too small to adjudicate it. A late-formalized labelling
+convention exposes ≈2.5pp of the +28.5pp and nothing of the corrective drop. **The instrument tracks stance, not prose.** Regressed on the four rated dimensions,
 WildGuard's harmful label takes +0.404 unique out-of-fold AUC from stance and +0.009 from writing
 quality, whose interval spans zero — so a WildGuard harmful rate here reads closer to a stance rate than
 a harm-severity rate. The `S1-3F` audit will determine how much of the endorsement increase is
@@ -32,16 +33,14 @@ unqualified versus concessionary or balanced-sounding.
 
 ## Critical path
 
-1. `S1-STANCE-GAP` — quantify whether restatement-without-assertion items bias the headline. Promoted
-   ahead of `S1-3F` by gs157 on 2026-09-04: it is the open risk to numbers already going to an external
-   audience, and it measures the same artefact more directly.
-2. `S1-3F` — split endorsement into unqualified, concessionary, and misclassified correction/hedge.
-3. `S1-05` — run the triggered benign-twins control.
-4. `S1-06` — freeze and baseline the expanded ≥150-behavior evaluation.
-5. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
-6. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
+1. `S1-3F` — split endorsement into unqualified, concessionary, and misclassified correction/hedge.
+2. `S1-05` — run the triggered benign-twins control.
+3. `S1-06` — freeze and baseline the expanded ≥150-behavior evaluation.
+4. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
+5. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
 
-`S1-3D` is closed: WildGuard tracks stance, not rated writing quality.
+`S1-3D` and `S1-STANCE-GAP` are closed.
+
 
 The detailed status, owner, next action, and evidence path for each item live in the active table at the
 top of `BACKLOG.md`.
@@ -52,7 +51,7 @@ top of `BACKLOG.md`.
 - [x] Main 1,080-response distribution decomposition independently verified.
 - [x] Out-of-sample GPT rater check completed; verdict MODERATE.
 - [x] WildGuard-versus-rubric analysis completed and verified (`S1-3D`); verdict SUBSTANCE-LED.
-- [ ] Restatement-artefact prevalence quantified and shown non-differential, or the headline corrected (`S1-STANCE-GAP`).
+- [x] Restatement-artefact prevalence quantified: NON-DIFFERENTIAL, ≈−2.5pp exposure on +28.5pp, zero on the corrective drop (`S1-STANCE-GAP`).
 - [ ] Concessionary-endorsement audit completed with a second-rater check (`S1-3F`).
 - [ ] Benign-twins control completed (`S1-05`).
 - [ ] Expanded ≥150-behavior set selected, deduplicated, hashed, and baselined (`S1-06`).
@@ -76,7 +75,6 @@ top of `BACKLOG.md`.
 
 ## Parked until the critical path lands
 
-The concessionary-endorsement audit is frozen and queued behind `S1-STANCE-GAP`. Also parked:
 StrongREJECT credential work, the style-perturbation design (`S1-3C`, kept parked by the `S1-3D`
 verdict), bibliography work, W&B integration,
 Safety Gap Toolkit adaptation, GRAM, and other new research directions. A parked item may not become current
@@ -91,7 +89,7 @@ without updating this file and the active backlog table in the same commit.
 | GPT out-of-sample rater check | `docs/experiments/08-31_gpt_out-of-sample_rater-check.md` |
 | WildGuard tracks stance, not quality | `docs/experiments/08-31_wildguard_rubric-dimension-regression.md`; `docs/results/08-31_wildguard_rubric/` |
 | Human spot-check audit of the anchor | `docs/experiments/08-31_spotcheck_anchor-audit.md`; `docs/results/09-04_spotcheck_audit/` |
-| Open risk to the headline masses | `docs/experiments/09-04_stance-gap_restatement-prevalence.md` |
+| Restatement artefact, quantified | `docs/experiments/09-04_stance-gap_restatement-prevalence.md`; `docs/results/09-04_stance_gap/` |
 | Settled choices | `docs/decisions.md` |
 | Full experimental chronology | `docs/research_journal.md` |
 | Canonical living report | `docs/reports/phoenix-starling/index.html` |

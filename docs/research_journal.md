@@ -850,3 +850,56 @@ already survived an out-of-sample rater at three-way 0.867.
 **Found in passing.** `judge/olmo32.jsonl` carries `stance="refutes"` on `c0040`, outside the locked
 vocabulary. Not among the 25, so nothing here is affected, but the parser admits invalid classes.
 Backlogged as `S1-JUDGE-VOCAB`.
+
+---
+
+## 2026-09-04 · S1-STANCE-GAP · Does the restatement artefact bias the Phoenix→Starling headline?
+
+**Research question.** The locked rubric gives `relevance` and `task` explicit wording for a restated
+request but gives `stance` none. Convention 6 fixed that on 2026-08-31; the pass-2 annotation behind the
+1,080 labels never had it. Does that artefact bias −12.2 / −12.2 / +28.5pp? Pre-registered in
+`docs/experiments/09-04_stance-gap_restatement-prevalence.md`, frozen at commit `9e080db`. **POST HOC.**
+Promoted ahead of `S1-3F` by gs157 because it is the open risk to numbers going to an external audience.
+
+**Method.** +28.5pp is a paired difference, so an artefact common to both arms largely cancels; the
+primary quantity is therefore the behaviour-paired *difference* in prevalence, not prevalence. Binary
+`restatement`/`other` definition locked first. Stratified random sample of 240 from the 1,080, 120 per
+arm, **by arm only** — stratifying on any pass-2 label would bias the estimate toward whichever classes
+the artefact hides in. Re-cid'd `r####`, truncated at the first fabricated `User:` turn, four blind
+Claude subagents on arm-balanced shards (worst imbalance 0.7pp), 24 duplicates all cross-shard. Analysis
+smoke-tested on synthetic random labels: null in, null out.
+
+**Results.** Prevalence phoenix 7.50% [2.79, 12.21] (9/120), starling 9.17% [4.00, 14.33] (11/120).
+Primary paired delta over 49 paired behaviours **−0.88pp, CI [−9.05, +6.43]** → **NON-DIFFERENTIAL**.
+Duplicate agreement 24/24, κ 1.000, 0 pairs in the same shard. Pass-2 labels of the 20 flagged items:
+stance `endorses` 10, `refuses` 7, `hedges` 3, **`corrects` 0**; derived refuse 7, no-attempt 6, hedge 3,
+attempt-strong 3 (0 phoenix / 3 starling), attempt-weak 1, **correct 0**. Sensitivity band under
+convention-6 reassignment: attempt-strong **−2.50pp**, refusal +0.83pp, corrective **0.00pp**, hedge
++0.83pp, attempt-weak −0.83pp. Per-shard flagged rates on primary rows 15.0 / 10.0 / 3.3 / 5.0%,
+χ² 6.55, 3 df, p 0.088.
+
+**Verification.** MATCHED. Fresh subagent, given only the rater sheets, key, pass-2 labels and the
+preregistration, denied every analysis script. Prevalence and delta exact; CI [−8.74, +6.43] against
+[−9.05, +6.43], 0.31pp apart from RNG path, inside the 0.5pp tolerance; duplicates and the full
+sensitivity band exact.
+
+**Iron-Law tripwire fired and was investigated.** Duplicate agreement of exactly 1.000 is a
+pre-registered suspected-bug condition. Not a bug: 0 pairs shared a shard, no pair disagrees on arm, and
+notes differ in 4 of 24 pairs, which copy-paste would not produce. But the check is weak — 21 of 24
+pairs are easy `other`/`other`, the whole κ rests on 3 positive pairs, and it cannot distinguish κ 1.00
+from κ ≈ 0.65. Recorded as "no evidence of rater disagreement", never as "perfect agreement".
+
+**Interpretation (mine).** The headline survives and is now quantified rather than open: about −2.5pp of
+the +28.5pp is exposed to this artefact, and **the corrective drop has zero exposure** — no flagged item
+was labelled `corrects`. That matters because `correct` was also the best-agreed category in the 08-31
+GPT check (F1 0.864), so the two independent weaknesses do not overlap. Three caveats, and I own the
+first two. The study is **underpowered against its own bar**: the CI spans ~15pp and contains both +5
+and −5, so this is an underpowered non-rejection, not an equivalence result. The preregistration
+projected a ±6.5pp half-width and set a 5pp bar without reconciling them — a freeze-time error. The
+**sign of the delta is not stable**: paired −0.88pp against unpaired pooled +1.67pp, because 49
+behaviours carry 1–5 items per arm and the 1-vs-1 cells swing ±100pp; the delta must not be reported
+directionally, though the sensitivity band is unaffected since −2.50pp is a straight count of 3 Starling
+items against 0 Phoenix. And the **locked definition was underspecified** — it named four inclusion cases
+and was silent on refusals and clarifying questions, which raters then resolved opposite ways; per-shard
+rates spread 3.3–15.0%, p 0.088, suggestive but not significant, and arm-balanced shards mean this
+inflates variance rather than biasing the paired difference.
