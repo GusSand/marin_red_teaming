@@ -7,8 +7,12 @@ their own subdir and are not committed.
 
 ## Current scripts
 - `check_project_state.py` — validates `STATUS.md` against the machine-marked active tables in
-  `BACKLOG.md` and `INBOX.md`, enforces the one-task WIP limit, and checks that blocked tasks name
-  live INBOX IDs. It also requires the canonical living report's task pointer and update date to agree
+  `BACKLOG.md` and `INBOX.md`, enforces the one-task WIP limit, and checks that blocked tasks name a live
+  blocker. **Updated 2026-09-04 (Gus):** a BLOCKED task may name either an INBOX ID, when a person must
+  act, or one or more task IDs, when it simply waits on sibling tasks. Requiring an INBOX ID for a purely
+  task-dependent blocker forced such tasks to be mislabelled READY, which is what `S1-SYNTH` was doing.
+  This is stricter, not looser: referenced INBOX IDs must still be live, referenced task IDs must exist
+  in the active table, and naming an already-`DONE` task as a blocker now fails as a stale state. It also requires the canonical living report's task pointer and update date to agree
   with `STATUS.md`. Run before commits. `submit.sh` runs it with `--require-in-progress` before any GPU
   submission, so a merely queued or stale task cannot consume compute.
 - `setup_safety_eval.sh` — Gate 1: build isolated venv `.venv-safety-eval`, `pip install -e .`

@@ -137,8 +137,15 @@ def main() -> None:
             fail(f"task {task_id} has invalid status {task_status}")
         if not all((owner, outcome, next_action, evidence)):
             fail(f"task {task_id} has an empty contract field")
-        if task_status == "BLOCKED" and "IN-" not in next_action:
-            fail(f"blocked task {task_id} must name an INBOX ID in Next action")
+        # A BLOCKED task must name what unblocks it. Two legitimate kinds of blocker:
+        #   - a person must act        -> an INBOX ID (IN-nnn)
+        #   - a sibling task must land -> one or more task IDs from this same table
+        # Requiring an INBOX ID for a purely task-dependent blocker forced such tasks to be
+        # mislabelled READY, which is what S1-SYNTH was doing (Gus, 2026-09-04). Both forms are
+        # validated below: referenced INBOX IDs must be live, and referenced task IDs must exist
+        # and must not already be DONE.
+        if task_status == "BLOCKED" and not re.search(r"`?(IN-\d+|S\d[\w-]*|PM-\d+|S2-\d+)`?", next_action):
+            fail(f"blocked task {task_id} must name an INBOX ID or a blocking task ID in Next action")
         if task_status == "IN_PROGRESS":
             in_progress.append(task_id)
         task_map[task_id] = row
@@ -183,6 +190,15 @@ def main() -> None:
         missing = referenced - inbox_ids
         if missing:
             fail(f"blocked task {task_id} references missing inbox IDs: {', '.join(sorted(missing))}")
+        # Task-dependency blockers: every named task must exist, must not be this task, and must not
+        # already be DONE -- a task blocked on finished work is a stale state, not a valid blocker.
+        named = {t for t in re.findall(r"`([A-Z0-9][\w-]*)`", row[4])
+                 if t in task_map and t != task_id}
+        finished = sorted(t for t in named if task_map[t][1] == "DONE")
+        if finished:
+            fail(f"blocked task {task_id} names already-DONE blockers: {', '.join(finished)}")
+        if not referenced and not named:
+            fail(f"blocked task {task_id} names no live INBOX ID and no live blocking task")
 
     print(
         f"PROJECT STATE OK — current={current_task}:{current_status}; "

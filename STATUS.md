@@ -4,8 +4,8 @@
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
 - **Current task:** `S1-3F`
-- **Task status:** `READY`
-- **Next checkpoint:** Run the frozen concessionary-endorsement audit over the 469 `endorses` items.
+- **Task status:** `IN_PROGRESS`
+- **Next checkpoint:** Label the 469 `endorses` items against the frozen sub-rubric, then build the second-rater package.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-04`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
