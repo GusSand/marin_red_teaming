@@ -226,3 +226,16 @@ to local `repro-olmo3-safety/runs/` before the remote is shut down (fresh-instan
   three subtypes. Mass change only, never a flow. Smoke-tested on synthetic random subtypes: the three
   deltas summed to +27.60pp (the real endorsement-mass increase, confirming the denominator), split
   evenly three ways, verdict MIXED, duplicate agreement 0.277 ≈ chance. Needs numpy.
+
+- `build_3f_second_rater.py` — the 150-item second-frontier-rater package. Stratified 75/75 by arm and
+  **25 per subtype per arm**. Equal allocation is deliberate, not proportional sampling: the internal
+  duplicate check produced zero `concessionary`/`misclassified` pairs, so that boundary — the one the
+  preregistration names as decisive — is unmeasured, and this slice is the only instrument for it.
+  Emits `upload/{items.jsonl,PROMPT.md,sheet.csv}` plus a `key.json` that is **never uploaded**.
+
+**Rater-dispatch rule, learned 2026-09-04.** Give every concurrent rater a **private** working directory.
+Two S1-3F raters each wrote a helper script to the same shared scratchpad path and one executed the
+other's version pointed at a different shard. Both caught it by cid discontinuity and re-ran, and the
+per-shard provenance gate confirmed 0 rows misattributed — but that gate is the only thing that catches
+this class, because a foreign cid is still a valid key entry and passes an ordinary missing/unexpected
+check.

@@ -11,6 +11,7 @@ rules: `docs/PROJECT_OPERATING_RULES.md`.
 |---|---|---|---|---|---|
 | `IN-001` | CRITICAL | Gus / David | Confirm which intermediate Starling checkpoints exist and whether the six-arm, 10-training-run screen plus one confirmation run is funded. If not, name the first arms to cut. | `S2-00` | Answer inline here; Stage 2 experiment doc applies it. |
 | `IN-003` | OPTIONAL | Gus | If retaining StrongREJECT: accept the `google/gemma-2b` licence and expose a read token to Torch jobs. | `S1-3B` only; not the critical path | Successful read of the gated base from the safety-eval environment. |
+| `IN-004` | HIGH | Gus | Route the 150-item second-rater slice to a frontier model (not Claude), then drop the returned CSV at `concessionary_second_rater_v1/sheet_second.csv`. Upload `PROMPT.md` + `items.jsonl` from `concessionary_second_rater_v1/upload/`; ask for one CSV, exact header `cid,subtype,notes`, 150 rows. | `S1-3F` closure only; not `S1-06` | Validated sheet at `/scratch/gs157/marin-misinfo-labels/concessionary_second_rater_v1/sheet_second.csv` |
 <!-- ACTIVE_INBOX_END -->
 
 When an item resolves, remove its row from this table in the same commit that applies the answer. Keep
@@ -19,6 +20,18 @@ the detailed exchange in the historical section.
 ---
 
 ## Historical correspondence
+
+- **[2026-09-04] IN-004 raised — 150-item second-rater slice ready.** `S1-3F`'s primary result is in and
+  verified: **MAINLY UNQUALIFIED**, unqualified endorsement carries 68.2% of the endorsement-mass increase
+  (+19.07pp) against concessionary 31.8% (+8.89pp). Starling flatly asserts more false theses rather than
+  hedging into compliance, so the stronger endorsement reading stands. What the slice is for: the internal
+  duplicate check produced **zero** `concessionary`↔`misclassified` pairs, so the one boundary the
+  preregistration named as decisive is completely unmeasured. The slice is stratified 25 per subtype per
+  arm precisely to load that boundary. Until it returns, the pre-registered "rater agreement κ < 0.50 →
+  weaken the claim" condition is unevaluated. Use a frontier model that is **not** Claude — the primary
+  raters were Claude, and a second Claude pass would measure self-consistency, not cross-rater agreement.
+  Package: `/scratch/gs157/marin-misinfo-labels/concessionary_second_rater_v1/upload/`. Primary labels are
+  not in the upload; do not send `key.json`.
 
 - **[2026-09-04] IN-002 CLOSED — spot-check done, verdict NOT EVALUABLE on stance.** You labelled all 25.
   Contested stance set came to **n=7**, under the pre-registered bar of 8, so the buckets (claude 2 / gpt 3 /

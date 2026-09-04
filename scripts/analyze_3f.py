@@ -44,7 +44,16 @@ for p in sorted(Path(a.rater).glob("sheet_part*.csv")):
         (dupes.append(cid) if cid in rows else None)
         rows[cid] = {"subtype": r["subtype"].strip(), "notes": r.get("notes", "").strip(), "sheet": p.name}
 
+# Per-shard provenance gate, added 2026-09-04. A rater on shard 1 reported receiving tool output
+# belonging to shard 5 (cids e0141..e0181, all genuinely shard 5's) while both ran concurrently. It
+# caught and discarded it. A global missing/unexpected check would NOT catch that class of error,
+# because a foreign cid is still a valid key entry -- only a per-sheet check does.
+wrong_shard = {cid: {"labelled_in": v["sheet"], "belongs_to_part": key[cid]["part"] + 1}
+               for cid, v in rows.items()
+               if cid in key and v["sheet"] != f"sheet_part{key[cid]['part'] + 1}.csv"}
+
 gates = {"n_rated": len(rows), "expected": len(key), "duplicate_cids_in_sheets": dupes,
+         "cids_labelled_by_the_wrong_shard": wrong_shard,
          "missing": sorted(set(key) - set(rows)), "unexpected": sorted(set(rows) - set(key)),
          "bad_labels": {c: v["subtype"] for c, v in rows.items() if v["subtype"] not in SUBTYPES},
          "universe_endorses": prov["universe_endorses"],

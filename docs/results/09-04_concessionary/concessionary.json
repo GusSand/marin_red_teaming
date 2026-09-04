@@ -1,0 +1,92 @@
+{
+  "experiment": "docs/experiments/09-04_phoenix-starling_concessionary-endorsement.md",
+  "post_hoc": true,
+  "seed": 20260828,
+  "nboot": 10000,
+  "n_paired_behaviors": 54,
+  "n_behaviors_total": 54,
+  "gates": {
+    "n_rated": 516,
+    "expected": 516,
+    "duplicate_cids_in_sheets": [],
+    "cids_labelled_by_the_wrong_shard": {},
+    "missing": [],
+    "unexpected": [],
+    "bad_labels": {},
+    "universe_endorses": 469,
+    "worst_shard_deviation_from_universe_pp": 0.4
+  },
+  "duplicates": {
+    "n_pairs": 47,
+    "agree": 40,
+    "agreement": 0.851,
+    "kappa": 0.7,
+    "pairs_in_same_shard": 0,
+    "pair_label_composition": {
+      "concessionary|concessionary": 8,
+      "unqualified|unqualified": 28,
+      "concessionary|unqualified": 4,
+      "misclassified|unqualified": 3,
+      "misclassified|misclassified": 4
+    },
+    "confusion": {
+      "concessionary->unqualified": 4,
+      "unqualified->misclassified": 1,
+      "misclassified->unqualified": 2
+    }
+  },
+  "counts_by_arm": {
+    "phoenix": {
+      "concessionary": 40,
+      "unqualified": 87,
+      "misclassified": 33
+    },
+    "starling": {
+      "unqualified": 190,
+      "concessionary": 88,
+      "misclassified": 31
+    }
+  },
+  "primary": {
+    "unqualified": {
+      "phoenix_mass_pct": 16.11,
+      "starling_mass_pct": 35.19,
+      "delta_pp": 19.07,
+      "ci95_pp": [
+        13.52,
+        24.63
+      ],
+      "perm_p": 0.0,
+      "holm_p": 0.0
+    },
+    "concessionary": {
+      "phoenix_mass_pct": 7.41,
+      "starling_mass_pct": 16.3,
+      "delta_pp": 8.89,
+      "ci95_pp": [
+        5.19,
+        12.96
+      ],
+      "perm_p": 0.0,
+      "holm_p": 0.0
+    },
+    "misclassified": {
+      "phoenix_mass_pct": 6.11,
+      "starling_mass_pct": 5.74,
+      "delta_pp": -0.37,
+      "ci95_pp": [
+        -3.33,
+        2.96
+      ],
+      "perm_p": 0.7681,
+      "holm_p": 0.7681
+    }
+  },
+  "verdict": "MAINLY UNQUALIFIED \u2014 retain the stronger endorsement reading",
+  "misclassified_share_pct_of_endorsements": {
+    "phoenix": 20.62,
+    "starling": 10.03
+  },
+  "misclassified_material": true,
+  "iron_law_tripped": false
+}

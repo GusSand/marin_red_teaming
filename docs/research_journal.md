@@ -903,3 +903,61 @@ items against 0 Phoenix. And the **locked definition was underspecified** — it
 and was silent on refusals and clarifying questions, which raters then resolved opposite ways; per-shard
 rates spread 3.3–15.0%, p 0.088, suggestive but not significant, and arm-balanced shards mean this
 inflates variance rather than biasing the paired difference.
+
+---
+
+## 2026-09-04 · S1-3F · Is Starling's endorsement gain unqualified or concessionary?
+
+**Research question.** Step 3 found `attempt-strong` mass rose +28.5pp. Endorsement underlies that, but a
+response can advance a false thesis flatly or concede harms and counterevidence and still land on it.
+Which is Starling doing more of? Pre-registered in
+`docs/experiments/09-04_phoenix-starling_concessionary-endorsement.md`, frozen at commit `6821ed7`,
+**POST HOC**. Run unchanged after `S1-STANCE-GAP`; that result was used only as a post-result consistency
+check, never as input to the labels or design.
+
+**Method.** Additive three-way sub-rubric over the 469 pass-2 `endorses` items — `unqualified` /
+`concessionary` / `misclassified` — locked before any rater saw an item. Six blind Claude subagents on
+arm-balanced shards (0.4pp from the universe proportion), 47 cross-shard duplicates. Convention 1
+truncation. Masses use the step-3 denominator (all of a behaviour's generations), so subtype masses sum
+to the endorsement mass. Behaviour bootstrap CI, sign-flip permutation p, Holm over three subtypes.
+
+**Results.** unqualified 16.11% → 35.19%, Δ **+19.07pp** [+13.52, +24.63], Holm p 0.000. concessionary
+7.41% → 16.30%, Δ +8.89pp [+5.19, +12.96], Holm p 0.000. misclassified 6.11% → 5.74%, Δ −0.37pp
+[−3.33, +2.96], Holm p 0.768. The three deltas sum to +27.59pp, matching the directly computed
+endorsement-mass change exactly. Raw deduplicated counts: phoenix 87/40/33 (160), starling 190/88/31
+(309). Duplicate agreement 0.851, κ 0.700, 0 pairs in the same shard. Misclassified as a share of each
+arm's endorsements: phoenix 20.62%, starling 10.03%.
+
+**Verdict: MAINLY UNQUALIFIED.** Unqualified is 68.21% of the endorsement-mass increase, above the 60%
+bar, CI far from 0. Retain the stronger endorsement reading.
+
+**Misclassified materiality fires in both arms**, so the pre-registered consequence applies and the
+stance-shift claim is weakened before Stage 2.
+
+**Verification.** MATCHED. Fresh subagent, denied every analysis script, own implementation: all six
+masses, three deltas and CIs, the sum, the 68.21% share, both materiality percentages, raw counts,
+duplicate agreement and κ, and every gate.
+
+**Four declared deviations.** 47 duplicates rather than the 48 planned (469 × 0.10 rounds to 47). The
+dedup tie-break is arbitrary; the second-sorting copy gives +19.26 / +8.52 / −0.19, verdict unchanged,
+all shifts ≤ 0.4pp. `tot` for the 60% rule excludes the negative misclassified delta per the frozen
+definition; the three-way sum gives 69.1%, same branch. And a concurrency incident: raters on shards 1
+and 5 both wrote a helper script to the same shared scratchpad path, so one ran the other's version
+pointed at a different shard. Both caught it by cid discontinuity and re-ran from private paths; the
+per-shard provenance gate added in response reports 0 rows attributed to the wrong shard and all shard
+files remain byte-identical to source. Cause was a shared writable path in my rater prompts.
+
+**Interpretation (mine).** The headline reading survives and strengthens: Starling is not hedging its way
+into compliance, it is flatly asserting more false theses, and unqualified endorsement carries roughly
+two-thirds of the increase. Concessionary endorsement also rose and is real, but it is the minority
+component. The materiality trigger fired, and it matters, but **not in the direction the rule was written
+to guard against**. Mislabelling is twice as bad in Phoenix (20.6%) as Starling (10.0%), so removing
+misclassified items *widens* the gap by 0.37pp rather than shrinking it. So this is a **levels caveat, not
+a gap caveat**: the absolute endorsement rate is overstated in both arms, the Phoenix→Starling difference
+is not. It must be worded that way and never as "the gap may be smaller". The real limitation is
+elsewhere: the internal duplicates produced **zero** `concessionary`↔`misclassified` pairs, so the one
+boundary the preregistration named as decisive is entirely unmeasured, and κ 0.700 is reliability on
+"flat endorsement or not". Strip the 28 unanimous `unqualified` pairs and agreement falls to 0.63. The
+150-item second-rater slice, stratified 25 per subtype per arm precisely to load that boundary, is the
+only instrument for it, and until it returns the pre-registered "agreement poor → weaken" condition is
+unevaluated.
