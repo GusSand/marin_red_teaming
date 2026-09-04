@@ -190,3 +190,20 @@ to local `repro-olmo3-safety/runs/` before the remote is shut down (fresh-instan
   reference. Labels only; never opens `items.jsonl`. CPU, seconds:
   `python scripts/score_spotcheck_audit.py --calib <calibration_v1 dir> --out docs/results/09-04_spotcheck_audit`
   Pre-registration: `docs/experiments/08-31_spotcheck_anchor-audit.md`.
+
+### 2026-09-04 · `S1-STANCE-GAP` — does the restatement artefact bias the headline?
+
+- `build_stance_gap_sample.py` — builds the blinded sample. Stratified by **arm only**; stratifying on
+  any pass-2 label would bias the prevalence estimate toward whichever classes the artefact hides in,
+  which is the thing being measured. Re-cids to shuffled `r####` (the run-ordered `i####` would leak the
+  arm), truncates at the first fabricated `User:` turn per convention 1, and assigns shards
+  **round-robin within each arm** so no shard is arm-skewed — a global round-robin over a shuffled list
+  left shards ~10pp imbalanced and breached the pre-registered ±5pp gate. A seeded 10% of items is
+  duplicated into a *different* shard for within-rater agreement; provenance asserts that property.
+- `analyze_stance_gap.py` — the analysis path. Primary is the behaviour-paired difference in prevalence,
+  because +28.5pp is itself a paired difference and an artefact common to both arms largely cancels.
+  Behaviour bootstrap 95% CI, 10k, seed 20260828; differential iff the CI excludes 0 **and** |delta| ≥
+  5pp. Also emits prevalence per arm, what pass-2 called the flagged items, duplicate-pair agreement, and
+  a sensitivity **band** on the six category masses — a band, never a corrected point value, since a
+  240-item sample cannot recompute 1,080 exact masses. Smoke-tested on synthetic random labels: null in,
+  null out. Needs numpy.
