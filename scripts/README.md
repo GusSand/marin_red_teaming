@@ -177,3 +177,16 @@ to local `repro-olmo3-safety/runs/` before the remote is shut down (fresh-instan
   Reads only `key.json` and `judge/claude_fable_pass2.jsonl`; it never opens `items.jsonl`, so no
   response text is touched. Pre-registration:
   `docs/experiments/08-31_wildguard_rubric-dimension-regression.md`.
+
+### 2026-09-04 · `IN-002` — human spot-check audit of the Claude anchor
+
+- `score_spotcheck_audit.py` — scores gs157's 25-item spot-check. The subset was written by
+  `compare_anchors.py`, so the rival is the **GPT anchor**, not the local judges — check
+  `anchor_agreement.json -> spotcheck.source` before assuming otherwise; `build_spotcheck.py` writes a
+  `why.json` and `compare_anchors.py` does not, which is how to tell which produced a given directory.
+  Statistic is head-to-head adjudication per dimension over that dimension's contested set (items where
+  the two anchors differ): `claude` / `gpt` / `neither`. Stance primary, `no_stance`-flagged items
+  excluded from it, a contested set below n=8 reported not evaluable. Local judges are a secondary
+  reference. Labels only; never opens `items.jsonl`. CPU, seconds:
+  `python scripts/score_spotcheck_audit.py --calib <calibration_v1 dir> --out docs/results/09-04_spotcheck_audit`
+  Pre-registration: `docs/experiments/08-31_spotcheck_anchor-audit.md`.

@@ -146,4 +146,114 @@ CPU, seconds. No GPU, no Slurm.
 
 ## Results
 
-(empty until run)
+**Run 2026-09-04, local CPU.** Analysis path: `scripts/score_spotcheck_audit.py`. Raw output:
+`docs/results/09-04_spotcheck_audit/spotcheck_audit.json`. Audited sheet md5
+`33bc28296e035fe1a778b73e5f9aed25`.
+
+### Correction to this document's premise, found at run time
+
+The Inputs and "The statistic" sections above were written on the belief that `build_spotcheck.py`
+selected these 25 because the Claude anchor disagrees with **both local judges**. That is wrong.
+`anchor_agreement.json` records `spotcheck.source = "sheet_claude.csv vs sheet_gpt.csv"`: the subset was
+written by `compare_anchors.py`, which picks items where the **two anchors** differ on a categorical
+dimension *or* on the derived six-category label — 58 such items, 25 drawn with seed 20260828. The
+absent `why.json` (which `build_spotcheck.py` writes and `compare_anchors.py` does not) was the tell and
+was walked past. The rival is **GPT**, not the local judges.
+
+The error was caught by this document's own selection gate: 6 of 25 items failed the property the
+document assumed. Under the corrected rule, **0 fail** — 23 differ on a categorical dimension and
+`c0008`/`c0122` are selected purely by the derived label, so the derived clause is load-bearing for
+exactly those two.
+
+**Disclosure: partial unblinding.** A run under the wrong rival was executed and its numbers were seen
+before the correction, including gs157-vs-Claude stance raw agreement 52.4% against gs157-vs-GPT 57.1%.
+The corrected analysis was therefore **not computed fully blind**. What limits the damage: the decision
+thresholds are unchanged from the 2026-08-31 freeze — rival beats anchor, `neither` ≤ 40%, n ≥ 8 — and
+only the identity of the rival changed, on file provenance rather than on any result. No threshold was
+tuned. This is recorded as a deviation, not waved away.
+
+### Head-to-head, gs157 adjudicating between the two anchors
+
+| dimension | n contested | claude | gpt | neither | evaluable (n ≥ 8) |
+|---|---|---|---|---|---|
+| **stance** (primary) | **7** | 2 | 3 | 2 | **no** |
+| relevance | 11 | 4 | 6 | 1 | yes |
+| task | 10 | 5 | 3 | 2 | yes |
+
+### Verdict — NOT EVALUABLE on the primary dimension
+
+The stance contested set is 7 after the 4 `no_stance` exclusions, below the n ≥ 8 bar frozen on
+2026-08-31. Per that rule the buckets 2/3/2 **must not be read as a result**. The audit does not resolve
+whether the Claude anchor is the better rater. Relevance favours GPT and task favours Claude, which is
+not a signal either.
+
+### The exclusion rule is decision-flipping in form — and the anchor is not supported under any of them
+
+Raised by the verifier. Only one excluded item (`c0004`) is stance-contested, so the exclusion sits one
+item away from the evaluability bar. All three treatments:
+
+| exclusion treatment | n | claude | gpt | neither | verdict |
+|---|---|---|---|---|---|
+| original freeze, 8 items | 6 | 2 | 3 | 1 | NOT EVALUABLE |
+| **amended, 4 items — as run** | **7** | **2** | **3** | **2** | **NOT EVALUABLE** |
+| no exclusion at all | 8 | 2 | 4 | 2 | UNDERMINES |
+
+Two things follow, and they matter more than the headline verdict.
+
+1. **The Claude anchor is never ahead.** claude < gpt under every treatment (2v3, 2v3, 2v4). No reading
+   of this data supports it. The result is "cannot decide" or "mildly against", never "supports".
+2. **The 2026-09-04 amendment did not manufacture the outcome.** It moved n from 6 to 7; both are below
+   the bar and both give the same verdict. Had it been the other way the amendment would be suspect.
+
+Standing caveat that survives all of this: the exclusion rule descends from convention 6, which was
+written with gs157 mid-labelling, and gs157's labels are also the measurement. Frozen before unblinding,
+but not independent of the rater.
+
+### Secondary — raw agreement over all 25 items, not a verdict input
+
+| dimension | items | claude | gpt | olmo32 | qwen72 |
+|---|---|---|---|---|---|
+| relevance | 25 | 10 (40.0%) | 12 (48.0%) | 12 (48.0%) | 11 (44.0%) |
+| task | 25 | 14 (56.0%) | 12 (48.0%) | 7 (28.0%) | 9 (36.0%) |
+| stance | 21 | 11 (52.4%) | 12 (57.1%) | 8 (38.1%) | 8 (38.1%) |
+
+**These are adversarially selected items. Never quote them against the 150-item anchor figures**
+(stance κ 0.784, derived-6 0.705) — the guard frozen before the run. Both local judges sit far below
+both anchors, consistent with the 08-29 selection verdict.
+
+### Verification — MATCHED EXACTLY
+
+Fresh subagent, given only the five label files and this document, denied every analysis script. It
+wrote its own implementation and then cross-checked with a second path (awk/join). Both agree with this
+analysis on **every integer**: all three contested-set sizes, all nine bucket counts, the exclusion set,
+every gate. Tolerance was exact counts, and exact is what came back.
+
+Gates independently confirmed: 25 unique cids, no duplicates anywhere, no cid missing from any of the
+four label sources, no out-of-vocabulary values in the three sheets, selection property clean, all four
+excluded rows at `stance=endorses`.
+
+### Data-quality bug found in passing
+
+`judge/olmo32.jsonl` carries `stance="refutes"` on `c0040` — outside the locked vocabulary
+`{refuses, corrects, hedges, endorses}`. `c0040` is not among the 25, so nothing here is affected, but
+the judge output parser admits invalid classes and that would bite any 150-item analysis. Backlogged as
+`S1-JUDGE-VOCAB`. It cannot rescue the 08-29 selection verdict, which rejected both judges.
+
+### Decision consequence applied
+
+`IN-002` closes as **completed but inconclusive on the primary dimension**. gs157 labelled all 25; the
+instrument was too small to answer. `S1-SYNTH` must state that the human audit was underpowered on
+stance and that no treatment of it supports the Claude anchor — not that the anchor was validated, and
+not that the check was skipped. The step-3 numbers are unchanged; only the confidence language moves.
+
+### Learnings
+
+- **Check which script wrote a directory, not which script's docstring describes it.** The missing
+  `why.json` was sitting there the whole time.
+- A pre-registered gate caught a design error the analyst missed. It was worth more than the statistic
+  it was guarding.
+- Pre-registering **n ≥ 8 as not-evaluable** before seeing the data is what stopped a 2-vs-3 split at
+  n=7 from being written up as a finding. Set that bar before, never after.
+- Adversarial subset selection buys sensitivity per item and costs sample size. 25 contested items gave
+  7 usable on the primary dimension. Budget for the exclusions, not the headline count.
+

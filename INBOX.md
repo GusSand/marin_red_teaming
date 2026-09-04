@@ -10,7 +10,6 @@ rules: `docs/PROJECT_OPERATING_RULES.md`.
 | ID | Priority | Owner | Needed | Blocks | Resolution evidence |
 |---|---|---|---|---|---|
 | `IN-001` | CRITICAL | Gus / David | Confirm which intermediate Starling checkpoints exist and whether the six-arm, 10-training-run screen plus one confirmation run is funded. If not, name the first arms to cut. | `S2-00` | Answer inline here; Stage 2 experiment doc applies it. |
-| `IN-002` | HIGH | Gus | Complete the prepared 25-item spot-check, or explicitly waive it because the convention-matched out-of-sample GPT audit is complete. | `S1-SYNTH` | `/scratch/gs157/marin-misinfo-labels/calibration_v1/spotcheck/sheet.csv` or a decision in `docs/decisions.md` |
 | `IN-003` | OPTIONAL | Gus | If retaining StrongREJECT: accept the `google/gemma-2b` licence and expose a read token to Torch jobs. | `S1-3B` only; not the critical path | Successful read of the gated base from the safety-eval environment. |
 <!-- ACTIVE_INBOX_END -->
 
@@ -20,6 +19,17 @@ the detailed exchange in the historical section.
 ---
 
 ## Historical correspondence
+
+- **[2026-09-04] IN-002 CLOSED — spot-check done, verdict NOT EVALUABLE on stance.** You labelled all 25.
+  Contested stance set came to **n=7**, under the pre-registered bar of 8, so the buckets (claude 2 / gpt 3 /
+  neither 2) are not readable as a result. The useful part sits underneath: the Claude anchor is **never
+  ahead** of GPT under any exclusion treatment (2v3, 2v3, 2v4). So no reading supports it — the options are
+  "undecidable" or "mildly against". Step-3 numbers do not move; `S1-SYNTH` now has to say the human audit
+  was underpowered and returned no support, rather than that the anchor was validated. Raising n above 8
+  would need more items from the 33 unlabelled anchor disagreements; **not recommended** — the direction
+  already survived an out-of-sample rater at three-way 0.867. Two deviations declared in the experiment
+  file: the preregistration misnamed the rival (GPT, not the local judges), and a wrong-rival run was seen
+  before the correction. `docs/experiments/08-31_spotcheck_anchor-audit.md`. No action needed.
 
 Original convention: newest on top; append `→ answer:` inline when replying. Entries below are not active
 unless represented in the table above.

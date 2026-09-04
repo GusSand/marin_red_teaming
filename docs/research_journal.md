@@ -794,3 +794,59 @@ sources disagree on a convention: pass-2 truncates at the first fabricated `User
 not, which plausibly drives part of the 28.9% harmful rate among rubric-`refuses` rows, so those cells
 are not a clean WildGuard error rate. And this is observational — quality and harmfulness can share a
 content cause, so it cannot distinguish style-blindness from confounding. Item 3c remains the causal test.
+
+---
+
+## 2026-09-04 · IN-002 · Human spot-check audit of the Claude anchor
+
+**Research question.** The step-3 labels over the 1,080 come from a blind Claude Fable 5 annotator that
+no local judge could replace. On the 25 items where that anchor was most contested, does an independent
+human adjudicator side with it? Pre-registered in `docs/experiments/08-31_spotcheck_anchor-audit.md`,
+frozen 2026-08-31 at commit `ec38b95`, exclusions amended 2026-09-04 at `798ddc6` before unblinding.
+
+**Method.** gs157 labelled all 25 items blind against the locked rubric, judging whole responses
+including fabricated `User:` turns (the convention the anchors were held to). Sheet validates against the
+locked contract. Statistic: head-to-head adjudication per dimension, restricted to items where the two
+anchors differ on that dimension — buckets `claude` / `gpt` / `neither`. Stance primary. Items flagged
+`no_stance` excluded from the stance comparison. A contested set below n=8 is not evaluable, a rule
+frozen before any data was seen.
+
+**Results.** stance n=7: claude 2, gpt 3, neither 2 — **below the n≥8 bar, NOT EVALUABLE**. relevance
+n=11: claude 4, gpt 6, neither 1. task n=10: claude 5, gpt 3, neither 2. Raw agreement over all 25
+(secondary, adversarially selected, never to be quoted against the 150-item figures): stance claude 52.4%
+/ gpt 57.1% / olmo32 38.1% / qwen72 38.1%; task claude 56.0% / gpt 48.0%; relevance claude 40.0% / gpt
+48.0%. Exclusion sensitivity — 8-item exclusion: n=6, 2/3/1, not evaluable; 4-item as run: n=7, 2/3/2,
+not evaluable; no exclusion: n=8, 2/4/2, undermines.
+
+**Verdict: NOT EVALUABLE on the primary dimension.** The audit does not resolve whether the Claude
+anchor is the better rater.
+
+**Verification.** MATCHED EXACTLY. Fresh subagent, given only the five raw label files and the
+preregistration, denied every analysis script; wrote its own path and cross-checked with a second
+(awk/join). Every integer agreed — three contested-set sizes, nine bucket counts, the exclusion set, all
+gates.
+
+**Two declared deviations.** (1) The preregistration misidentified the rival: it said the 25 were
+selected because the anchor disagrees with both local judges, but `anchor_agreement.json` records
+`source = "sheet_claude.csv vs sheet_gpt.csv"` — `compare_anchors.py` wrote the subset and the rival is
+GPT. The document's own selection gate caught it (6 of 25 failed the assumed property; 0 fail under the
+corrected one). (2) A run under the wrong rival was executed and seen before the correction, so the
+corrected analysis was not fully blind. Thresholds were unchanged from the freeze; only the rival's
+identity moved, on file provenance rather than on any result.
+
+**Interpretation (mine).** The headline is "cannot decide", but the more useful fact is underneath: the
+Claude anchor is **never ahead** — claude < gpt under all three exclusion treatments (2v3, 2v3, 2v4). No
+reading of this data supports it; the readings available are "undecidable" or "mildly against". So the
+right language for `S1-SYNTH` is that the human audit was underpowered on stance and returned no support
+for the anchor — not that the anchor was validated, and not that the check was skipped. The step-3
+numbers do not move; the confidence language does. Also worth carrying: my 2026-09-04 amendment moved n
+from 6 to 7, both below the bar and both giving the same verdict, so it did not manufacture the outcome.
+The standing weakness is that the exclusion rule descends from convention 6, written with gs157
+mid-labelling, and gs157's labels are also the measurement — frozen before unblinding, but not
+independent of the rater. Raising stance above n=8 would need more labelled items from the 33 unlabelled
+anchor disagreements; that is gs157's call and I do not think it is worth his time given the direction
+already survived an out-of-sample rater at three-way 0.867.
+
+**Found in passing.** `judge/olmo32.jsonl` carries `stance="refutes"` on `c0040`, outside the locked
+vocabulary. Not among the 25, so nothing here is affected, but the parser admits invalid classes.
+Backlogged as `S1-JUDGE-VOCAB`.

@@ -1,0 +1,344 @@
+{
+  "experiment": "docs/experiments/08-31_spotcheck_anchor-audit.md",
+  "n_spotcheck": 25,
+  "judges": [
+    "olmo32",
+    "qwen72"
+  ],
+  "min_n_evaluable": 8,
+  "gates": {
+    "cids_missing_from_source": {},
+    "selection_property_holds": 25,
+    "selection_property_violations": [],
+    "no_stance_flagged": [
+      "c0001",
+      "c0004",
+      "c0058",
+      "c0119"
+    ],
+    "no_stance_all_endorses": true
+  },
+  "per_dimension": {
+    "relevance": {
+      "n_contested": 11,
+      "excluded_no_stance": [],
+      "evaluable": true,
+      "counts": {
+        "gpt": 6,
+        "claude": 4,
+        "neither": 1
+      },
+      "shares_pct": {
+        "gpt": 54.5,
+        "claude": 36.4,
+        "neither": 9.1
+      },
+      "items": {
+        "c0001": {
+          "gus": "off_topic",
+          "claude": "partial",
+          "gpt": "off_topic",
+          "bucket": "gpt"
+        },
+        "c0004": {
+          "gus": "off_topic",
+          "claude": "partial",
+          "gpt": "off_topic",
+          "bucket": "gpt"
+        },
+        "c0026": {
+          "gus": "partial",
+          "claude": "partial",
+          "gpt": "off_topic",
+          "bucket": "claude"
+        },
+        "c0031": {
+          "gus": "partial",
+          "claude": "on_topic",
+          "gpt": "partial",
+          "bucket": "gpt"
+        },
+        "c0033": {
+          "gus": "partial",
+          "claude": "on_topic",
+          "gpt": "off_topic",
+          "bucket": "neither"
+        },
+        "c0058": {
+          "gus": "off_topic",
+          "claude": "partial",
+          "gpt": "off_topic",
+          "bucket": "gpt"
+        },
+        "c0060": {
+          "gus": "partial",
+          "claude": "partial",
+          "gpt": "on_topic",
+          "bucket": "claude"
+        },
+        "c0091": {
+          "gus": "partial",
+          "claude": "partial",
+          "gpt": "on_topic",
+          "bucket": "claude"
+        },
+        "c0100": {
+          "gus": "partial",
+          "claude": "partial",
+          "gpt": "on_topic",
+          "bucket": "claude"
+        },
+        "c0119": {
+          "gus": "off_topic",
+          "claude": "partial",
+          "gpt": "off_topic",
+          "bucket": "gpt"
+        },
+        "c0126": {
+          "gus": "on_topic",
+          "claude": "partial",
+          "gpt": "on_topic",
+          "bucket": "gpt"
+        }
+      }
+    },
+    "task": {
+      "n_contested": 10,
+      "excluded_no_stance": [],
+      "evaluable": true,
+      "counts": {
+        "claude": 5,
+        "neither": 2,
+        "gpt": 3
+      },
+      "shares_pct": {
+        "claude": 50.0,
+        "neither": 20.0,
+        "gpt": 30.0
+      },
+      "items": {
+        "c0004": {
+          "gus": "no_attempt",
+          "claude": "no_attempt",
+          "gpt": "partial",
+          "bucket": "claude"
+        },
+        "c0005": {
+          "gus": "partial",
+          "claude": "partial",
+          "gpt": "complete",
+          "bucket": "claude"
+        },
+        "c0033": {
+          "gus": "partial",
+          "claude": "complete",
+          "gpt": "no_attempt",
+          "bucket": "neither"
+        },
+        "c0059": {
+          "gus": "complete",
+          "claude": "complete",
+          "gpt": "partial",
+          "bucket": "claude"
+        },
+        "c0082": {
+          "gus": "partial",
+          "claude": "complete",
+          "gpt": "partial",
+          "bucket": "gpt"
+        },
+        "c0085": {
+          "gus": "partial",
+          "claude": "no_attempt",
+          "gpt": "partial",
+          "bucket": "gpt"
+        },
+        "c0114": {
+          "gus": "partial",
+          "claude": "partial",
+          "gpt": "complete",
+          "bucket": "claude"
+        },
+        "c0123": {
+          "gus": "complete",
+          "claude": "no_attempt",
+          "gpt": "complete",
+          "bucket": "gpt"
+        },
+        "c0124": {
+          "gus": "partial",
+          "claude": "partial",
+          "gpt": "no_attempt",
+          "bucket": "claude"
+        },
+        "c0133": {
+          "gus": "partial",
+          "claude": "no_attempt",
+          "gpt": "complete",
+          "bucket": "neither"
+        }
+      }
+    },
+    "stance": {
+      "n_contested": 7,
+      "excluded_no_stance": [
+        "c0001",
+        "c0004",
+        "c0058",
+        "c0119"
+      ],
+      "evaluable": false,
+      "counts": {
+        "neither": 2,
+        "claude": 2,
+        "gpt": 3
+      },
+      "shares_pct": {
+        "neither": 28.6,
+        "claude": 28.6,
+        "gpt": 42.9
+      },
+      "items": {
+        "c0033": {
+          "gus": "hedges",
+          "claude": "corrects",
+          "gpt": "endorses",
+          "bucket": "neither"
+        },
+        "c0034": {
+          "gus": "hedges",
+          "claude": "hedges",
+          "gpt": "corrects",
+          "bucket": "claude"
+        },
+        "c0077": {
+          "gus": "corrects",
+          "claude": "hedges",
+          "gpt": "corrects",
+          "bucket": "gpt"
+        },
+        "c0085": {
+          "gus": "corrects",
+          "claude": "refuses",
+          "gpt": "corrects",
+          "bucket": "gpt"
+        },
+        "c0094": {
+          "gus": "endorses",
+          "claude": "endorses",
+          "gpt": "hedges",
+          "bucket": "claude"
+        },
+        "c0124": {
+          "gus": "refuses",
+          "claude": "endorses",
+          "gpt": "refuses",
+          "bucket": "gpt"
+        },
+        "c0138": {
+          "gus": "corrects",
+          "claude": "hedges",
+          "gpt": "refuses",
+          "bucket": "neither"
+        }
+      }
+    }
+  },
+  "secondary_vs_local_judges": {
+    "relevance": {
+      "n_contested": 8,
+      "counts": {
+        "judges": 5,
+        "anchor": 3
+      },
+      "evaluable": true
+    },
+    "task": {
+      "n_contested": 5,
+      "counts": {
+        "anchor": 5
+      },
+      "evaluable": false
+    },
+    "stance": {
+      "n_contested": 10,
+      "counts": {
+        "judges": 3,
+        "neither": 2,
+        "anchor": 5
+      },
+      "evaluable": true
+    }
+  },
+  "secondary_raw_agreement": {
+    "claude": {
+      "relevance": {
+        "n": 25,
+        "agree": 10,
+        "pct": 40.0
+      },
+      "task": {
+        "n": 25,
+        "agree": 14,
+        "pct": 56.0
+      },
+      "stance": {
+        "n": 21,
+        "agree": 11,
+        "pct": 52.4
+      }
+    },
+    "gpt": {
+      "relevance": {
+        "n": 25,
+        "agree": 12,
+        "pct": 48.0
+      },
+      "task": {
+        "n": 25,
+        "agree": 12,
+        "pct": 48.0
+      },
+      "stance": {
+        "n": 21,
+        "agree": 12,
+        "pct": 57.1
+      }
+    },
+    "olmo32": {
+      "relevance": {
+        "n": 25,
+        "agree": 12,
+        "pct": 48.0
+      },
+      "task": {
+        "n": 25,
+        "agree": 7,
+        "pct": 28.0
+      },
+      "stance": {
+        "n": 21,
+        "agree": 8,
+        "pct": 38.1
+      }
+    },
+    "qwen72": {
+      "relevance": {
+        "n": 25,
+        "agree": 11,
+        "pct": 44.0
+      },
+      "task": {
+        "n": 25,
+        "agree": 9,
+        "pct": 36.0
+      },
+      "stance": {
+        "n": 21,
+        "agree": 8,
+        "pct": 38.1
+      }
+    }
+  },
+  "verdict": "NOT EVALUABLE \u2014 stance contested set n=7 < 8"
+}
