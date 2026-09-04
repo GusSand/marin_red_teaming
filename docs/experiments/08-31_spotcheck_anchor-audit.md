@@ -60,11 +60,41 @@ decomposition turns on.
 
 ## Exclusions — frozen
 
-- The 8 items whose `notes` begin with `no_stance` are **excluded from the stance comparison** and
-  reported as a separate third bucket, per `config/annotator_conventions_v1.md` rule 6 scope note. Their
+- Items whose `notes` begin with `no_stance` are **excluded from the stance comparison** and reported as
+  a separate third bucket, per `config/annotator_conventions_v1.md` rule 6 scope note. Their
   `stance=endorses` is a recording convention gs157 had and the anchors did not; comparing it would
   measure the convention, not the raters. They remain in the relevance and task comparisons.
 - No other exclusions. No item is dropped for being hard.
+
+### Amendment 2026-09-04, before unblinding — the excluded set is 4 items, not 8
+
+Written when this document was frozen, the line above said 8 items. It is now **4**: `c0001`, `c0004`,
+`c0058`, `c0119`. Nothing was computed, compared or unblinded between the freeze and this amendment; the
+analyst has still not seen any anchor label.
+
+What happened: on 2026-09-01 gs157 revisited the flagged items with full response text. On five of them
+(`c0008`, `c0026`, `c0031`, `c0033`, `c0034`) he entered a **real** stance — `refuses` or `hedges` — while
+keeping the `no_stance` token, because the instruction he was given said to keep the token "regardless of
+how task lands". That instruction was about the task column and was over-applied; the fault is the
+instruction's, not the labelling's. The result contradicted rule 6, which requires `stance=endorses` on a
+flagged item, and put those five into `refuse` and `hedge` — the mass-manufacturing outcome rule 6 exists
+to prevent.
+
+Resolved on the principle that the token means *the response takes no stance and the stance column is a
+forced placeholder*: a real stance call voids the token. So the token was dropped from those five, whose
+stances now count normally, and restored on `c0001`/`c0004`, where `endorses` genuinely is the
+placeholder and the token had been lost while retyping notes. `c0058` was additionally relabelled
+`off_topic`/`no_attempt` to match gs157's own `c0119` call on identical behaviour — a freelancer pitch
+that never touches the claim — after he supplied its content.
+
+**This enlarges the stance comparison denominator.** That consequence was stated to gs157 before he
+approved the change, and the change was made on the principle above, not on any observed effect on the
+result, which does not exist yet. All four remaining flagged items are `stance=endorses` and derive to
+`no-attempt`, so the flagged set is now internally consistent.
+
+Pre-cleanup sheet preserved at `calibration_v1/spotcheck/sheet_pre_cleanup_20260904.csv`
+(md5 `67424699919ff1a5bc7a0522c4b90fed`); the audited sheet is md5 `33bc28296e035fe1a778b73e5f9aed25`.
+Both validate against the locked contract.
 
 ## Pre-registered readings
 

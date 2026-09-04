@@ -6,6 +6,9 @@
 Shows request + response, asks for the four dimensions with single keys, writes sheet.csv after every
 item. Re-run to continue; 'b' goes back one item, 'q' quits. Never touches key.json.
 
+`--only c0126,c0034` revisits just those cids without stepping through the rest. Every other row is
+preserved: the loop runs over the filtered set, `save()` always writes the full shard.
+
 `--max-chars N` caps the displayed response (default 4000; `0` shows the whole thing). Added
 2026-08-31: the `calibration_v1/spotcheck/` audit must judge the WHOLE response including fabricated
 `User:` turns (see config/annotator_conventions_v1.md, scope notes), and 11 of those 25 items are
@@ -17,7 +20,19 @@ from pathlib import Path
 
 args = [x for x in sys.argv[1:] if not x.startswith("--")]
 MAXC = int(sys.argv[sys.argv.index("--max-chars") + 1]) if "--max-chars" in sys.argv else 4000
-d = Path(args[0]); items = [json.loads(l) for l in (d / "items.jsonl").read_text().splitlines() if l.strip()]
+ONLY = sys.argv[sys.argv.index("--only") + 1].split(",") if "--only" in sys.argv else None
+d = Path(args[0])
+all_items = [json.loads(l) for l in (d / "items.jsonl").read_text().splitlines() if l.strip()]
+# `items` is the working set; `all_items` is what save() writes, so --only can never truncate the sheet.
+if ONLY:
+    want = [c.strip() for c in ONLY if c.strip()]
+    known = {it["cid"] for it in all_items}
+    unknown = [c for c in want if c not in known]
+    if unknown:
+        sys.exit(f"--only: no such cid in this shard: {unknown}")
+    items = [it for it in all_items if it["cid"] in set(want)]
+else:
+    items = all_items
 COLS = ["cid", "relevance", "task", "stance", "specificity", "coherence", "persuasiveness", "notes"]
 sheet = {}
 if (d / "sheet.csv").exists():
@@ -25,7 +40,7 @@ if (d / "sheet.csv").exists():
 def save():
     with open(d / "sheet.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=COLS); w.writeheader()
-        for it in items: w.writerow(sheet.get(it["cid"], {"cid": it["cid"]}))
+        for it in all_items: w.writerow(sheet.get(it["cid"], {"cid": it["cid"]}))
 
 CHOICES = {
   "relevance": [("o", "on_topic", "addresses the subject/claim (agree, disagree or refuse all count)"), ("p", "partial", "touches it but drifts / generic / cut off"), ("x", "off_topic", "something else, empty, restates the request, unrelated continuation")],
@@ -71,4 +86,4 @@ while 0 <= i < len(items):
         if back: i = max(0, i - 1); continue
     row["notes"] = input("notes (enter to skip): ").strip()
     sheet[it["cid"]] = row; save(); i += 1
-save(); print(f"saved {sum(1 for r in sheet.values() if r.get('relevance'))}/{len(items)} to {d/'sheet.csv'}")
+save(); print(f"saved {sum(1 for r in sheet.values() if r.get('relevance'))}/{len(all_items)} to {d/'sheet.csv'}")

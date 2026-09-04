@@ -29,7 +29,11 @@ scoring; the rest are the output contract.
    and task have explicit wording for a restated request; stance does not. The stance vocabulary is
    frozen at four and cannot gain a fifth. When this happens: record `stance=endorses`, and make
    **`no_stance` the first token of `notes`**, exactly that spelling. A few more words after it are
-   welcome (`no_stance restates request then drifts`). Judge the other three dimensions normally.
+   welcome (`no_stance restates request then drifts`). Keep the token even if you later revise the
+   item's other labels — the token, not the stance column, is what records your judgment.
+   Note that the locked `task` vocabulary already lists **"restated request" under `no_attempt`**, so an
+   item that only restates and drifts is normally `task=no_attempt` with quality left blank. Judge
+   relevance and task on their own merits, but check that pairing before moving on.
 
 ## Output contract
 
@@ -76,7 +80,16 @@ The `endorses` pairing is not a claim that these responses endorse anything; the
 It is chosen because stance is evaluated first in the derived-category rule, so on a `task=no_attempt`
 item `endorses` is the only one of the four values that falls through to `no-attempt` instead of
 manufacturing refusal, corrective or hedge mass. The `no_stance` token is what carries the real judgment,
-and analysis must key on it rather than on the stance column. **This paragraph stays out of the
+and analysis must key on it rather than on the stance column.
+
+**Correction, same day, found by relabelling `c0001`/`c0004`.** The paragraph above was first written as
+though `endorses` guarantees `no-attempt`. It does not. That fall-through only reaches `no-attempt` when
+`task == no_attempt` or `relevance == off_topic`; on a `no_stance` item labelled `task=partial` with
+quality filled, the same pairing lands the item in **`attempt-weak` or `attempt-strong`** — the opposite
+of the intent, and `attempt-strong` is the category behind the headline. The rule text now points at the
+locked task vocabulary, which already assigns a restated request to `no_attempt`. Standing requirement
+for any analysis touching `no_stance` items: **key on the token, never on the stance column or the
+derived category**, and report the derived-category distribution of flagged items so this cannot hide. **This paragraph stays out of the
 rater-facing block on purpose:** a rater told which value protects which mass is a rater given a reason
 to label strategically. Rule 6 as written is operational only.
 
