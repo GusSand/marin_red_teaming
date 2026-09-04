@@ -252,7 +252,110 @@ covered. Primary labels are not in the upload. Routing request: `IN-004`.
 Outstanding until it returns: the pre-registered "rater agreement poor (κ < 0.50) → weaken the
 stance-shift claim" condition is **unevaluated**.
 
+## Second-rater slice — returned 2026-09-04, `IN-004` resolved
+
+Routed by gs157 to GPT-5.6, a non-Claude frontier model. Sheet validated 150/150: exact header, no
+duplicates, no foreign cids, no blanks, stratification exactly 25 per subtype per arm as registered.
+Analysis: `scripts/compare_3f_raters.py`. Raw: `docs/results/09-04_concessionary/second_rater_agreement.json`.
+
+### Agreement — ADEQUATE
+
+Three-subtype agreement **0.867** (130/150), Cohen's κ **0.800** (Scott's π 0.799). By arm: phoenix
+0.853 / κ 0.780, starling 0.880 / κ 0.820. The pre-registered "rater agreement poor" condition
+(κ < 0.50) does **not** fire, and neither does the MODERATE band.
+
+Population-weighted, correcting for the equal-allocation design: agreement **0.814**, κ **0.696**. Still
+adequate, but the reweighting is not cosmetic — the balanced slice **flatters κ by about 0.10**, because
+it undersamples `unqualified`, which is 59% of the population and the one class where the raters
+actually disagree. Report the weighted figure alongside, never instead.
+
+### The boundary the preregistration named decisive is fine
+
+`concessionary`↔`misclassified` crossings: **6 of the 100 items in those two classes** (conc→misc 5,
+misc→conc 1). The internal duplicates produced zero such pairs and could not test it; now it is tested,
+and it is **not** where the raters disagree.
+
+### The disagreement is one cell over, and strictly one-way
+
+| primary \ second | unqualified | concessionary | misclassified |
+|---|---|---|---|
+| unqualified | **37** | **11** | 2 |
+| concessionary | **0** | **45** | 5 |
+| misclassified | 1 | 1 | **48** |
+
+`unqualified`→`concessionary` is 11; the reverse is **0**. The second rater sees material concessions
+where the primary rater saw flat assertion, essentially never the other way round. This is a threshold
+difference on "what counts as a material concession", not noise.
+
+### POST-HOC robustness — the registered verdict does NOT survive
+
+Applying the observed transition matrix to the full 469 (denominator 540 generations per arm; row totals
+preserve 160 and 309 exactly, so total endorsement mass is unchanged and the projection only
+redistributes *within* endorsement):
+
+| subtype | Δ registered | Δ projected under the second rater |
+|---|---|---|
+| unqualified | +19.07pp | **+14.11pp** |
+| concessionary | +8.89pp | **+12.19pp** |
+| misclassified | −0.37pp | +1.30pp |
+| **unqualified share of the increase** | **68.21%** | **53.65%** |
+| **verdict** | MAINLY UNQUALIFIED | **MIXED** |
+
+Stratified bootstrap over the slice, 10,000 resamples, seed 20260828: share median 0.538,
+**95% CI [0.448, 0.618]**, **P(share ≥ 0.60) = 0.068**. The two components' CIs overlap heavily
+(d_u [+11.81, +16.40], d_c [+9.93, +14.51]). **This is not a knife-edge miss** — the 60% bar sits outside
+the bulk of the distribution and the two components are no longer distinguishable in size.
+
+Using arm-specific transition matrices instead (n=25 per cell, noisy) gives a share of 37.65%, which
+would read as *mainly concessionary*. Not trustworthy at that n, but it establishes that the flip is not
+in a direction that rescues the registered verdict.
+
+### How this result must be reported
+
+**The verdict is rater-dependent, and that is the finding.** Under the primary rater unqualified holds
+68.21% of the endorsement-mass increase; under the second rater 53.65%. The frozen 60% bar sits between
+them, so the branch selected is a property of the rater, not of the model.
+
+`S1-SYNTH` must use the **MIXED** language: unqualified and concessionary endorsement both rose
+substantially — roughly +19 and +9pp under the primary rater, +14 and +12pp under the second — and which
+one dominates is inside rater disagreement.
+
+**Retracted:** the sentence "Starling is not hedging its way into compliance — it flatly asserts more
+false theses" was written from the primary labels alone and is **not supported**. Do not use it.
+
+Two things survive intact and belong in the same breath: the **total endorsement-mass gap of +27.6pp is
+untouched** by any of this — the projection redistributes within endorsement and preserves both arm
+totals exactly — and the raters agree at κ 0.80 / 0.867. This is a *framing* disagreement inside a
+well-agreed classification, not a broken rubric.
+
+### Verification — MATCHED
+
+Fresh subagent, given only `key.json`, the second rater's CSV and this document; denied every analysis
+script; two independent routes agreeing to 4 decimals. Every figure matched: agreement, κ, the full
+confusion matrix, per-class recall and precision, both arm splits, the boundary count, the weighted
+figures, the transition matrix, all six projected masses, and the 53.65% share. The bootstrap CI and the
+arm-specific sensitivity above are its contributions.
+
+### Caveats on the projection, from the verifier
+
+- It **assumes the second rater is ground truth** and that one pooled transition matrix estimated on 150
+  items applies to all 469. It is a one-directional measurement-error correction, not an adjudication.
+  Neither rater has been shown correct.
+- `P(second = unqualified | primary = concessionary) = 0.000` is a **structural zero in a 50-item row**.
+  The projection therefore lets mass flow out of `unqualified` but never back in, and that single cell
+  carries much of the flip. With even one such item the share rises.
+- The equal-allocation design does **not** bias the transition matrix — its rows are conditioned on the
+  primary class — only the precision of each row. That is why the projection is legitimate even though
+  the weighted-κ correction was needed. The two look contradictory and are not.
+- The confusion matrix is near-triangular (all three reverse cells are 0 or 1). That is what a genuine
+  one-way threshold difference looks like, and the 11-item off-diagonal rules out a rater defaulting to
+  one class. The Iron Law does not fire, but it is clean enough to deserve one adjudication pass.
+
+**Cheap follow-up that would settle it:** adjudicate the 11 `unqualified`→`concessionary` items with a
+third rater. Filed as `S1-3F-ADJ`.
+
 ## Results status
 
-**Primary result: VERIFIED.** Second-rater agreement: **PENDING** (`IN-004`).
+**Primary result: VERIFIED.** **Second-rater agreement: VERIFIED, ADEQUATE (κ 0.800).**
+**Registered verdict: NOT ROBUST — report as rater-dependent, use MIXED language.**
 

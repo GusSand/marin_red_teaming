@@ -961,3 +961,49 @@ boundary the preregistration named as decisive is entirely unmeasured, and κ 0.
 150-item second-rater slice, stratified 25 per subtype per arm precisely to load that boundary, is the
 only instrument for it, and until it returns the pre-registered "agreement poor → weaken" condition is
 unevaluated.
+
+---
+
+## 2026-09-04 · S1-3F second rater (IN-004) · The verdict is rater-dependent
+
+**Corrects the entry immediately above.** That entry reported MAINLY UNQUALIFIED from the primary labels
+and wrote "Starling is not hedging its way into compliance, it is flatly asserting more false theses".
+The second rater does not support that sentence. It is retracted.
+
+**Method.** The frozen 150-item slice — stratified 25 per subtype per arm to load the
+`concessionary`/`misclassified` boundary — was routed by gs157 to GPT-5.6, a non-Claude frontier model.
+Sheet validated 150/150. Agreement computed against the primary Claude subtypes per the frozen
+thresholds.
+
+**Results.** Three-subtype agreement 0.867, Cohen's κ **0.800** → **ADEQUATE**; the pre-registered
+"agreement poor" condition does not fire. By arm: phoenix 0.853 / κ 0.780, starling 0.880 / κ 0.820.
+Population-weighted (correcting the equal-allocation design): agreement 0.814, κ 0.696 — still adequate,
+but the balanced slice flatters κ by ~0.10 because it undersamples `unqualified`, the class where the
+raters disagree. `concessionary`↔`misclassified` crossings: 6 of 100. Confusion is near-triangular:
+`unqualified`→`concessionary` 11, reverse **0**.
+
+Post-hoc robustness, applying the transition matrix to all 469 (row totals preserve 160/309, so total
+endorsement mass is unchanged): unqualified Δ +19.07 → **+14.11pp**, concessionary Δ +8.89 →
+**+12.19pp**, unqualified share of the increase 68.21% → **53.65%**. Below the frozen 60% bar, so the
+verdict becomes **MIXED**. Stratified bootstrap: share median 0.538, 95% CI [0.448, 0.618],
+P(share ≥ 0.60) = 0.068. Arm-specific matrices (n=25/cell, noisy) give 37.65%.
+
+**Verification.** MATCHED, two independent routes agreeing to 4 decimals. Every figure — agreement, κ,
+the full confusion matrix, per-class recall and precision, both arm splits, the boundary count, the
+weighted figures, the transition matrix, all six projected masses, the 53.65% share. The bootstrap CI and
+the arm-specific sensitivity are the verifier's contributions.
+
+**Interpretation (mine).** The finding is that **the verdict is a property of the rater, not of the
+model**. 68.21% under one rater, 53.65% under another, with the frozen 60% bar sitting between them. The
+disagreement is not noise: it is strictly one-way and concentrated in a single cell, a threshold
+difference about what counts as a material concession. Two independent checks now agree on the fault
+line — the internal duplicates put 4 of 7 disagreements at `unqualified`/`concessionary`, the second
+rater 11 of 14. So `S1-SYNTH` must use MIXED language: both components rose substantially, roughly +19
+and +9pp under the primary rater and +14 and +12pp under the second, and which dominates is inside rater
+disagreement. Two things survive and belong in the same breath: the **total endorsement-mass gap of
++27.6pp is untouched** — the projection redistributes within endorsement and preserves both arm totals
+exactly — and the raters agree at κ 0.80. This is a framing disagreement inside a well-agreed
+classification, not a broken rubric. The projection's weakest point, which the verifier found, is a
+structural zero: P(second=`unqualified` | primary=`concessionary`) = 0.000 in a 50-item row, so mass flows
+out of `unqualified` and never back in, and that one cell carries much of the flip. Adjudicating the 11
+crossing items with a third rater would settle it cheaply; filed as `S1-3F-ADJ`.

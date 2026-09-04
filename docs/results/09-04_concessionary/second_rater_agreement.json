@@ -1,0 +1,130 @@
+{
+  "experiment": "docs/experiments/09-04_phoenix-starling_concessionary-endorsement.md",
+  "inbox": "IN-004",
+  "n": 150,
+  "gates": {
+    "n_key": 150,
+    "n_second": 150,
+    "missing": [],
+    "unexpected": [],
+    "bad_labels": {}
+  },
+  "second_rater_distribution": {
+    "concessionary": 57,
+    "misclassified": 55,
+    "unqualified": 38
+  },
+  "primary_distribution_in_slice": {
+    "concessionary": 50,
+    "misclassified": 50,
+    "unqualified": 50
+  },
+  "three_subtype_agreement": 0.867,
+  "cohens_kappa": 0.8,
+  "population_weighted_agreement": 0.814,
+  "population_weighted_kappa": 0.696,
+  "confusion_primary_to_second": {
+    "concessionary->concessionary": 45,
+    "concessionary->misclassified": 5,
+    "misclassified->concessionary": 1,
+    "misclassified->misclassified": 48,
+    "misclassified->unqualified": 1,
+    "unqualified->concessionary": 11,
+    "unqualified->misclassified": 2,
+    "unqualified->unqualified": 37
+  },
+  "per_class": {
+    "unqualified": {
+      "primary_n": 50,
+      "second_n": 38,
+      "both": 37,
+      "recall_primary": 0.74,
+      "precision_second": 0.974
+    },
+    "concessionary": {
+      "primary_n": 50,
+      "second_n": 57,
+      "both": 45,
+      "recall_primary": 0.9,
+      "precision_second": 0.789
+    },
+    "misclassified": {
+      "primary_n": 50,
+      "second_n": 55,
+      "both": 48,
+      "recall_primary": 0.96,
+      "precision_second": 0.873
+    }
+  },
+  "concessionary_vs_misclassified": {
+    "cross_count": 6,
+    "conc->misc": 5,
+    "misc->conc": 1,
+    "note": "the internal duplicate check produced ZERO such pairs; this slice is the only measurement"
+  },
+  "by_arm": {
+    "phoenix": {
+      "n": 75,
+      "agreement": 0.853,
+      "kappa": 0.78
+    },
+    "starling": {
+      "n": 75,
+      "agreement": 0.88,
+      "kappa": 0.82
+    }
+  },
+  "posthoc_sensitivity_under_second_rater": {
+    "note": "POST HOC. Observed per-class transition rates applied to the full 469. Does not replace the registered verdict, which stands on the primary labels.",
+    "transition_rates_primary_to_second": {
+      "unqualified": {
+        "unqualified": 0.74,
+        "concessionary": 0.22,
+        "misclassified": 0.04
+      },
+      "concessionary": {
+        "unqualified": 0.0,
+        "concessionary": 0.9,
+        "misclassified": 0.1
+      },
+      "misclassified": {
+        "unqualified": 0.02,
+        "concessionary": 0.02,
+        "misclassified": 0.96
+      }
+    },
+    "projected_counts": {
+      "phoenix": {
+        "unqualified": 65.0,
+        "concessionary": 55.8,
+        "misclassified": 39.2
+      },
+      "starling": {
+        "unqualified": 141.2,
+        "concessionary": 121.6,
+        "misclassified": 46.2
+      }
+    },
+    "projected_mass_pct": {
+      "phoenix": {
+        "unqualified": 12.04,
+        "concessionary": 10.33,
+        "misclassified": 7.25
+      },
+      "starling": {
+        "unqualified": 26.15,
+        "concessionary": 22.52,
+        "misclassified": 8.55
+      }
+    },
+    "projected_delta_pp": {
+      "unqualified": 14.11,
+      "concessionary": 12.19,
+      "misclassified": 1.3
+    },
+    "projected_unqualified_share_of_increase": 0.5365,
+    "projected_verdict": "MIXED",
+    "registered_verdict_robust_to_second_rater": false
+  },
+  "verdict": "ADEQUATE"
+}

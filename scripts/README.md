@@ -12,7 +12,18 @@ their own subdir and are not committed.
   act, or one or more task IDs, when it simply waits on sibling tasks. Requiring an INBOX ID for a purely
   task-dependent blocker forced such tasks to be mislabelled READY, which is what `S1-SYNTH` was doing.
   This is stricter, not looser: referenced INBOX IDs must still be live, referenced task IDs must exist
-  in the active table, and naming an already-`DONE` task as a blocker now fails as a stale state. It also requires the canonical living report's task pointer and update date to agree
+  in the active table, and naming an already-`DONE` task as a blocker now fails as a stale state. **Note
+  for editors:** any backticked task ID appearing in a BLOCKED row's Next action is read as a blocker, so
+  do not mention completed tasks there — put that history in the Outcome column instead. The rule caught
+  its first real stale state within the hour, when `S1-3F` closed and `S1-SYNTH` still named it.
+
+- `compare_3f_raters.py` — S1-3F second-rater agreement (`IN-004`). Three-subtype agreement, Cohen's κ,
+  the confusion matrix, per-class recall/precision, per-arm splits, and the `concessionary`/
+  `misclassified` boundary count called out separately. Reports a **population-weighted** κ alongside the
+  raw one: the slice is stratified equally by primary subtype, which flatters κ by ~0.10 because it
+  undersamples the class where the raters disagree. Also runs the post-hoc robustness projection —
+  applying the observed transition matrix to all 469 to test whether the registered verdict survives the
+  second rater. It did not. It also requires the canonical living report's task pointer and update date to agree
   with `STATUS.md`. Run before commits. `submit.sh` runs it with `--require-in-progress` before any GPU
   submission, so a merely queued or stale task cannot consume compute.
 - `setup_safety_eval.sh` — Gate 1: build isolated venv `.venv-safety-eval`, `pip install -e .`

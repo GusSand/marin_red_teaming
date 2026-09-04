@@ -11,7 +11,6 @@ rules: `docs/PROJECT_OPERATING_RULES.md`.
 |---|---|---|---|---|---|
 | `IN-001` | CRITICAL | Gus / David | Confirm which intermediate Starling checkpoints exist and whether the six-arm, 10-training-run screen plus one confirmation run is funded. If not, name the first arms to cut. | `S2-00` | Answer inline here; Stage 2 experiment doc applies it. |
 | `IN-003` | OPTIONAL | Gus | If retaining StrongREJECT: accept the `google/gemma-2b` licence and expose a read token to Torch jobs. | `S1-3B` only; not the critical path | Successful read of the gated base from the safety-eval environment. |
-| `IN-004` | HIGH | Gus | Route the 150-item second-rater slice to a frontier model (not Claude), then drop the returned CSV at `concessionary_second_rater_v1/sheet_second.csv`. Upload `PROMPT.md` + `items.jsonl` from `concessionary_second_rater_v1/upload/`; ask for one CSV, exact header `cid,subtype,notes`, 150 rows. | `S1-3F` closure only; not `S1-06` | Validated sheet at `/scratch/gs157/marin-misinfo-labels/concessionary_second_rater_v1/sheet_second.csv` |
 <!-- ACTIVE_INBOX_END -->
 
 When an item resolves, remove its row from this table in the same commit that applies the answer. Keep
@@ -20,6 +19,19 @@ the detailed exchange in the historical section.
 ---
 
 ## Historical correspondence
+
+- **[2026-09-04] IN-004 CLOSED — second rater returned, and it changes the verdict.** GPT-5.6 sheet
+  validated 150/150. Agreement is **good**: three-subtype 0.867, κ **0.800**, ADEQUATE; the
+  "agreement poor" condition does not fire. The boundary we built the slice to test —
+  `concessionary` vs `misclassified` — turns out fine, 6 crossings of 100. **But the disagreement is
+  one cell over and strictly one-way:** `unqualified`→`concessionary` 11, reverse 0. Projecting that onto
+  all 469 drops the unqualified share of the endorsement increase from **68.2% to 53.65%**, under the
+  frozen 60% bar, so the verdict flips to **MIXED** (bootstrap CI [44.8%, 61.8%], P(≥60%) = 0.068 — not a
+  knife-edge). **The verdict is rater-dependent, and that is the finding.** Retracted: "Starling flatly
+  asserts more false theses rather than hedging into compliance." Untouched: the total endorsement-mass
+  gap of +27.6pp, and the fact that the two raters agree at κ 0.80 — this is a framing disagreement
+  inside a well-agreed classification. No action needed. `S1-3F-ADJ` is parked: adjudicating the 11
+  crossing items with a third rater would settle it cheaply.
 
 - **[2026-09-04] IN-004 raised — 150-item second-rater slice ready.** `S1-3F`'s primary result is in and
   verified: **MAINLY UNQUALIFIED**, unqualified endorsement carries 68.2% of the endorsement-mass increase

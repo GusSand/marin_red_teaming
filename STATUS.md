@@ -25,9 +25,10 @@ experiment that separates data-mixture and learning-rate effects.
 attempt-strong mass rose 28.5pp. General instruction following improved 11.8pp. Quality given attempt
 moved only +0.12 and was not significant. The direction replicates across raters; the magnitude is
 rater-dependent, and the human spot-check was too small to adjudicate it. A late-formalized labelling
-convention exposes ≈2.5pp of the +28.5pp and nothing of the corrective drop. The endorsement gain is
-**mainly unqualified** (68.2% of it), so Starling flatly asserts more false theses rather than hedging
-into compliance. **The instrument tracks stance, not prose.** Regressed on the four rated dimensions,
+convention exposes ≈2.5pp of the +28.5pp and nothing of the corrective drop. Endorsement rose in both
+forms — unqualified and concessionary — and **which dominates is rater-dependent** (68.2% vs 53.65% of
+the increase across two raters, straddling the 60% bar). The total endorsement-mass gap of +27.6pp is
+untouched by that disagreement. **The instrument tracks stance, not prose.** Regressed on the four rated dimensions,
 WildGuard's harmful label takes +0.404 unique out-of-fold AUC from stance and +0.009 from writing
 quality, whose interval spans zero — so a WildGuard harmful rate here reads closer to a stance rate than
 a harm-severity rate. The `S1-3F` audit will determine how much of the endorsement increase is
@@ -37,8 +38,7 @@ unqualified versus concessionary or balanced-sounding.
 
 1. `S1-06` — freeze and baseline the expanded ≥150-behavior evaluation. **Current.**
 2. `S1-05` — run the triggered benign-twins control.
-3. `S1-3F` — blocked on `IN-004`, the second-rater slice. Primary result is verified.
-4. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
+3. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
 5. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
 
 `S1-3D` and `S1-STANCE-GAP` are closed.
@@ -54,7 +54,7 @@ top of `BACKLOG.md`.
 - [x] Out-of-sample GPT rater check completed; verdict MODERATE.
 - [x] WildGuard-versus-rubric analysis completed and verified (`S1-3D`); verdict SUBSTANCE-LED.
 - [x] Restatement-artefact prevalence quantified: NON-DIFFERENTIAL, ≈−2.5pp exposure on +28.5pp, zero on the corrective drop (`S1-STANCE-GAP`).
-- [~] Concessionary-endorsement audit: primary VERIFIED, MAINLY UNQUALIFIED. Second-rater check pending (`IN-004`).
+- [x] Concessionary-endorsement audit completed with a second-rater check; verdict rater-dependent (`S1-3F`).
 - [ ] Benign-twins control completed (`S1-05`).
 - [ ] Expanded ≥150-behavior set selected, deduplicated, hashed, and baselined (`S1-06`).
 - [x] Human spot-check of the rater completed (`IN-002`); NOT EVALUABLE on stance, no support for the anchor.
@@ -73,7 +73,6 @@ top of `BACKLOG.md`.
 
 - `IN-001` blocks Stage 2: intermediate Starling checkpoint availability and training budget from David.
 - `IN-002` is closed: the 25-item spot-check is done and came back NOT EVALUABLE on stance (n=7 < 8). The Claude anchor is never ahead of GPT under any exclusion treatment, so no reading supports it.
-- `IN-004` blocks `S1-3F` closure: Gus routes the 150-item second-rater slice to a non-Claude frontier model.
 - `IN-003` is optional and non-gating: Gemma access for the StrongREJECT sidecar.
 
 ## Parked until the critical path lands
