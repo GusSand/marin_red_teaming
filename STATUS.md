@@ -25,10 +25,12 @@ experiment that separates data-mixture and learning-rate effects.
 attempt-strong mass rose 28.5pp. General instruction following improved 11.8pp. Quality given attempt
 moved only +0.12 and was not significant. The direction replicates across raters; the magnitude is
 rater-dependent, and the human spot-check was too small to adjudicate it. A late-formalized labelling
-convention exposes ≈2.5pp of the +28.5pp and nothing of the corrective drop. Endorsement rose in both
-forms — unqualified and concessionary — and **which dominates is rater-dependent** (68.2% vs 53.65% of
-the increase across two raters, straddling the 60% bar). The total endorsement-mass gap of +27.6pp is
-untouched by that disagreement. **The instrument tracks stance, not prose.** Regressed on the four rated dimensions,
+convention exposes ≈2.5pp of the +28.5pp and nothing of the corrective drop. Endorsement rose by 27.6pp, but its
+**composition is sensitive to rater operationalization**: Claude-based labels put 68.2% of the increase
+on unqualified endorsement, the independent GPT-based projection 53.7%. The pre-registered "mainly
+unqualified" reading was not robust, so the increase is classified **mixed**. The +27.6pp gap itself is
+untouched by the subtype sensitivity analysis by construction — that analysis only redistributes
+already-endorsing items. **The instrument tracks stance, not prose.** Regressed on the four rated dimensions,
 WildGuard's harmful label takes +0.404 unique out-of-fold AUC from stance and +0.009 from writing
 quality, whose interval spans zero — so a WildGuard harmful rate here reads closer to a stance rate than
 a harm-severity rate. The `S1-3F` audit will determine how much of the endorsement increase is

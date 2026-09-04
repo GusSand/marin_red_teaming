@@ -312,21 +312,38 @@ in a direction that rescues the registered verdict.
 
 ### How this result must be reported
 
-**The verdict is rater-dependent, and that is the finding.** Under the primary rater unqualified holds
-68.21% of the endorsement-mass increase; under the second rater 53.65%. The frozen 60% bar sits between
-them, so the branch selected is a property of the rater, not of the model.
+Wording fixed by gs157, 2026-09-04, correcting two overstatements in the first draft of this section.
 
-`S1-SYNTH` must use the **MIXED** language: unqualified and concessionary endorsement both rose
-substantially — roughly +19 and +9pp under the primary rater, +14 and +12pp under the second — and which
-one dominates is inside rater disagreement.
+**The compositional verdict is sensitive to rater operationalization.** Under the primary rater
+unqualified holds 68.21% of the endorsement-mass increase; under the second rater 53.65%. The frozen 60%
+bar sits between them, so the pre-registered "mainly unqualified" interpretation **was not robust**.
 
-**Retracted:** the sentence "Starling is not hedging its way into compliance — it flatly asserts more
-false theses" was written from the primary labels alone and is **not supported**. Do not use it.
+*Not* "the verdict is a property of the rater, not the model" — that is too absolute. Two purposively
+chosen model raters do not license a claim about what is or is not a property of the model.
 
-Two things survive intact and belong in the same breath: the **total endorsement-mass gap of +27.6pp is
-untouched** by any of this — the projection redistributes within endorsement and preserves both arm
-totals exactly — and the raters agree at κ 0.80 / 0.867. This is a *framing* disagreement inside a
-well-agreed classification, not a broken rubric.
+`S1-SYNTH` uses the **MIXED** language. The agreed wording:
+
+> Endorsement increased by 27.6pp, but its composition was rater-sensitive. Claude-based labels
+> attributed 68.2% of the increase to unqualified endorsement, whereas the independent GPT-based
+> projection attributed 53.7%. Thus the preregistered "mainly unqualified" interpretation was not robust,
+> and we classify the increase as mixed between unqualified and concessionary endorsement.
+
+**Retracted:** "Starling is not hedging its way into compliance — it flatly asserts more false theses."
+Written from the primary labels alone; not supported.
+
+**On the +27.6pp gap — state it precisely.** It is **untouched by the subtype sensitivity analysis, by
+construction**: the second-rater task only redistributes already-endorsing items among subtypes, and the
+projection preserves both arm totals exactly. It is **not** "independently confirmed by both raters" —
+neither rater re-judged whether an item endorses at all, so this analysis carries no information about
+that.
+
+**On κ = 0.80 — it does not rescue the headline.** Overall classification can be reliable while the
+particular decision-critical estimand is unstable, and that is what happened here. Two further limits:
+the slice was deliberately balanced across primary subtype and arm, so **κ describes agreement on that
+constructed slice, not population-level reliability** (the population-weighted κ 0.696 is the closer
+figure, and even it is design-conditioned); and the decision-relevant quantities are the **projected
+shares**, valid only insofar as the projection and its bootstrap preserve the stratified design. The
+bootstrap reported above is stratified over the slice.
 
 ### Verification — MATCHED
 
@@ -356,6 +373,10 @@ third rater. Filed as `S1-3F-ADJ`.
 
 ## Results status
 
-**Primary result: VERIFIED.** **Second-rater agreement: VERIFIED, ADEQUATE (κ 0.800).**
-**Registered verdict: NOT ROBUST — report as rater-dependent, use MIXED language.**
+**Primary result: VERIFIED.** **Second-rater agreement: VERIFIED, ADEQUATE (κ 0.800) on the constructed
+slice.** **Registered verdict: NOT ROBUST — the composition is sensitive to rater operationalization;
+`S1-SYNTH` classifies the increase as MIXED.**
+
+`S1-3F` is **closed as MIXED**. A later third-rater pass is sensitivity evidence under `S1-3F-ADJ` and
+**does not retroactively erase this failed robustness check**, whatever it returns.
 

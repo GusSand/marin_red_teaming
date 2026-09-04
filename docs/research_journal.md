@@ -1007,3 +1007,31 @@ classification, not a broken rubric. The projection's weakest point, which the v
 structural zero: P(second=`unqualified` | primary=`concessionary`) = 0.000 in a 50-item row, so mass flows
 out of `unqualified` and never back in, and that one cell carries much of the flip. Adjudicating the 11
 crossing items with a third rater would settle it cheaply; filed as `S1-3F-ADJ`.
+
+---
+
+## 2026-09-04 · Correction to the S1-3F second-rater entry (gs157)
+
+Two claims in the entry above overstate what the data support, and one wording choice was wrong. gs157
+caught all three; corrected here rather than by rewriting the entry, which is append-only.
+
+1. **"The verdict is a property of the rater, not of the model"** is too absolute. Three purposively
+   chosen model raters are not independent draws and none is ground truth. The supportable claim is
+   **"the compositional verdict is sensitive to rater operationalization."**
+2. **"+27.6pp is untouched by any of this"** was stated as though two raters had confirmed it. They had
+   not. The second-rater task only redistributes items already labelled `endorses` among subtypes, so the
+   gap is **untouched by the subtype sensitivity analysis, by construction** — and this analysis carries
+   **no** information about whether those items endorse at all.
+3. **κ = 0.80 does not rescue the headline**, and it is also not a population figure. Overall
+   classification can be reliable while the decision-critical estimand is unstable, which is exactly what
+   happened. The slice was deliberately balanced across primary subtype and arm, so κ describes agreement
+   on that constructed slice; the projected shares are the decision-relevant quantities, valid only while
+   the projection and bootstrap preserve the stratified design.
+
+Also settled: if a third rater agrees with GPT, that would **not** establish "systematic Claude bias". It
+would support only *"the Claude-based primary labels appear to use a different concession threshold from
+two other model families."* Accordingly the third-rater reading rule drops the subjective
+"clustering near GPT" branch and reports objective quantities only.
+
+`S1-3F` stays closed as **MIXED**. The third-rater pass is sensitivity evidence under `S1-3F-ADJ` and does
+not retroactively erase a failed robustness check.

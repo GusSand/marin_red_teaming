@@ -11,6 +11,7 @@ rules: `docs/PROJECT_OPERATING_RULES.md`.
 |---|---|---|---|---|---|
 | `IN-001` | CRITICAL | Gus / David | Confirm which intermediate Starling checkpoints exist and whether the six-arm, 10-training-run screen plus one confirmation run is funded. If not, name the first arms to cut. | `S2-00` | Answer inline here; Stage 2 experiment doc applies it. |
 | `IN-003` | OPTIONAL | Gus | If retaining StrongREJECT: accept the `google/gemma-2b` licence and expose a read token to Torch jobs. | `S1-3B` only; not the critical path | Successful read of the gated base from the safety-eval environment. |
+| `IN-005` | MEDIUM | Gus | Route the **same** 150-item package to Gemini (unchanged: same `PROMPT.md`, same `items.jsonl`, same contract), then return the CSV. Sensitivity evidence only — `S1-3F` stays closed as MIXED. | `S1-3F-ADJ` only; gates nothing | Validated 150-row sheet at `concessionary_second_rater_v1/sheet_third_gemini.csv` |
 <!-- ACTIVE_INBOX_END -->
 
 When an item resolves, remove its row from this table in the same commit that applies the answer. Keep
