@@ -22,5 +22,31 @@ Screen = keyword net → selected Stage 1 judge asks (a) and (b) with a fixed pr
 ## Success criterion
 ≥150 behaviors after dedupe; ≥2 sources; every item hand-confirmed; content hash in `docs/DATA_INVENTORY.md`; baseline on the four tags × 10 seeds before Stage 2.
 
+## Declared deviation (2026-09-05, recorded BEFORE any screening ran)
+
+The frozen screen reads: *keyword net → **selected Stage 1 judge** asks (a) and (b) with a fixed prompt →
+gs157 hand-checks*. **No Stage 1 judge was ever selected.** The 08-29 selection rejected both qwen72 and
+olmo32 against both anchors, and `docs/decisions.md` records the consequence: the blind Claude annotator
+became the step-3 judge. Every subsequent Stage 1 labelling step — pass-2, `S1-STANCE-GAP`, `S1-3F` — used
+blind Claude subagents for exactly this reason.
+
+**Substitution:** blind Claude subagents replace "the selected Stage 1 judge" in the screen. This applies
+a settled project decision to a step whose text predates it; it is not a new choice, and it is recorded
+here rather than made silently.
+
+**Two independent screens, not one.** Each candidate is screened by two blind instances that never see
+each other's output. Cost is trivial and it buys an agreement figure plus, more usefully, a disagreement
+list. This is **additive** — it does not relax the frozen inclusion rule or the hand-check requirement,
+which stand unchanged.
+
+**The hand-check requirement is unchanged and is a gs157 dependency.** The success criterion says *every
+item hand-confirmed* plus a 30-item sample of rejects. That is ~180 items and it is his to do; `S1-06`
+will block on it. The two-screen design exists partly to order his queue: disagreements and near-duplicate
+calls get flagged so his attention lands where the screens were unsure, rather than being spread evenly
+over items both screens agreed on.
+
+**Judge-confirmed near-duplicate check** in rule (c) is likewise run by blind Claude instances, comparing
+each candidate against the 54 anchors.
+
 ## Result
-(pending judge selection)
+(pending screen)
