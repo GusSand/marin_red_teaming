@@ -48,5 +48,72 @@ over items both screens agreed on.
 **Judge-confirmed near-duplicate check** in rule (c) is likewise run by blind Claude instances, comparing
 each candidate against the 54 anchors.
 
-## Result
-(pending screen)
+## Result (2026-09-05) — the >=150 target is NOT reachable from the registered sources
+
+### Step 1: the WildJailbreak screen returned nothing usable
+
+Two independent blind screens over the 98 keyword-net candidates: **98/98 included by both, zero
+disagreements.** A 100% pass rate is a red flag, and both screeners independently diagnosed it before
+being asked — the 98 rows collapse to **7 distinct request texts**, repeated 7-21 times each. The
+`vanilla` field of WildJailbreak repeats the same base prompt across many adversarial wrappers.
+
+Checking those 7 against the anchors: **6 are verbatim HarmBench behaviours.** The 7th
+(`vaccines cause autism`, Twitter thread) turns out to be in HarmBench's **val** split, which the local
+test-split file does not contain.
+
+**WildJailbreak contributes 0 net-new behaviours.** Not 98, not 7. Zero. It is dropped as a source.
+
+The screen was therefore also uninformative as a rule test: it made 7 judgements, not 98, on a pool with
+nothing that plausibly fails (a) or (b). The 98/98 agreement figure must not be quoted as screen
+reliability.
+
+### Step 2: the reachable ceiling across all non-gated sources
+
+| source | misinfo items | net-new after exact dedupe |
+|---|---|---|
+| HarmBench **all** (standard + contextual) | 65 | **64** |
+| JailbreakBench `Disinformation` | 10 | **6** (4 duplicate HarmBench) |
+| AdvBench, keyword+artefact net | 31 of 520 | **31** (unscreened) |
+| WildJailbreak vanilla-harmful | 98 rows / 7 texts | **0** |
+| SORRY-Bench | — | **gated on the Hub, needs authentication** |
+| **distinct total** | | **101** |
+
+**101 is a ceiling, not an estimate.** It uses exact normalized-text dedupe only, so semantic
+near-duplicates are still in; and AdvBench's 31 have passed only the keyword net, not the frozen
+inclusion rule. The realistic figure after both is lower.
+
+**Shortfall against the frozen >=150 criterion: at least 49.**
+
+### Also found: the local HarmBench file is the test split
+
+`harmbench_behaviors_text_test.csv` carries 54 misinfo behaviours. HarmBench **all** carries **65** (34
+standard, 31 contextual) — the val split adds 11. The 08-29 plan says "all HarmBench misinfo (standard +
+contextual, 54)"; the parenthetical is the test-split count, not "all". Using all 65 is closer to the
+plan's stated intent and is the single cheapest source of net-new behaviours, from the benchmark already
+anchoring this study. Flagged as a deviation for gs157 rather than taken unilaterally, because it changes
+the anchor set the Stage 1 dataset was built on.
+
+### What the shortfall costs, approximately
+
+The plan's power rationale is "54 items x 10 seeds resolves +/-5pp". Behaviour-level resolution scales
+about as 1/sqrt(n), so:
+
+| behaviours | approximate resolution |
+|---|---|
+| 54 (today) | +/-5.0pp |
+| 65 (HarmBench all) | +/-4.6pp |
+| **101 (ceiling)** | **+/-3.7pp** |
+| 150 (target) | +/-3.0pp |
+
+Rough scaling, not a formal power analysis. It says something useful anyway: **54 -> 101 buys most of the
+available improvement; 101 -> 150 is the smaller marginal gain.** A set of ~101 would resolve
+Stage 2's 4-8pp pieces considerably better than today's 54, without reaching the registered target.
+
+### Status
+
+`S1-06` is **BLOCKED** on `IN-006`. The options — authenticate SORRY-Bench, accept a smaller set and
+restate the power claim, author new behaviours, or some combination — each change what Stage 2 can claim,
+so the choice is gs157's, not mine.
+
+The frozen inclusion rule, hand-check requirement, and dedupe rule are untouched and still stand for
+whatever set is chosen.

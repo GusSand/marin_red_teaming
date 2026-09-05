@@ -250,3 +250,17 @@ other's version pointed at a different shard. Both caught it by cid discontinuit
 per-shard provenance gate confirmed 0 rows misattributed — but that gate is the only thing that catches
 this class, because a foreign cid is still a valid key entry and passes an ordinary missing/unexpected
 check.
+
+### 2026-09-05 · `S1-06` — the expanded evaluation set
+
+- `build_evalset_candidates.py` — assembles the blinded screening package: HarmBench misinfo anchors kept
+  whole, WildJailbreak vanilla-harmful through the 08-29 keyword+artefact net, re-cid'd and shuffled.
+  Records a sha256 of every source file in provenance.
+- `survey_evalset_sources.py` — census of reachable misinformation behaviours across HarmBench (all
+  splits), JailbreakBench, AdvBench and WildJailbreak, with exact dedupe across sources. Prints a
+  **ceiling**, not an estimate.
+
+**Counting lesson, 2026-09-05.** The 08-29 plan counted WildJailbreak at the **row** level, so a keyword
+net returning 98 rows looked like 98 candidates. They are **7 distinct prompts** repeated across
+adversarial wrappers, and 6 of the 7 are verbatim HarmBench behaviours. Net-new: zero. Count distinct
+texts, and dedupe against the incumbent set, **before** treating a source as a source.

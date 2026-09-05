@@ -1,12 +1,12 @@
 # Project status
 
-- **Last updated:** `2026-09-04`
+- **Last updated:** `2026-09-05`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
-- **Current task:** `S1-06`
+- **Current task:** `S1-05`
 - **Task status:** `IN_PROGRESS`
-- **Next checkpoint:** Write the second-source selection note, deduplicate against the 54, and hash the frozen set into `DATA_INVENTORY.md`.
-- **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-04`.
+- **Next checkpoint:** Finalize the 54 rule-gradable benign twins and pre-register their scoring.
+- **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-05`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
 holds live requests for Gus. `docs/research_journal.md` and the legacy sections of the backlog and
@@ -38,8 +38,8 @@ unqualified versus concessionary or balanced-sounding.
 
 ## Critical path
 
-1. `S1-06` — freeze and baseline the expanded ≥150-behavior evaluation. **Current.**
-2. `S1-05` — run the triggered benign-twins control.
+1. `S1-05` — run the triggered benign-twins control. **Current.**
+2. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
 3. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
 5. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
 
@@ -75,6 +75,8 @@ top of `BACKLOG.md`.
 
 - `IN-001` blocks Stage 2: intermediate Starling checkpoint availability and training budget from David.
 - `IN-002` is closed: the 25-item spot-check is done and came back NOT EVALUABLE on stance (n=7 < 8). The Claude anchor is never ahead of GPT under any exclusion treatment, so no reading supports it.
+- `IN-006` blocks `S1-06` and therefore all of Stage 2: how to close a 49-behaviour shortfall.
+- `IN-005` is sensitivity only: route the 150-item slice to Gemini for `S1-3F-ADJ`.
 - `IN-003` is optional and non-gating: Gemma access for the StrongREJECT sidecar.
 
 ## Parked until the critical path lands

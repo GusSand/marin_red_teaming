@@ -1035,3 +1035,48 @@ two other model families."* Accordingly the third-rater reading rule drops the s
 
 `S1-3F` stays closed as **MIXED**. The third-rater pass is sensitivity evidence under `S1-3F-ADJ` and does
 not retroactively erase a failed robustness check.
+
+---
+
+## 2026-09-05 · S1-06 · The ≥150-behaviour target is not reachable from the registered sources
+
+**Research question.** Assemble and freeze a deduplicated ≥150-behaviour misinformation evaluation before
+any Stage 2 arm trains. Plan frozen 2026-08-29 (`08-29_misinfo-evalset_selection.md`); judge substitution
+declared 2026-09-05 before any screening ran.
+
+**Method.** Two independent blind Claude screens over the 98 WildJailbreak candidates surviving the 08-29
+keyword+artefact net, applying the frozen inclusion rule unchanged. Then an exact-dedupe census across
+every non-gated candidate source.
+
+**Results.** Both screens returned **98/98 include, zero disagreements**. The cause, diagnosed
+independently by both screeners: the 98 rows are **7 distinct request texts** repeated 7–21 times, because
+WildJailbreak's `vanilla` field repeats one base prompt across many adversarial wrappers. Of those 7, **6
+are verbatim HarmBench behaviours** and the 7th is in HarmBench's val split. **WildJailbreak contributes
+0 net-new behaviours.**
+
+Census of non-gated sources, exact normalized-text dedupe: HarmBench all misinfo 65 (64 net-new after one
+internal duplicate), JailbreakBench `Disinformation` 10 (6 net-new, 4 duplicate HarmBench), AdvBench
+keyword+artefact 31 of 520 (unscreened), WildJailbreak 0. **Distinct total 101.** SORRY-Bench is gated on
+the Hub. Shortfall against the frozen ≥150 criterion: **at least 49**, and 101 is a ceiling — semantic
+near-duplicates are still in and AdvBench's 31 have not passed the inclusion rule.
+
+Separately: the local HarmBench file is `harmbench_behaviors_text_test.csv`, 54 misinfo. HarmBench **all**
+carries 65 (34 standard, 31 contextual); the val split adds 11.
+
+**Verification.** Not applicable in the usual sense — no metric is being claimed. The load-bearing facts
+are deterministic counts (distinct texts, exact string matches against anchors, category counts) and were
+each recomputed directly rather than taken from a screener's report. The 7-distinct-texts claim came from
+a screener and I confirmed it against the file before acting on it.
+
+**Interpretation (mine).** Two things went wrong in the 08-29 plan and neither was visible when it was
+written. WildJailbreak was counted at the *row* level by a keyword net, so 98 rows looked like 98
+candidates; they were 7 prompts, already ours. And the ≥150 target was set without checking that 150
+distinct misinformation artefact-requests exist in reachable public benchmarks. They appear not to: the
+ceiling is 101 before the inclusion rule and semantic dedupe bite. That makes this a genuine design
+blocker, not a slow step, so it goes to gs157 rather than getting quietly re-scoped. The approximate
+scaling is worth carrying into that decision — resolution goes ±5.0pp at 54, ±3.7pp at 101, ±3.0pp at
+150 — because **54 → 101 buys most of the available gain and 101 → 150 buys the smaller remainder**. A
+~101-behaviour set would serve Stage 2 considerably better than today's 54 while missing the registered
+number. The cheapest real gain on the table is switching from the HarmBench test split to all of
+HarmBench, +11 behaviours from the benchmark already anchoring the study; I flagged it rather than taking
+it, because it changes the anchor set the existing 1,080-response dataset was built on.

@@ -12,6 +12,7 @@ rules: `docs/PROJECT_OPERATING_RULES.md`.
 | `IN-001` | CRITICAL | Gus / David | Confirm which intermediate Starling checkpoints exist and whether the six-arm, 10-training-run screen plus one confirmation run is funded. If not, name the first arms to cut. | `S2-00` | Answer inline here; Stage 2 experiment doc applies it. |
 | `IN-003` | OPTIONAL | Gus | If retaining StrongREJECT: accept the `google/gemma-2b` licence and expose a read token to Torch jobs. | `S1-3B` only; not the critical path | Successful read of the gated base from the safety-eval environment. |
 | `IN-005` | MEDIUM | Gus | Route the **same** 150-item package to Gemini (unchanged: same `PROMPT.md`, same `items.jsonl`, same contract), then return the CSV. Sensitivity evidence only — `S1-3F` stays closed as MIXED. | `S1-3F-ADJ` only; gates nothing | Validated 150-row sheet at `concessionary_second_rater_v1/sheet_third_gemini.csv` |
+| `IN-006` | HIGH | Gus | Decide how to close a 49-behaviour shortfall: the ≥150 target is not reachable from registered sources (ceiling 101, and that is before semantic dedupe and the inclusion rule). Options: authenticate SORRY-Bench on the Hub; accept ~101 and restate the power claim; author new behaviours; or a combination. Also approve or reject switching from the HarmBench test split to all of HarmBench (+11). | `S1-06`, and therefore all of Stage 2 | A decision line in `docs/decisions.md` |
 <!-- ACTIVE_INBOX_END -->
 
 When an item resolves, remove its row from this table in the same commit that applies the answer. Keep
@@ -20,6 +21,22 @@ the detailed exchange in the historical section.
 ---
 
 ## Historical correspondence
+
+- **[2026-09-05] IN-006 — S1-06 is blocked on a design decision, not on slow work.** Two problems, both
+  invisible when the 08-29 plan was written. **(1) WildJailbreak is worthless here.** Its 98 keyword hits
+  are **7 distinct prompts** repeated across adversarial wrappers, and **6 of the 7 are verbatim HarmBench
+  behaviours**; the 7th is in HarmBench's val split. Net-new: **zero**. Both blind screens returned 98/98
+  include and both independently diagnosed why, so that agreement figure means nothing. **(2) The ≥150
+  target may be unreachable.** Census of every non-gated source: HarmBench all 64 net-new, JailbreakBench
+  Disinformation 6, AdvBench keyword-net 31 unscreened, WildJailbreak 0 → **101 distinct, a ceiling**
+  before semantic dedupe or the inclusion rule. SORRY-Bench is gated and needs your Hub authentication.
+  **Your call, because each option changes what Stage 2 can claim:** authenticate SORRY-Bench (unknown
+  yield); accept ~101 and restate the power claim; author new behaviours (changes the eval from
+  benchmark-sourced to partly synthetic); or a combination. One number for the decision — resolution
+  scales ±5.0pp at 54, ±3.7pp at 101, ±3.0pp at 150, so **54→101 buys most of the gain and 101→150 the
+  smaller remainder**. Also needs a yes/no: switch from the HarmBench test split to all of HarmBench,
+  +11 behaviours, which changes the anchor set the existing 1,080-response dataset was built on.
+  `docs/experiments/08-29_misinfo-evalset_selection.md`.
 
 - **[2026-09-04] IN-004 CLOSED — second rater returned, and it changes the verdict.** GPT-5.6 sheet
   validated 150/150. Agreement is **good**: three-subtype 0.867, κ **0.800**, ADEQUATE; the
