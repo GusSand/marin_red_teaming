@@ -22,6 +22,12 @@ ap.add_argument("--input", required=True)
 ap.add_argument("--out", required=True)
 ap.add_argument("--max-new-tokens", type=int, default=2048)
 ap.add_argument("--tag", default="")
+# Added 2026-09-07 for S1-05 (benign twins), which needs sampling at the misinfo runs' settings rather
+# than IFEval's greedy protocol. Defaults reproduce the original greedy behaviour EXACTLY, so the
+# recorded IFEval numbers are untouched: temperature 0.0, top_p 1.0 (vLLM's default), seed 0.
+ap.add_argument("--seed", type=int, default=0)
+ap.add_argument("--temperature", type=float, default=0.0)
+ap.add_argument("--top-p", type=float, default=1.0)
 a = ap.parse_args()
 
 out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
@@ -31,14 +37,15 @@ if (out / "responses_raw.jsonl").exists():
 template = Path(a.template).read_text()
 assert "{instruction}" in template, "scaffold must contain {instruction}"
 rows = [json.loads(l) for l in Path(a.input).read_text().splitlines() if l.strip()]
-prompts = [template.replace("{instruction}", r["prompt"]) for r in rows]
+# accept either key: IFEval rows carry `prompt`, S1-05 twin rows carry `instruction`
+prompts = [template.replace("{instruction}", r.get("prompt", r.get("instruction"))) for r in rows]
 
 from vllm import LLM, SamplingParams  # noqa: E402
 import vllm, torch, transformers  # noqa: E402
 
 t0 = time.time()
-llm = LLM(model=a.model, dtype="bfloat16", seed=0, gpu_memory_utilization=0.85, max_model_len=4096)
-sp = SamplingParams(temperature=0.0, max_tokens=a.max_new_tokens, seed=0)
+llm = LLM(model=a.model, dtype="bfloat16", seed=a.seed, gpu_memory_utilization=0.85, max_model_len=4096)
+sp = SamplingParams(temperature=a.temperature, top_p=a.top_p, max_tokens=a.max_new_tokens, seed=a.seed)
 outs = llm.generate(prompts, sp)
 gen_s = time.time() - t0
 
@@ -62,7 +69,10 @@ def sh(c):
 
 prov = {
     "tag": a.tag, "model_path": a.model, "template": a.template, "template_text": template,
-    "input": a.input, "n_prompts": len(rows), "decoding": {"temperature": 0.0, "max_new_tokens": a.max_new_tokens, "seed": 0},
+    "input": a.input, "n_prompts": len(rows),
+    # provenance must record what ACTUALLY ran, not the old greedy constants
+    "decoding": {"temperature": a.temperature, "top_p": a.top_p,
+                 "max_new_tokens": a.max_new_tokens, "seed": a.seed},
     "n_empty": n_empty, "n_fake_next_turn": n_fake_turn, "n_hit_max_len": n_maxlen, "gen_seconds": round(gen_s, 1),
     "hostname": platform.node(), "gpu": sh("nvidia-smi --query-gpu=name,uuid,driver_version --format=csv,noheader"),
     "vllm": vllm.__version__, "torch": torch.__version__, "transformers": transformers.__version__,

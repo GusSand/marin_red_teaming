@@ -117,6 +117,20 @@ script. It re-implements the four checks independently and recomputes the primar
 
 324 generations, well under one GPU-hour. One sub-2h job. Grading and analysis are CPU, seconds.
 
+## Run record
+
+**Job 17120971 submitted 2026-09-07**, `slurm/benign_twins.sbatch`, partition `h200_tandon`, one GPU,
+six generation runs sequentially. Preflight `DRY RUN OK`. Twins frozen at
+`/scratch/gs157/marin-misinfo-labels/benign_twins_v1/twins.jsonl` (54 rows).
+
+**Decoding matches the misinformation runs exactly** — temperature 0.7, top_p 0.95, max_new_tokens 2048,
+read off `harmbench/default.yaml`, with per-run seeds 0/1/2. The twins are compared against attempt-strong
+mass from those runs, so the decoding must not differ. `scripts/ifeval_generate.py` was extended
+additively for this: `--seed`, `--temperature`, `--top-p`, defaults reproducing the original greedy
+IFEval behaviour exactly, so the recorded IFEval numbers are untouched. Its provenance block was also
+fixed — it had hardcoded `temperature 0.0, seed 0` and would have logged the wrong decoding for any
+non-greedy run.
+
 ## Results
 
-(empty until run)
+(empty until the job lands)

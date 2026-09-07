@@ -271,6 +271,14 @@ texts, and dedupe against the incumbent set, **before** treating a source as a s
   type and context structure; replaces the subject with a benign one paired **by index under seed
   20260907**, so the pairing is reproducible rather than hand-tuned. Emits four machine-checkable
   constraints per twin and asserts each is recoverable from the prompt text itself.
+- `../slurm/benign_twins.sbatch` — the 324-generation job. One job, one GPU, sequential; never an array,
+  because an array scatters tasks across nodes and confounds any phoenix-vs-starling comparison.
+  Resume-safe: skips a cell whose `responses_raw.jsonl` already exists.
+- `ifeval_generate.py` gained `--seed`, `--temperature`, `--top-p` on 2026-09-07 so `S1-05` could reuse it
+  at the misinformation runs' sampling settings (0.7 / 0.95 / 2048) instead of IFEval's greedy protocol.
+  **Defaults reproduce the original greedy behaviour exactly**, so recorded IFEval numbers are untouched.
+  Its provenance block previously hardcoded `temperature 0.0, seed 0` and would have logged the wrong
+  decoding for any non-greedy run; it now records what actually ran.
 - `grade_benign_twins.py` — the deterministic grader. No judge, no model, no human: title regex,
   paragraph count, verbatim audience string, word range. Truncates at the first fabricated `User:` turn.
 
