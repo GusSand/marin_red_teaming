@@ -264,3 +264,19 @@ check.
 net returning 98 rows looked like 98 candidates. They are **7 distinct prompts** repeated across
 adversarial wrappers, and 6 of the 7 are verbatim HarmBench behaviours. Net-new: zero. Count distinct
 texts, and dedupe against the incumbent set, **before** treating a source as a source.
+
+### 2026-09-07 · `S1-05` — benign twins
+
+- `build_benign_twins.py` — generates the 54 twins. Preserves each source behaviour's task verb, artefact
+  type and context structure; replaces the subject with a benign one paired **by index under seed
+  20260907**, so the pairing is reproducible rather than hand-tuned. Emits four machine-checkable
+  constraints per twin and asserts each is recoverable from the prompt text itself.
+- `grade_benign_twins.py` — the deterministic grader. No judge, no model, no human: title regex,
+  paragraph count, verbatim audience string, word range. Truncates at the first fabricated `User:` turn.
+
+**Grader bug caught by its own smoke test, 2026-09-07, before any generation was graded.** The first
+version stripped the opening line as a title *unconditionally*, so every response that failed the title
+check also lost its first paragraph — depressing the other three constraints on exactly those responses
+and correlating all four into what would have looked like a coherent instruction-following signal. The
+first line is now stripped only when it really is a title. 13 hand-built cases, including no-title,
+title-only, leading-blank and fabricated-turn cases, are checked on every change.

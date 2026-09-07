@@ -3,9 +3,9 @@
 - **Last updated:** `2026-09-07`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
-- **Current task:** `S1-05`
+- **Current task:** `S1-3F-ADJ`
 - **Task status:** `IN_PROGRESS`
-- **Next checkpoint:** Author the 54 twins and the deterministic grader, then submit the 324-generation job.
+- **Next checkpoint:** Run the frozen three-rater sensitivity, then resume `S1-05` at the sbatch.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-07`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
