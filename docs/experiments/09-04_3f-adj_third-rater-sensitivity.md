@@ -61,6 +61,55 @@ Output is a characterization table plus a proposed operational definition of "ma
 future rubric v2. **It does not modify `judge_rubric_v1`,** which is locked and hashed into every judge
 output already in the record.
 
+## Amendment 2026-09-07 — a rater-validity gate, frozen before any further labels exist
+
+The first third-rater pass used **Gemini Flash** and **failed as an instrument**. It passed every gate
+this document had — 150 rows, exact header, no duplicates, no foreign cids, all labels in vocabulary —
+and still measured nothing. That is a gap in the gates, not a surprise about the model.
+
+**Naming discipline:** the failed rater is **Gemini Flash**, not "Gemini". Attributing a null to a model
+family when the small fast variant was used would be wrong, and the write-up says Flash everywhere.
+
+gs157 is running a **Gemini Pro** pass. The gate below is frozen **before those labels exist**, so it
+cannot be tuned to whatever comes back.
+
+### Hard precondition — a rater's labels must carry item-level information
+
+Before any rater's labels enter any statistic:
+
+**Permutation test.** Compute the rater's agreement with the primary labels. Then shuffle the rater's own
+label vector across items ≥ 10,000 times and recompute. **Require the observed agreement to exceed the
+95th percentile of that null** — equivalently p < 0.05.
+
+Rationale: a rater that ignores items and answers from a fixed marginal produces exactly the observed
+distribution and exactly chance agreement. No other gate detects that, because every *sheet-level* check
+passes. Gemini Flash scored **p = 0.377**: 38% of random reshuffles of its own labels matched the primary
+rater at least as well as its real labels did.
+
+**Failing this gate means the labels are not projected into any downstream statistic**, and the pass is
+recorded as a failed instrument rather than as a dissenting opinion.
+
+### Secondary red flag — independence from the treatment variable
+
+Report χ² of the rater's label against **arm**, conditional on the primary rater's class. The slice is
+balanced 25 per subtype per arm, so a rater tracking content should show no arm dependence within a
+primary class.
+
+Rationale, and the reason this is now explicit: Gemini Flash was null on the construct (χ² 2.71, n.s.
+against the primary class) but **not** null on the arm — `unqualified` share 0.573 Phoenix vs 0.853
+Starling, +28.0pp, χ² 14.52, significant. **A rater that is noise on the construct but structured on the
+treatment is worse than noise: it manufactures an apparent arm effect from nothing.** Its projected share
+of 0.8368 was that artifact, and it pointed the same way as the primary result — the most dangerous
+direction to be wrong in.
+
+A significant arm dependence is reported as a confound whether or not the permutation gate passes.
+
+### Standing constraint is unchanged
+
+Still a blinded sensitivity analysis. `S1-3F` stays closed as **MIXED** whatever any rater returns. No
+"two of three" majority is treated as truth — and the Flash pass is a reminder that a majority can be
+manufactured by a rater that is not reading.
+
 ## Gates
 
 - Gemini sheet: 150 rows, exact header `cid,subtype,notes`, every cid present once, no blanks, all labels

@@ -1,0 +1,173 @@
+{
+  "experiment": "docs/experiments/09-04_3f-adj_third-rater-sensitivity.md",
+  "standing_constraint": "blinded sensitivity, not a tie-breaking vote; S1-3F stays closed as MIXED; no two-of-three majority is treated as truth",
+  "n_slice": 150,
+  "gates": {
+    "claude": {
+      "rows": 150,
+      "missing": [],
+      "unexpected": [],
+      "bad": {}
+    },
+    "gpt": {
+      "rows": 150,
+      "missing": [],
+      "unexpected": [],
+      "bad": {}
+    },
+    "gemini": {
+      "rows": 150,
+      "missing": [],
+      "unexpected": [],
+      "bad": {}
+    }
+  },
+  "bar": 0.6,
+  "label_distribution": {
+    "claude": {
+      "concessionary": 50,
+      "misclassified": 50,
+      "unqualified": 50
+    },
+    "gpt": {
+      "concessionary": 57,
+      "misclassified": 55,
+      "unqualified": 38
+    },
+    "gemini": {
+      "unqualified": 107,
+      "concessionary": 22,
+      "misclassified": 21
+    }
+  },
+  "projected": {
+    "gpt": {
+      "unqualified_share": 0.5365,
+      "stratified_ci95": [
+        0.45,
+        0.6181
+      ],
+      "p_share_ge_bar": 0.0687,
+      "projected_delta_pp": {
+        "unqualified": 14.11,
+        "concessionary": 12.19,
+        "misclassified": 1.3
+      },
+      "transition_matrix": {
+        "unqualified": {
+          "unqualified": 0.74,
+          "concessionary": 0.22,
+          "misclassified": 0.04
+        },
+        "concessionary": {
+          "unqualified": 0.0,
+          "concessionary": 0.9,
+          "misclassified": 0.1
+        },
+        "misclassified": {
+          "unqualified": 0.02,
+          "concessionary": 0.02,
+          "misclassified": 0.96
+        }
+      }
+    },
+    "gemini": {
+      "unqualified_share": 0.8368,
+      "stratified_ci95": [
+        0.7526,
+        0.9136
+      ],
+      "p_share_ge_bar": 1.0,
+      "projected_delta_pp": {
+        "unqualified": 19.67,
+        "concessionary": 3.84,
+        "misclassified": 4.09
+      },
+      "transition_matrix": {
+        "unqualified": {
+          "unqualified": 0.7,
+          "concessionary": 0.12,
+          "misclassified": 0.18
+        },
+        "concessionary": {
+          "unqualified": 0.74,
+          "concessionary": 0.18,
+          "misclassified": 0.08
+        },
+        "misclassified": {
+          "unqualified": 0.7,
+          "concessionary": 0.14,
+          "misclassified": 0.16
+        }
+      }
+    },
+    "claude": {
+      "unqualified_share": 0.6821,
+      "note": "the registered primary computation, from S1-3F"
+    }
+  },
+  "raters_above_bar": {
+    "count": 2,
+    "of": 3,
+    "which": [
+      "claude",
+      "gemini"
+    ]
+  },
+  "share_range": [
+    0.5365,
+    0.8368
+  ],
+  "pairwise": {
+    "claude_vs_gpt": {
+      "agreement": 0.867,
+      "kappa": 0.8,
+      "weighted_agreement": 0.814,
+      "weighted_kappa": 0.696,
+      "confusion": {
+        "concessionary->concessionary": 45,
+        "concessionary->misclassified": 5,
+        "misclassified->concessionary": 1,
+        "misclassified->misclassified": 48,
+        "misclassified->unqualified": 1,
+        "unqualified->concessionary": 11,
+        "unqualified->misclassified": 2,
+        "unqualified->unqualified": 37
+      }
+    },
+    "claude_vs_gemini": {
+      "agreement": 0.347,
+      "kappa": 0.02,
+      "weighted_agreement": 0.484,
+      "weighted_kappa": 0.012,
+      "confusion": {
+        "concessionary->concessionary": 9,
+        "concessionary->misclassified": 4,
+        "concessionary->unqualified": 37,
+        "misclassified->concessionary": 7,
+        "misclassified->misclassified": 8,
+        "misclassified->unqualified": 35,
+        "unqualified->concessionary": 6,
+        "unqualified->misclassified": 9,
+        "unqualified->unqualified": 35
+      }
+    },
+    "gpt_vs_gemini": {
+      "agreement": 0.333,
+      "kappa": 0.064,
+      "weighted_agreement": 0.472,
+      "weighted_kappa": 0.076,
+      "confusion": {
+        "concessionary->concessionary": 11,
+        "concessionary->misclassified": 6,
+        "concessionary->unqualified": 40,
+        "misclassified->concessionary": 7,
+        "misclassified->misclassified": 10,
+        "misclassified->unqualified": 38,
+        "unqualified->concessionary": 4,
+        "unqualified->misclassified": 5,
+        "unqualified->unqualified": 29
+      }
+    }
+  }
+}
