@@ -3,9 +3,9 @@
 - **Last updated:** `2026-09-07`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
-- **Current task:** `S1-3F-ADJ`
+- **Current task:** `S1-05`
 - **Task status:** `IN_PROGRESS`
-- **Next checkpoint:** Run the frozen three-rater sensitivity, then resume `S1-05` at the sbatch.
+- **Next checkpoint:** Write the twins sbatch, preflight it, and submit the 324-generation job.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-07`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
@@ -76,7 +76,6 @@ top of `BACKLOG.md`.
 - `IN-001` blocks Stage 2: intermediate Starling checkpoint availability and training budget from David.
 - `IN-002` is closed: the 25-item spot-check is done and came back NOT EVALUABLE on stance (n=7 < 8). The Claude anchor is never ahead of GPT under any exclusion treatment, so no reading supports it.
 - `IN-006` blocks `S1-06` and therefore all of Stage 2: how to close a 49-behaviour shortfall.
-- `IN-005` is sensitivity only: route the 150-item slice to Gemini for `S1-3F-ADJ`.
 - `IN-003` is optional and non-gating: Gemma access for the StrongREJECT sidecar.
 
 ## Parked until the critical path lands
@@ -97,6 +96,7 @@ without updating this file and the active backlog table in the same commit.
 | Human spot-check audit of the anchor | `docs/experiments/08-31_spotcheck_anchor-audit.md`; `docs/results/09-04_spotcheck_audit/` |
 | Benign-twins control | `docs/experiments/09-07_benign-twins_control.md` |
 | Restatement artefact, quantified | `docs/experiments/09-04_stance-gap_restatement-prevalence.md`; `docs/results/09-04_stance_gap/` |
+| Three-rater sensitivity, not resolvable | `docs/experiments/09-04_3f-adj_third-rater-sensitivity.md`; `docs/results/09-07_3f_adj/` |
 | Endorsement subtype split | `docs/experiments/09-04_phoenix-starling_concessionary-endorsement.md`; `docs/results/09-04_concessionary/` |
 | Settled choices | `docs/decisions.md` |
 | Full experimental chronology | `docs/research_journal.md` |

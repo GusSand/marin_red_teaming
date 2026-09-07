@@ -33,11 +33,16 @@ ap.add_argument("--slice", required=True); ap.add_argument("--out", required=Tru
 a = ap.parse_args()
 S = Path(a.slice)
 key = json.load(open(S / "key.json"))["items"]
-sheets = {"gpt": "sheet_second.csv", "gemini": "sheet_third_gemini.csv"}
+# gemini_flash is loaded but NEVER projected: it failed the frozen validity gate (permutation p 0.377,
+# labels statistically indistinguishable from a reshuffle of its own marginal) and, worse, was structured
+# on the ARM while null on the construct. It is reported as a failed instrument only.
+sheets = {"gpt": "sheet_second.csv", "gemini_pro": "sheet_third_gemini_pro.csv",
+          "gemini_flash": "sheet_third_gemini.csv"}
 labels = {n: {r["cid"].strip(): r["subtype"].strip() for r in csv.DictReader(open(S / f))}
           for n, f in sheets.items()}
 labels["claude"] = {c: key[c]["primary_subtype"] for c in key}
-RATERS = ["claude", "gpt", "gemini"]
+RATERS = ["claude", "gpt", "gemini_pro"]
+FAILED_GATE = ["gemini_flash"]
 
 gates = {n: {"rows": len(labels[n]),
              "missing": sorted(set(key) - set(labels[n])),
@@ -83,7 +88,7 @@ res = {"experiment": "docs/experiments/09-04_3f-adj_third-rater-sensitivity.md",
        "label_distribution": {n: dict(Counter(labels[n][c] for c in cids)) for n in RATERS},
        "projected": {}}
 
-for r in ["gpt", "gemini"]:
+for r in ["gpt", "gemini_pro"]:
     share, d, tr = project(cids, r)
     boots = []
     for _ in range(NBOOT):

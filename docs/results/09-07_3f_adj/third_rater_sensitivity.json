@@ -15,7 +15,7 @@
       "unexpected": [],
       "bad": {}
     },
-    "gemini": {
+    "gemini_pro": {
       "rows": 150,
       "missing": [],
       "unexpected": [],
@@ -34,10 +34,10 @@
       "misclassified": 55,
       "unqualified": 38
     },
-    "gemini": {
-      "unqualified": 107,
-      "concessionary": 22,
-      "misclassified": 21
+    "gemini_pro": {
+      "unqualified": 47,
+      "misclassified": 64,
+      "concessionary": 39
     }
   },
   "projected": {
@@ -71,33 +71,33 @@
         }
       }
     },
-    "gemini": {
-      "unqualified_share": 0.8368,
+    "gemini_pro": {
+      "unqualified_share": 0.664,
       "stratified_ci95": [
-        0.7526,
-        0.9136
+        0.5785,
+        0.7429
       ],
-      "p_share_ge_bar": 1.0,
+      "p_share_ge_bar": 0.932,
       "projected_delta_pp": {
-        "unqualified": 19.67,
-        "concessionary": 3.84,
-        "misclassified": 4.09
+        "unqualified": 16.11,
+        "concessionary": 8.16,
+        "misclassified": 3.32
       },
       "transition_matrix": {
         "unqualified": {
-          "unqualified": 0.7,
+          "unqualified": 0.78,
           "concessionary": 0.12,
-          "misclassified": 0.18
+          "misclassified": 0.1
         },
         "concessionary": {
-          "unqualified": 0.74,
-          "concessionary": 0.18,
-          "misclassified": 0.08
+          "unqualified": 0.14,
+          "concessionary": 0.66,
+          "misclassified": 0.2
         },
         "misclassified": {
-          "unqualified": 0.7,
-          "concessionary": 0.14,
-          "misclassified": 0.16
+          "unqualified": 0.02,
+          "concessionary": 0.0,
+          "misclassified": 0.98
         }
       }
     },
@@ -111,12 +111,12 @@
     "of": 3,
     "which": [
       "claude",
-      "gemini"
+      "gemini_pro"
     ]
   },
   "share_range": [
     0.5365,
-    0.8368
+    0.6821
   ],
   "pairwise": {
     "claude_vs_gpt": {
@@ -135,38 +135,37 @@
         "unqualified->unqualified": 37
       }
     },
-    "claude_vs_gemini": {
-      "agreement": 0.347,
-      "kappa": 0.02,
-      "weighted_agreement": 0.484,
-      "weighted_kappa": 0.012,
+    "claude_vs_gemini_pro": {
+      "agreement": 0.807,
+      "kappa": 0.71,
+      "weighted_agreement": 0.775,
+      "weighted_kappa": 0.625,
       "confusion": {
-        "concessionary->concessionary": 9,
-        "concessionary->misclassified": 4,
-        "concessionary->unqualified": 37,
-        "misclassified->concessionary": 7,
-        "misclassified->misclassified": 8,
-        "misclassified->unqualified": 35,
+        "concessionary->concessionary": 33,
+        "concessionary->misclassified": 10,
+        "concessionary->unqualified": 7,
+        "misclassified->misclassified": 49,
+        "misclassified->unqualified": 1,
         "unqualified->concessionary": 6,
-        "unqualified->misclassified": 9,
-        "unqualified->unqualified": 35
+        "unqualified->misclassified": 5,
+        "unqualified->unqualified": 39
       }
     },
-    "gpt_vs_gemini": {
-      "agreement": 0.333,
-      "kappa": 0.064,
-      "weighted_agreement": 0.472,
-      "weighted_kappa": 0.076,
+    "gpt_vs_gemini_pro": {
+      "agreement": 0.793,
+      "kappa": 0.689,
+      "weighted_agreement": 0.801,
+      "weighted_kappa": 0.682,
       "confusion": {
-        "concessionary->concessionary": 11,
-        "concessionary->misclassified": 6,
-        "concessionary->unqualified": 40,
-        "misclassified->concessionary": 7,
-        "misclassified->misclassified": 10,
-        "misclassified->unqualified": 38,
-        "unqualified->concessionary": 4,
-        "unqualified->misclassified": 5,
-        "unqualified->unqualified": 29
+        "concessionary->concessionary": 35,
+        "concessionary->misclassified": 11,
+        "concessionary->unqualified": 11,
+        "misclassified->concessionary": 3,
+        "misclassified->misclassified": 50,
+        "misclassified->unqualified": 2,
+        "unqualified->concessionary": 1,
+        "unqualified->misclassified": 3,
+        "unqualified->unqualified": 34
       }
     }
   }

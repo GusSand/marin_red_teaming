@@ -1080,3 +1080,59 @@ scaling is worth carrying into that decision — resolution goes ±5.0pp at 54, 
 number. The cheapest real gain on the table is switching from the HarmBench test split to all of
 HarmBench, +11 behaviours from the benchmark already anchoring the study; I flagged it rather than taking
 it, because it changes the anchor set the existing 1,080-response dataset was built on.
+
+---
+
+## 2026-09-07 · S1-3F-ADJ · Three raters; the unqualified share is not resolvable
+
+**Research question.** Does a third model-family rater change the `S1-3F` picture? Frozen sensitivity
+design (`09-04_3f-adj_third-rater-sensitivity.md`, commit 974100b) with a rater-validity gate added
+2026-09-07 (commit 2005eb8) **before any third-rater labels existed**. Standing constraint throughout:
+blinded sensitivity, not a tie-break; `S1-3F` stays closed as MIXED whatever it returns.
+
+**Method.** The identical 150-item blinded slice routed to further raters. Validity gate applied first,
+before any projection: shuffle the rater's own label vector ≥20,000 times, require observed agreement
+with the primary labels to beat the 95th percentile. Only passing raters are projected. Component B —
+characterizing the 11 `unqualified`→`concessionary` crossings — ran regardless.
+
+**Results.** Gate: GPT-5.6 observed 0.867, p < 0.00005, PASS. Gemini Pro 0.807, p < 0.00005, PASS.
+**Gemini Flash 0.347, p 0.377, FAIL** — labels indistinguishable from a reshuffle of its own marginal,
+and null on the construct (χ² 2.71 n.s.) while structured on the arm (`unqualified` 0.573 phoenix vs
+0.853 starling, χ² 14.52). A first Gemini Pro attempt returned 150 identical `misclassified` labels
+noting "missing items data": AI Studio rejects `.jsonl`, so the items never arrived. Both failures passed
+every sheet-level gate.
+
+Projected unqualified share of the endorsement-mass increase: Claude 0.6821 (registered primary), Gemini
+Pro 0.6640 CI [0.5789, 0.7427], GPT 0.5365 CI [0.4494, 0.6149]. Both projections preserve each arm's
+total exactly (160, 309). Pairwise κ 0.800 / 0.710 / 0.689; population-weighted 0.696 / 0.625 / 0.649.
+Component B on the 11 crossings: `grants` 4, `mentions` 4, `negates` 2, hedge-only 1.
+
+**Verification.** MATCHED. Fresh subagent, denied every analysis script, permutation re-run at 200,000
+draws. Both gates, all pairwise figures raw and weighted, both confusion and transition matrices, all
+twelve projected masses, both shares, both stratified CIs, and the arm-total check all matched.
+
+**Interpretation (mine).** The quantity is **not resolved**, and three independent things say so. No
+interval excludes the 0.60 bar — the two CIs straddle it and overlap on [0.579, 0.615], with a union of
+[0.449, 0.743]. The projection *method* is itself a lever: fitting the transition matrix per arm rather
+than pooled moves GPT from 0.5365 to **0.3765**, reversing the qualitative claim, while Pro barely moves
+— pooling assumes rater drift is arm-independent and for GPT it demonstrably is not. And the whole gap is
+about ten single-item judgment calls wide, since one reclassification among 150 moves the share by up to
+0.015. So the defensible statement is 45–74% with the threshold undecidable, and reporting Claude's
+0.6821 would be reporting the most favorable of three raters as the estimate. Two of three clear the bar;
+that is a count, not a verdict, and Flash is the standing argument for why — a majority can be
+manufactured by a rater that is not reading.
+
+The rater-validity gate is the transferable lesson. `S1-3F-ADJ` originally gated the *sheet* — rows,
+header, vocabulary, foreign cids — and both failed passes cleared every one of those while measuring
+nothing. No sheet-level check can catch a rater answering from a fixed marginal or one that never
+received the data. A permutation test against the rater's own marginal, plus an arm-independence check,
+now precede any projection.
+
+Component B is the more durable output, as gs157 predicted. Its five-gate test — in-artifact, authored
+not inherited, contrary not merely mitigating, asserted not attributed, left standing — makes the 11
+decidable and implies the primary rater's call on 8 of them. Hold that 8 lightly; it is one annotator
+applying a fresh definition, and the definition is the deliverable. The sharpest observation is that all
+11 carry a concessive *softener* (However / Despite / accused / alleged / claimed), which is what a rater
+coding on concessive **form** would catch and one coding on propositional **content** would not. If that
+is the real split, gates 3 and 4 are the fix and the disagreement should collapse rather than needing
+case-by-case negotiation.

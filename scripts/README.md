@@ -280,3 +280,16 @@ check also lost its first paragraph — depressing the other three constraints o
 and correlating all four into what would have looked like a coherent instruction-following signal. The
 first line is now stripped only when it really is a title. 13 hand-built cases, including no-title,
 title-only, leading-blank and fabricated-turn cases, are checked on every change.
+
+- `analyze_3f_adj.py` — three-rater sensitivity for `S1-3F-ADJ`. Runs the **rater-validity gate first**:
+  a rater whose observed agreement with the primary labels fails to beat the 95th percentile of
+  reshuffles of its own label vector is recorded as a failed instrument and is **never projected**.
+  Then per-rater projected shares, stratified bootstrap CIs resampled within the six strata, all pairwise
+  confusion matrices, and a count of raters above the bar — a count, not a verdict.
+
+**Rater-validity lesson, 2026-09-07.** Two of three third-rater passes measured nothing while passing
+every *sheet* gate — rows, header, vocabulary, no foreign cids. Gemini Flash answered from a near-fixed
+marginal (permutation p 0.377) and was null on the construct but structured on the arm, which
+manufactures an apparent arm effect from nothing. A Gemini Pro attempt returned 150 identical labels
+noting "missing items data" because **AI Studio does not accept `.jsonl`** — hence `items.md` and
+`items.csv` alongside it in any rater package. Gate the **rater**, not just the sheet.

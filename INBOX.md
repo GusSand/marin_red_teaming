@@ -11,9 +11,7 @@ rules: `docs/PROJECT_OPERATING_RULES.md`.
 |---|---|---|---|---|---|
 | `IN-001` | CRITICAL | Gus / David | Confirm which intermediate Starling checkpoints exist and whether the six-arm, 10-training-run screen plus one confirmation run is funded. If not, name the first arms to cut. | `S2-00` | Answer inline here; Stage 2 experiment doc applies it. |
 | `IN-003` | OPTIONAL | Gus | If retaining StrongREJECT: accept the `google/gemma-2b` licence and expose a read token to Torch jobs. | `S1-3B` only; not the critical path | Successful read of the gated base from the safety-eval environment. |
-| `IN-005` | MEDIUM | Gus | Route the **same** 150-item package to Gemini (unchanged: same `PROMPT.md`, same `items.jsonl`, same contract), then return the CSV. Sensitivity evidence only — `S1-3F` stays closed as MIXED. | `S1-3F-ADJ` only; gates nothing | Validated 150-row sheet at `concessionary_second_rater_v1/sheet_third_gemini.csv` |
 | `IN-006` | HIGH | Gus | Decide how to close a 49-behaviour shortfall: the ≥150 target is not reachable from registered sources (ceiling 101, and that is before semantic dedupe and the inclusion rule). Options: authenticate SORRY-Bench on the Hub; accept ~101 and restate the power claim; author new behaviours; or a combination. Also approve or reject switching from the HarmBench test split to all of HarmBench (+11). | `S1-06`, and therefore all of Stage 2 | A decision line in `docs/decisions.md` |
-| `IN-007` | MEDIUM | Gus | Route the same unchanged 150-item package to **Gemini Pro** and return the CSV. The Flash pass failed the rater-validity gate (permutation p 0.377) and is discarded. | `S1-3F-ADJ` only; gates nothing | Validated 150-row sheet at `concessionary_second_rater_v1/sheet_third_gemini_pro.csv` |
 <!-- ACTIVE_INBOX_END -->
 
 When an item resolves, remove its row from this table in the same commit that applies the answer. Keep
@@ -22,6 +20,19 @@ the detailed exchange in the historical section.
 ---
 
 ## Historical correspondence
+
+- **[2026-09-07] IN-005 and IN-007 CLOSED — three raters in, and the answer is "not resolvable".**
+  Gemini **Flash** failed the validity gate (permutation p 0.377; labels indistinguishable from a reshuffle
+  of its own marginal) and, worse, was null on the construct but structured on the arm — it would have
+  manufactured an arm effect from nothing. Discarded. The first **Pro** attempt returned 150 identical
+  labels noting "missing items data": **AI Studio rejects `.jsonl`**, so the items never arrived; `items.md`
+  and `items.csv` now exist in the package for that reason. The second Pro pass **passed** (0.807,
+  p < 0.00005). Result across the three valid raters: unqualified share **Claude 0.682 · Pro 0.664
+  [0.579, 0.743] · GPT 0.537 [0.449, 0.615]**. No interval excludes the 0.60 bar, the two CIs overlap, and
+  fitting the transition matrix per arm rather than pooled moves GPT to **0.377** — the method itself is a
+  lever. So the share is **45–74% with the threshold undecidable**, `S1-3F` stays MIXED, and 0.682 must
+  never be quoted as the estimate. Component B delivered the more durable thing: a five-gate operational
+  test for "material concession" for a rubric v2. No action needed.
 
 - **[2026-09-05] IN-006 — S1-06 is blocked on a design decision, not on slow work.** Two problems, both
   invisible when the 08-29 plan was written. **(1) WildJailbreak is worthless here.** Its 98 keyword hits
