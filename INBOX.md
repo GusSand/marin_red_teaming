@@ -9,7 +9,7 @@ rules: `docs/PROJECT_OPERATING_RULES.md`.
 <!-- ACTIVE_INBOX_START -->
 | ID | Priority | Owner | Needed | Blocks | Resolution evidence |
 |---|---|---|---|---|---|
-| `IN-001` | CRITICAL | Gus / David | Confirm which intermediate Starling checkpoints exist and whether the six-arm, 10-training-run screen plus one confirmation run is funded. If not, name the first arms to cut. | `S2-00` | Answer inline here; Stage 2 experiment doc applies it. |
+| `IN-001` | CRITICAL | Gus / David | Public cooldown checkpoint availability is resolved. Confirm the external allocation for the six-arm, 10-training-run screen plus one confirmation run and any required Phoenix training-state handoff. If allocation is limited, name the first arms to cut. Finer internal checkpoints are optional; local GPU hours need no new approval. | `S2-00` external replay only; not `S1-CKPT` | `docs/planning/09-07_public-cooldown-checkpoints.md`; `outputs/2026-09-07_cooldown-config-audit/checkpoint-evidence.json`; remaining allocation answer goes into the Stage 2 doc. |
 | `IN-003` | OPTIONAL | Gus | If retaining StrongREJECT: accept the `google/gemma-2b` licence and expose a read token to Torch jobs. | `S1-3B` only; not the critical path | Successful read of the gated base from the safety-eval environment. |
 | `IN-006` | HIGH | Gus | Decide how to close a 49-behaviour shortfall: the ≥150 target is not reachable from registered sources (ceiling 101, and that is before semantic dedupe and the inclusion rule). Options: authenticate SORRY-Bench on the Hub; accept ~101 and restate the power claim; author new behaviours; or a combination. Also approve or reject switching from the HarmBench test split to all of HarmBench (+11). | `S1-06`, and therefore all of Stage 2 | A decision line in `docs/decisions.md` |
 <!-- ACTIVE_INBOX_END -->
@@ -409,3 +409,5 @@ is needed for any row, so no external API cost. Nothing needed from you on this.
   safety-eval CAN use OpenAI GPT judges (needs OPENAI_API_KEY) but this commit's DEFAULT configs use WildGuard for
   every row (matches the paper), so we never call OpenAI. The placeholder key only satisfies an import-time
   constructor; a real OpenAI call would fail loudly. Fully offline/reproducible.
+
+- **[2026-09-07] IN-001 partially resolved — public cooldown intermediates found.** Commit revisions at steps 1,340,000, 1,360,000 and 1,380,000 each list all four weight shards. Named tags were not the complete checkpoint inventory. This supersedes any absence claim based only on tags. The evaluation can proceed without David; full downloads and inference remain pending. Raccoon is soft-raccoon-3, a Jellyfish deeper-cooldown branch, not Phoenix reheat. The remaining person-dependent request concerns external replay allocation and any required training-state handoff. Local GPU hours are already authorized by `CLAUDE.md`. Evidence: `docs/planning/09-07_public-cooldown-checkpoints.md`; `outputs/2026-09-07_cooldown-config-audit/`.

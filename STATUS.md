@@ -39,11 +39,12 @@ unqualified versus concessionary or balanced-sounding.
 ## Critical path
 
 1. `S1-05` — run the triggered benign-twins control. **Current.**
-2. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
-3. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
+2. `S1-CKPT` — public cooldown timing probe. **READY; next after the current twins task.**
+3. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
+4. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
 5. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
 
-`S1-3D` and `S1-STANCE-GAP` are closed.
+`S1-3D` and `S1-STANCE-GAP` are closed. `S1-CKPT` is a descriptive diagnostic, not a new Stage 1 exit gate. Its protocol must be frozen before evaluation.
 
 
 The detailed status, owner, next action, and evidence path for each item live in the active table at the
@@ -65,7 +66,7 @@ top of `BACKLOG.md`.
 ## Stage 2 entry criteria
 
 - Stage 1 exit criteria are complete.
-- David has answered checkpoint-availability and compute-budget questions (`IN-001`).
+- The external six-arm replay allocation and any required training-state handoff are settled (`IN-001`). Public evaluation checkpoints are already identified. Local GPU-hour approval is not an entry gate.
 - All six arms start from the same resolved Phoenix checkpoint.
 - Data manifests, replacement mass, token budget, LR schedules, training seeds, and stopping rules are frozen.
 - The full Starling-mix/cooldown arm is designated as the positive-control reproduction.
@@ -73,7 +74,7 @@ top of `BACKLOG.md`.
 
 ## Live decisions and blockers
 
-- `IN-001` blocks Stage 2: intermediate Starling checkpoint availability and training budget from David.
+- `IN-001` is partially resolved: public Starling checkpoints exist at 1,340,000, 1,360,000 and 1,380,000. Only external replay allocation / required training-state handoff remains; finer internal checkpoints are optional. The public timing probe is unblocked.
 - `IN-002` is closed: the 25-item spot-check is done and came back NOT EVALUABLE on stance (n=7 < 8). The Claude anchor is never ahead of GPT under any exclusion treatment, so no reading supports it.
 - `IN-006` blocks `S1-06` and therefore all of Stage 2: how to close a 49-behaviour shortfall.
 - `IN-003` is optional and non-gating: Gemma access for the StrongREJECT sidecar.
@@ -82,13 +83,14 @@ top of `BACKLOG.md`.
 
 StrongREJECT credential work, the style-perturbation design (`S1-3C`, kept parked by the `S1-3D`
 verdict), bibliography work, W&B integration,
-Safety Gap Toolkit adaptation, GRAM, and other new research directions. A parked item may not become current
+Safety Gap Toolkit adaptation, GRAM, the Raccoon branch diagnostic (`S1-RACCOON`), a scoped FLAN continuation (`S2-FLAN-SCREEN`), and other new research directions. A parked item may not become current
 without updating this file and the active backlog table in the same commit.
 
 ## Evidence map
 
 | Claim | Evidence |
 |---|---|
+| Published cooldown config and public intermediate revisions | `docs/planning/09-07_public-cooldown-checkpoints.md`; `outputs/2026-09-07_cooldown-config-audit/` (metadata audit; no new behavior evaluations) |
 | Phoenix→Starling trajectory | `docs/results/08-27_misinfo_rvc/analysis.md` |
 | Stage 1 decomposition | `docs/experiments/08-28_phoenix-starling_distribution-decomposition.md` |
 | GPT out-of-sample rater check | `docs/experiments/08-31_gpt_out-of-sample_rater-check.md` |

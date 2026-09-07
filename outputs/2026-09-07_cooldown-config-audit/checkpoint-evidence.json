@@ -1,0 +1,703 @@
+{
+  "retrieved": "2026-09-07",
+  "commits_first_page": [
+    {
+      "id": "0f1f6585547c052e2de46f0dd70cb803bd09fe51",
+      "title": "Update README.md (#1)",
+      "message": "\n\n\n- Update README.md (bb2cbf14bae448c54a1d64af2b32c3dbbba8fa39)\n\n\nCo-authored-by: JW <blahBlahhhJ@users.noreply.huggingface.co>\n",
+      "authors": [
+        {
+          "user": "dlwh",
+          "avatar": "/avatars/7b23926f1b3bf014f775f911835e9711.svg"
+        },
+        {
+          "user": "blahBlahhhJ",
+          "avatar": "/avatars/febb17708668f05bd83d7fda908f4cf9.svg"
+        }
+      ],
+      "date": "2025-05-19T05:46:59.000Z"
+    },
+    {
+      "id": "db2e6c57756a69df15aa2c7483c84e785d9338a3",
+      "title": "Update README.md",
+      "message": "",
+      "authors": [
+        {
+          "user": "WillHeld",
+          "avatar": "https://cdn-avatars.huggingface.co/v1/production/uploads/1666207676653-632116accafe12f481a473cb.jpeg"
+        }
+      ],
+      "date": "2025-05-19T04:14:36.000Z"
+    },
+    {
+      "id": "c257af7e60b374ae7c78014a35725373c9269af6",
+      "title": "Update README.md",
+      "message": "",
+      "authors": [
+        {
+          "user": "WillHeld",
+          "avatar": "https://cdn-avatars.huggingface.co/v1/production/uploads/1666207676653-632116accafe12f481a473cb.jpeg"
+        }
+      ],
+      "date": "2025-05-19T04:09:58.000Z"
+    },
+    {
+      "id": "64eb300a293f1d0bfda3f62c7b1b57bac1531a6f",
+      "title": "Update README.md",
+      "message": "",
+      "authors": [
+        {
+          "user": "dlwh",
+          "avatar": "/avatars/7b23926f1b3bf014f775f911835e9711.svg"
+        }
+      ],
+      "date": "2025-05-19T03:05:00.000Z"
+    },
+    {
+      "id": "d57287aa62aeb5d09881958862c860554d19941d",
+      "title": "tootsie-8b-deeper-starling: step-1419999",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:59.000Z"
+    },
+    {
+      "id": "66279e715ef6881b972c86c31596cb1e57354f99",
+      "title": "tootsie-8b-sensible-starling: step-1399999",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:58.000Z"
+    },
+    {
+      "id": "34b1c23173e12f88f0a1999c57f68d5b8d7f7adb",
+      "title": "tootsie-8b-sensible-starling: step-1380000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:58.000Z"
+    },
+    {
+      "id": "83e7d73c64bbec3be13b6f62650e9495b3590c12",
+      "title": "tootsie-8b-sensible-starling: step-1360000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:58.000Z"
+    },
+    {
+      "id": "de183cad08bae55f8a07d346442efe20469d2144",
+      "title": "tootsie-8b-sensible-starling: step-1340000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:58.000Z"
+    },
+    {
+      "id": "5837472e13444e91e49fccc1cc010bb48138760a",
+      "title": "llama-8b-tootsie-adept-phoenix: step-1320000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:58.000Z"
+    },
+    {
+      "id": "40666d4c8f68475836f29edd13520e8b27f55e33",
+      "title": "llama-8b-tootsie-adept-phoenix: step-1300000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:58.000Z"
+    },
+    {
+      "id": "b4f890f489d0b8e6a784265a8184ee4291637d9e",
+      "title": "llama-8b-tootsie-adept-phoenix: step-1280000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:58.000Z"
+    },
+    {
+      "id": "60c48df0494d3d5bb887f2fbd726da5f68f66408",
+      "title": "llama-8b-tootsie-adept-phoenix: step-1260000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:57.000Z"
+    },
+    {
+      "id": "6ed92568088f0f5b569c5c352ecd3a49d5af26c2",
+      "title": "llama-8b-tootsie-adept-phoenix: step-1240000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:57.000Z"
+    },
+    {
+      "id": "eaa25c261368eb03dfd7f00b309f0ce14463da8e",
+      "title": "llama-8b-tootsie-adept-phoenix: step-1220000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:57.000Z"
+    },
+    {
+      "id": "212b71204dd657846c12a0db6b8040d22283d150",
+      "title": "llama-8b-tootsie-adept-phoenix: step-1200000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:57.000Z"
+    },
+    {
+      "id": "24c2570fec637247ed808346a40d0ea9369e3205",
+      "title": "llama-8b-tootsie-adept-phoenix: step-1180000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:57.000Z"
+    },
+    {
+      "id": "d611f6b9e5e701ebcfaf4192242dfb157243a2ea",
+      "title": "llama-8b-tootsie-adept-phoenix: step-1160000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:57.000Z"
+    },
+    {
+      "id": "0f8bc6afcf1d46b4b17fffd3fe537ffcf38a2892",
+      "title": "llama-8b-tootsie-adept-phoenix: step-1140000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:57.000Z"
+    },
+    {
+      "id": "8e6b9d623ba4749f72e3d5328a638a6ce0bb8647",
+      "title": "llama-8b-tootsie-adept-phoenix: step-1120000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:56.000Z"
+    },
+    {
+      "id": "6d106f748760bee19d6afde206c0e794f2ca4045",
+      "title": "llama-8b-tootsie-adept-phoenix: step-1100000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:56.000Z"
+    },
+    {
+      "id": "f236a1c257d053cf8c13bd352aa6de77e98d81be",
+      "title": "llama-8b-tootsie-adept-phoenix: step-1080000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:56.000Z"
+    },
+    {
+      "id": "65823b84d4aa08387c3a1ca2a7331be94c85cd6a",
+      "title": "llama-8b-tootsie-adept-phoenix: step-1060000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:56.000Z"
+    },
+    {
+      "id": "1b5eb90ed53046b4447f05a85326d7991839a8ae",
+      "title": "llama-8b-tootsie-adept-phoenix: step-1040000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:56.000Z"
+    },
+    {
+      "id": "4b74d8081d3a0b90b23742fbe639a9671447ddaf",
+      "title": "llama-8b-tootsie-adept-phoenix: step-1020000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:56.000Z"
+    },
+    {
+      "id": "0dbd1f62d01a70bf286318d9eeeb26bef8cb6cde",
+      "title": "llama-8b-tootsie-adept-phoenix: step-980000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:56.000Z"
+    },
+    {
+      "id": "d397d4e542b7dd5ddcf1bb2a35ef104ba8419d52",
+      "title": "llama-8b-tootsie-adept-phoenix: step-960000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:55.000Z"
+    },
+    {
+      "id": "a883230112bd8b305c356206dc177429b8206851",
+      "title": "llama-8b-tootsie-adept-phoenix: step-940000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:55.000Z"
+    },
+    {
+      "id": "f114e236d3a5709d8b986fe24b41f77565ac1d39",
+      "title": "llama-8b-tootsie-adept-phoenix: step-920000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:55.000Z"
+    },
+    {
+      "id": "0c78128296d3dfb4107a343eaf74a12333628839",
+      "title": "llama-8b-tootsie-adept-phoenix: step-900000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:55.000Z"
+    },
+    {
+      "id": "103c7c8d1f94fac7ff6ec4f6c38826b6b2d7cec6",
+      "title": "llama-8b-tootsie-adept-phoenix: step-880000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:55.000Z"
+    },
+    {
+      "id": "76e6df8378a8a3ae865631123000acf624523e3f",
+      "title": "llama-8b-tootsie-adept-phoenix: step-860000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:55.000Z"
+    },
+    {
+      "id": "4a54f144bf20703875587e2d9bdb5e105403755a",
+      "title": "llama-8b-tootsie-adept-phoenix: step-840000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:55.000Z"
+    },
+    {
+      "id": "b62525884267933b6e642ea2a52a630fb4305b37",
+      "title": "tootsie-8b-soft-raccoon-3: step-829999",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:55.000Z"
+    },
+    {
+      "id": "b8e406de46094485f9e7eaafabcdd627277a34b6",
+      "title": "tootsie-8b-soft-raccoon-3: step-820000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:54.000Z"
+    },
+    {
+      "id": "c92465e482614bd2b3d44c7d3aebc57ba50de53a",
+      "title": "llama-8b-tootsie-phase3: step-819999",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:54.000Z"
+    },
+    {
+      "id": "1e06ad1ed66611d6554970174e21bcad90df3806",
+      "title": "llama-8b-tootsie-phase3: step-800000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:54.000Z"
+    },
+    {
+      "id": "7c85c9437fa5306e9dbabfea605fbc50e4d365a1",
+      "title": "llama-8b-tootsie-phase3: step-780000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:54.000Z"
+    },
+    {
+      "id": "33644d5a68682b8c505903818bc64a7806662619",
+      "title": "llama-8b-tootsie-phase3: step-760000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:54.000Z"
+    },
+    {
+      "id": "6fdee961fa0b757d2372df7649277a3747438567",
+      "title": "llama-8b-tootsie-phase3: step-740000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:54.000Z"
+    },
+    {
+      "id": "e4d18c1d4b8c1f3ec9b9b6fd3e1a7472505abd6f",
+      "title": "llama-8b-tootsie-phase2: step-730000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:54.000Z"
+    },
+    {
+      "id": "2f09382fb754f3d8985b687f214ea2bd92a402d8",
+      "title": "llama-8b-tootsie-phase2: step-720000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:53.000Z"
+    },
+    {
+      "id": "170e424d5750ff052cccb92f5a9da61867dc91d9",
+      "title": "llama-8b-tootsie-phase2: step-710000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:53.000Z"
+    },
+    {
+      "id": "171cd7a19ccf9586717d70a6dcde3ba0bc88ef58",
+      "title": "llama-8b-tootsie-phase2: step-700000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:53.000Z"
+    },
+    {
+      "id": "e0878924dc7da0017abaf043bcda809520ee3e46",
+      "title": "llama-8b-tootsie-phase2: step-690000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:53.000Z"
+    },
+    {
+      "id": "6258208f91a06b3132f28909e43d57a9531a5b40",
+      "title": "llama-8b-tootsie-phase2: step-680000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:53.000Z"
+    },
+    {
+      "id": "c8dc5b21cc0d888aff519231912d3c28a523cc00",
+      "title": "llama-8b-tootsie-phase2: step-670000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:53.000Z"
+    },
+    {
+      "id": "56ef403a3636884c171b662fb2ff9f1dfe1c51b9",
+      "title": "llama-8b-tootsie-0.001-19ad63: step-660000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:53.000Z"
+    },
+    {
+      "id": "1a1ab26faac9fa6fca3fe92664ca7edfe3df5742",
+      "title": "llama-8b-tootsie-0.001-19ad63: step-640000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:52.000Z"
+    },
+    {
+      "id": "f80bf135037505b132e7a722a69ad12b94d800cc",
+      "title": "llama-8b-tootsie-0.001-19ad63: step-620000",
+      "message": "\n",
+      "authors": [
+        {
+          "user": "Helw150"
+        }
+      ],
+      "date": "2025-05-19T01:11:52.000Z"
+    }
+  ],
+  "verified_cooldown_checkpoints": [
+    {
+      "revision": "34b1c23173e12f88f0a1999c57f68d5b8d7f7adb",
+      "title": "tootsie-8b-sensible-starling: step-1380000",
+      "url": "https://huggingface.co/marin-community/marin-8b-base/tree/34b1c23173e12f88f0a1999c57f68d5b8d7f7adb",
+      "index_sha256": "78b650dc91c138f1606f398d283ef5aa5400354ccb3394c71f19f1458f3f4da5",
+      "parameter_entries": 291,
+      "all_shards_present": true,
+      "shards": [
+        {
+          "path": "model-00001-of-00004.safetensors",
+          "size": 9831465704,
+          "lfs": {
+            "oid": "733f4180794bc003413cec43aebb24d2fdf093615cc04d7bfe0b985691f98229",
+            "size": 9831465704,
+            "pointerSize": 135
+          }
+        },
+        {
+          "path": "model-00002-of-00004.safetensors",
+          "size": 9865007800,
+          "lfs": {
+            "oid": "0784c9f6aa70e5dca6f2c2af162a0de6d7149cb4ac4a7193571f11aaa3b6673d",
+            "size": 9865007800,
+            "pointerSize": 135
+          }
+        },
+        {
+          "path": "model-00003-of-00004.safetensors",
+          "size": 8221912272,
+          "lfs": {
+            "oid": "f21c16aef8178eb103ddf54a894112d81fdbf29f9352a78b54c1ccef094e8145",
+            "size": 8221912272,
+            "pointerSize": 135
+          }
+        },
+        {
+          "path": "model-00004-of-00004.safetensors",
+          "size": 4202692840,
+          "lfs": {
+            "oid": "1b81c3344d86d241244a8386b4b1adb9d1b2d21e1f24d89854009e10d8620504",
+            "size": 4202692840,
+            "pointerSize": 135
+          }
+        }
+      ]
+    },
+    {
+      "revision": "83e7d73c64bbec3be13b6f62650e9495b3590c12",
+      "title": "tootsie-8b-sensible-starling: step-1360000",
+      "url": "https://huggingface.co/marin-community/marin-8b-base/tree/83e7d73c64bbec3be13b6f62650e9495b3590c12",
+      "index_sha256": "78b650dc91c138f1606f398d283ef5aa5400354ccb3394c71f19f1458f3f4da5",
+      "parameter_entries": 291,
+      "all_shards_present": true,
+      "shards": [
+        {
+          "path": "model-00001-of-00004.safetensors",
+          "size": 9831465704,
+          "lfs": {
+            "oid": "63bb1ae451305a3931e0b61fb06bab5415de25695f65ab0225ec90d3186c5ff5",
+            "size": 9831465704,
+            "pointerSize": 135
+          }
+        },
+        {
+          "path": "model-00002-of-00004.safetensors",
+          "size": 9865007800,
+          "lfs": {
+            "oid": "b5e6e1ec59689072ba0d426bdab5abfa2af2f4d263c78b60c9213c575f6c1b05",
+            "size": 9865007800,
+            "pointerSize": 135
+          }
+        },
+        {
+          "path": "model-00003-of-00004.safetensors",
+          "size": 8221912272,
+          "lfs": {
+            "oid": "02aabc24286133acce14fece3cf5c4665be14c4d07c918713be9c7f800d02c47",
+            "size": 8221912272,
+            "pointerSize": 135
+          }
+        },
+        {
+          "path": "model-00004-of-00004.safetensors",
+          "size": 4202692840,
+          "lfs": {
+            "oid": "b6507ff20b098b026cd8bffc2659428c079377812a8b6157144937f5bc69adf2",
+            "size": 4202692840,
+            "pointerSize": 135
+          }
+        }
+      ]
+    },
+    {
+      "revision": "de183cad08bae55f8a07d346442efe20469d2144",
+      "title": "tootsie-8b-sensible-starling: step-1340000",
+      "url": "https://huggingface.co/marin-community/marin-8b-base/tree/de183cad08bae55f8a07d346442efe20469d2144",
+      "index_sha256": "78b650dc91c138f1606f398d283ef5aa5400354ccb3394c71f19f1458f3f4da5",
+      "parameter_entries": 291,
+      "all_shards_present": true,
+      "shards": [
+        {
+          "path": "model-00001-of-00004.safetensors",
+          "size": 9831465704,
+          "lfs": {
+            "oid": "79d18fd0d17af81a911a166326e7660b55536d88a2d73f019f6dbb61f1115212",
+            "size": 9831465704,
+            "pointerSize": 135
+          }
+        },
+        {
+          "path": "model-00002-of-00004.safetensors",
+          "size": 9865007800,
+          "lfs": {
+            "oid": "d2a11b3698a7b83f6889c312298f828c15f22355048bf0ba91d1bb1f76a2384b",
+            "size": 9865007800,
+            "pointerSize": 135
+          }
+        },
+        {
+          "path": "model-00003-of-00004.safetensors",
+          "size": 8221912272,
+          "lfs": {
+            "oid": "c62fc3526bf2b9e9bf66c80149427f1b760ffffba9b02e31df51fd83e52942f1",
+            "size": 8221912272,
+            "pointerSize": 135
+          }
+        },
+        {
+          "path": "model-00004-of-00004.safetensors",
+          "size": 4202692840,
+          "lfs": {
+            "oid": "45458fa719cf92c1f3582a6b6ab8a4967e881af1dfd665425a4763c96733300d",
+            "size": 4202692840,
+            "pointerSize": 135
+          }
+        }
+      ]
+    }
+  ]
+}

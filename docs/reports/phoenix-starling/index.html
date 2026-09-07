@@ -82,7 +82,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <div class="lede">
     <div>
       <p>From Phoenix to Starling, objective instruction following improves while refusals and corrective responses fall. Strong misinformation attempts rise sharply. Writing quality changes little once the model has already decided to attempt the request.</p>
-      <p>This rules against a large prose-quality-only explanation. It does not identify which training change caused the behavior because the data mixture and learning-rate schedule changed together.</p>
+      <p>This rules against a large prose-quality-only explanation. It does not identify which training change caused the behavior because the data mixture, learning-rate schedule, batch size and z-loss changed together.</p>
       <p>The instrument now has a measured character. Regressing WildGuard’s harmful label on the four rated dimensions, <strong>stance carries it and rated writing quality adds nothing</strong>: unique out-of-fold AUC contribution +0.404 for stance against +0.009 for quality, whose interval spans zero. Read a WildGuard harmful rate in this program as closer to a stance rate than a harm-severity rate.</p>
       <div class="callout"><span class="eyebrow">Claim boundary</span>Behavioral distribution change: verified. Causal training attribution: unproven. The six-arm Phoenix replay is the causal test.</div>
     </div>
@@ -110,9 +110,11 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
       <tr><td>S1-3F · concessionary endorsement</td><td><span class="result"><b class="pending">Mixed</b></span></td><td>Endorsement rose in both forms. Three raters put unqualified at 45-74% of the increase; the threshold is undecidable.</td></tr>
       <tr><td>Expanded evaluation set</td><td><span class="result"><b class="fail">Blocked</b></span></td><td>The ≥150-behaviour target is not reachable from public sources; ceiling is 101.</td></tr>
       <tr><td>Benign twins control</td><td><span class="result"><b class="pending">Running</b></span></td><td>Tests generality and freezes the Stage 2 endpoints.</td></tr>
-      <tr><td>Six-arm Phoenix replay</td><td><span class="result"><b class="pending">Blocked</b></span></td><td>Separates the causal effects of data mixture and learning-rate schedule.</td></tr>
+      <tr><td>S1-CKPT · public cooldown timing</td><td><span class="result"><b class="pending">Ready</b></span></td><td>Evaluate public steps 1,340,000, 1,360,000 and 1,380,000 after benign twins. Metadata checked; behavior evaluations not run.</td></tr>
+      <tr><td>Six-arm Phoenix replay</td><td><span class="result"><b class="pending">Blocked</b></span></td><td>Separates the causal effects of data mixture and learning-rate schedule. External replay allocation and Stage 1 closure remain open; public checkpoint availability is resolved.</td></tr>
     </tbody>
   </table></div>
+  <p class="small">Queue update, 7 Sep: public commit revisions permit coarse cooldown timing, not causal attribution. Raccoon is a Jellyfish deeper-cooldown branch and is parked. A FLAN-in/out continuation remains a scoped proposal. <a href="../../planning/09-07_public-cooldown-checkpoints.md">Config audit and revision inventory</a>.</p>
   <p class="small">Main evidence: <code>docs/experiments/08-28_phoenix-starling_distribution-decomposition.md</code> and <code>docs/experiments/08-31_gpt_out-of-sample_rater-check.md</code>. “Ready” and “queued” are progress labels, not findings.</p>
 </section>
 
