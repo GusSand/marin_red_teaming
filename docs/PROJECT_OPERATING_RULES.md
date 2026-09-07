@@ -120,3 +120,17 @@ At least once every seven days with project activity:
 - ensure every blocker has an owner;
 - confirm the current task is still the shortest path to the phase exit criteria;
 - move no historical evidence and rewrite no past result.
+
+
+## `IN_PROGRESS` means started, not next (added 2026-09-07, Gus)
+
+A task is flipped to `IN_PROGRESS` **only in the change set that freezes its plan and begins its work**.
+
+Failure mode this prevents: when a task blocks, the natural reflex is to promote the next one immediately
+so the board looks alive. Twice on 2026-09-04/05 (`S1-06`, then `S1-05`) a task sat `IN_PROGRESS`
+overnight with nothing behind it, so `STATUS.md` and the living report both claimed progress that had not
+happened. A reader — including a future session — cannot distinguish that from real work in flight.
+
+When a task blocks and nothing else can start immediately, leave the next task `READY`, set `wip=0`, and
+state in `STATUS.md` what is unblocked and why it has not begun. An honest `wip=0` is better than a
+misleading `wip=1`.

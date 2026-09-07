@@ -43,6 +43,11 @@ Treat each experiment as one explicit state transaction:
 2. **Start.** Change the current task from `READY` to `IN_PROGRESS` in `BACKLOG.md` and `STATUS.md`.
    Freeze the experiment question, data, analysis, exclusions, success criteria, tolerance, and decision
    consequences in its experiment file. Commit this pre-result state before running or inspecting new outcomes.
+   **`IN_PROGRESS` means work has begun, not that work is next.** Flip a task only in the same change set
+   that freezes its plan. Promoting a task on the board and then stopping leaves the control surfaces
+   claiming progress that does not exist — which happened twice on 2026-09-04/05 with `S1-06` and `S1-05`,
+   both marked `IN_PROGRESS` for a day with no work behind them. When a task blocks and there is nothing
+   else to start immediately, leave the next task `READY` and say so; do not pre-promote it.
 3. **Run.** Execute only the frozen plan. Preserve raw inputs and outputs. Deviations are new, clearly labelled
    analyses; they never silently replace the registered analysis.
 4. **Verify.** Keep the result `UNVERIFIED` until an independent path reproduces the headline numbers against

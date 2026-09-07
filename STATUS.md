@@ -1,12 +1,12 @@
 # Project status
 
-- **Last updated:** `2026-09-05`
+- **Last updated:** `2026-09-07`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
 - **Current task:** `S1-05`
 - **Task status:** `IN_PROGRESS`
-- **Next checkpoint:** Finalize the 54 rule-gradable benign twins and pre-register their scoring.
-- **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-05`.
+- **Next checkpoint:** Author the 54 twins and the deterministic grader, then submit the 324-generation job.
+- **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-07`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
 holds live requests for Gus. `docs/research_journal.md` and the legacy sections of the backlog and
@@ -95,6 +95,7 @@ without updating this file and the active backlog table in the same commit.
 | GPT out-of-sample rater check | `docs/experiments/08-31_gpt_out-of-sample_rater-check.md` |
 | WildGuard tracks stance, not quality | `docs/experiments/08-31_wildguard_rubric-dimension-regression.md`; `docs/results/08-31_wildguard_rubric/` |
 | Human spot-check audit of the anchor | `docs/experiments/08-31_spotcheck_anchor-audit.md`; `docs/results/09-04_spotcheck_audit/` |
+| Benign-twins control | `docs/experiments/09-07_benign-twins_control.md` |
 | Restatement artefact, quantified | `docs/experiments/09-04_stance-gap_restatement-prevalence.md`; `docs/results/09-04_stance_gap/` |
 | Endorsement subtype split | `docs/experiments/09-04_phoenix-starling_concessionary-endorsement.md`; `docs/results/09-04_concessionary/` |
 | Settled choices | `docs/decisions.md` |
