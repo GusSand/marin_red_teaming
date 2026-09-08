@@ -3,7 +3,7 @@
 - **Last updated:** `2026-09-08`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
-- **Current task:** `S1-CKPT`
+- **Current task:** `S1-05B`
 - **Task status:** `IN_PROGRESS`
 - **Next checkpoint:** Freeze the primary measure and timing rules; match the endpoint protocol and verify downloaded weights at all three full SHAs.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-08`.
@@ -22,7 +22,9 @@ experiment that separates data-mixture and learning-rate effects.
 
 **Phoenix→Starling is a real behavioral-distribution change, not yet a causal training claim.** On the
 54-behavior, 10-seed evaluation, refusal mass fell 12.2pp, corrective mass fell 12.2pp, and
-attempt-strong mass rose 28.5pp. General instruction following improved 11.8pp. Quality given attempt
+attempt-strong mass rose 28.5pp. **The refusal change is early**: present by 25% of the cooldown,
+verified across three public intermediate checkpoints — a temporal bound only, since mixture, LR, batch
+and z-loss all switch together at step 1,320,000. General instruction following improved 11.8pp. Quality given attempt
 moved only +0.12 and was not significant. The direction replicates across raters; the magnitude is
 rater-dependent, and the human spot-check was too small to adjudicate it. A late-formalized labelling
 convention exposes ≈2.5pp of the +28.5pp and nothing of the corrective drop. Endorsement rose by 27.6pp, but its
@@ -98,6 +100,7 @@ without updating this file and the active backlog table in the same commit.
 | GPT out-of-sample rater check | `docs/experiments/08-31_gpt_out-of-sample_rater-check.md` |
 | WildGuard tracks stance, not quality | `docs/experiments/08-31_wildguard_rubric-dimension-regression.md`; `docs/results/08-31_wildguard_rubric/` |
 | Human spot-check audit of the anchor | `docs/experiments/08-31_spotcheck_anchor-audit.md`; `docs/results/09-04_spotcheck_audit/` |
+| Cooldown localization (EARLY) | `docs/experiments/09-08_cooldown_localization.md`; `outputs/cooldown_localization.json` |
 | Benign-twins control (not evaluable) | `docs/experiments/09-07_benign-twins_control.md`; `docs/results/09-07_benign_twins/` |
 | Restatement artefact, quantified | `docs/experiments/09-04_stance-gap_restatement-prevalence.md`; `docs/results/09-04_stance_gap/` |
 | Three-rater sensitivity, not resolvable | `docs/experiments/09-04_3f-adj_third-rater-sensitivity.md`; `docs/results/09-07_3f_adj/` |

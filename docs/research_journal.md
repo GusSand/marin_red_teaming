@@ -1196,3 +1196,57 @@ the verifier rather than by rule. Widened: exact 0% or 100% at *either* checkpoi
 inspection. And I smoke-tested the grader — which caught a real bug — but not the generator, which
 shipped a `KeyError` to an H200 (job 17120971, 2:44 wasted). Three lines of local test would have caught
 it.
+
+---
+
+## 2026-09-08 · S1-CKPT · The refusal change is present by 25% of the cooldown
+
+**Research question.** Refusal falls 12.2pp across the 80,000-step, 1.3T-token Phoenix→Starling cooldown.
+Where in that span? Pre-registered `09-08_cooldown_localization.md`, frozen at commit 4f51699 before any
+intermediate was downloaded, run or inspected. Three public intermediates at 25/50/75% of the cooldown,
+reachable only by commit SHA — they carry no animal tag, which is why an earlier check for tags concluded
+wrongly that none existed.
+
+**Method.** Identical to the 08-27 trajectory study in every respect that could move a number: same 54
+behaviours, same `base_template_v2` wrapper, 10 seeds, pinned offline WildGuard, same denominators, one
+GPU sequential, never an array. 1,620 new generations (jobs 17189042 + 17224763). Because these revisions
+sit outside the harness's `refs/<tag>` mechanism, every downloaded shard was hashed against its recorded
+LFS object id before the job was allowed to run — 12/12 matched, three distinct revisions.
+
+**Results.** Refusal, behaviour-level: phoenix 26.48% → 25% 14.63% → 50% 16.48% → 75% 11.67% → starling
+14.26%; endpoint span −12.22pp. Fraction of the endpoint change realized: f(25%) **0.970** [0.671, 1.423],
+f(50%) 0.818 [0.439, 1.344], f(75%) 1.212 [0.966, 1.681]. All three intermediates differ from Phoenix
+(CIs excluding 0) and none differs materially from Starling. Harmful-given-non-refusal: 69.03 → 78.31 →
+82.29 → 80.98 → 83.95. Non-response 1 empty in 2,700.
+
+**Verdict: EARLY.** Localization bound — the refusal change is present by 25% of the cooldown.
+
+**Verification.** MATCHED. Fresh subagent, own aggregation on the cluster, denied every analysis script.
+Every gate, rate, CI, f value, paired contrast, the verdict and the tripwire checks matched.
+
+**Interpretation (mine).** The honest summary is that this design has **one usable bit — early, not late
+— and it delivered it.** The f intervals are 0.72–0.91 wide, about ±40 percentage points of "fraction
+realized", so what is supported is that the change is essentially finished by step 1,340,000 (even the
+lower bound of f(25%) is 0.671). What is not supported is any ordering among the three intermediates, any
+claim that f(25%) is 0.97 rather than 0.7, or any resolution of where inside the first 336B-token interval
+the change sits. And the standing constraint holds: mixture, LR, batch and z-loss all switch together at
+step 1,320,000, so this is temporal and not evidence for any one of them.
+
+Two corrections from the verifier that I would otherwise have got wrong. **f > 1 is an overshoot, not
+"121% of the change"** — the 75% checkpoint's refusal rate sits *below* Starling's, and the
+fraction-of-change framing breaks once the trajectory overshoots. And **the non-monotonicity is partly
+real**: the 50→75 dip is −4.81pp [−9.44, −0.37], excluding zero, and only 19.1% of bootstrap resamples
+give a monotone ordering. It is one of six uncorrected comparisons and would not survive correction, but
+it is reported rather than smoothed. In items it is ~26 label flips out of 540.
+
+Also worth carrying: **refusal and harmfulness do not move together.** Refusal drops at once and
+plateaus while harmful-given-non-refusal climbs more steadily across the whole cooldown. They may not be
+one phenomenon, which bears on which endpoint Stage 2 should track.
+
+Declared limitation the verifier caught: **hardware is not pinned to the endpoints.** The endpoints ran
+on gh114, the intermediates on gh110/gh120, and the 75% checkpoint itself spans two hosts. GPU model and
+driver match, so the pre-registered comparability gate passes, but the project's own rule prefers a shared
+physical GPU and none is shared here.
+
+**Forward use.** An early change makes a 10%-of-budget screening checkpoint in Stage 2 genuinely
+informative rather than a formality. That is the only forward-looking claim this supports.
