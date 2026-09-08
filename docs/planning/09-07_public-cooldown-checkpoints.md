@@ -1,6 +1,6 @@
 # Public cooldown checkpoints — queue update, 2026-09-07
 
-**S1-CKPT is READY, next after S1-05.** This is a planning note and source-metadata audit. No new model generations, behavior metrics, or causal findings were produced. Freeze a separate experiment specification before running.
+**Queue reconciled 2026-09-08: S1-CKPT is current, in protocol preparation. S1-05 is closed as NOT EVALUABLE; S1-05B follows localization.** This is a planning note and source-metadata audit. No new model generations, behavior metrics, or causal findings were produced. Freeze a separate experiment specification before running.
 
 ## Public revisions
 
@@ -22,10 +22,10 @@ LR falls linearly from 1.7e-3 to 1.7e-5 over 80,000 steps. Batch increases from 
 
 ## Next experiment contract to freeze
 
-- Reuse the existing trajectory harness and comparable Phoenix/Starling endpoint protocol. Predownload full pinned revisions; do not assume the harness honors a revision argument.
-- Lock behaviors, wrappers, seeds, judge/rubric, denominators, uncertainty, exclusions, and decision rules before any new outcome inspection. Record compute estimate, download checks and hardware provenance.
+- Reuse the existing trajectory harness. Match the Phoenix/Starling endpoint behaviors, wrappers, seeds, grading conventions and denominators. Predownload full pinned revisions and verify the downloaded weight files against the pinned revision; manifest checks alone are insufficient. Do not assume the harness honors a revision argument.
+- Freeze the primary behavior measure, timing decision rules, uncertainty and exclusions before inspecting intermediate outputs. Lock the matching behaviors, wrappers, seeds, judge/rubric and denominators in that preregistration. Record compute estimate, download checks and hardware provenance.
 - Compare behavior changes at the 25%, 50% and 75% checkpoints. Report a coarse temporal pattern; each interval spans roughly 336B tokens. Do not label a pattern as an LR or FLAN effect.
-- Public checkpoints cannot resolve a change within the first interval. Accumulated mixture exposure, LR, batch, z-loss and training duration are confounded. Denser internal checkpoints help timing; matched training interventions are needed for causality.
+- If the first intermediate shows the change under the frozen decision rule, report “present by 25% of cooldown.” That cannot establish an abrupt change at the mixture switch. Public checkpoints cannot resolve a change within the first interval. Accumulated mixture exposure, LR, batch, z-loss and training duration are confounded. Denser internal checkpoints help timing; matched training interventions are needed for causality.
 - Independently verify any behavioral result before using it in the synthesis. This diagnostic does not change the existing Stage 1 exit gates or the registered six-arm design.
 
 ## Lower-priority work and remaining request

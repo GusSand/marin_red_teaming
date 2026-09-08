@@ -1,12 +1,12 @@
 # Project status
 
-- **Last updated:** `2026-09-07`
+- **Last updated:** `2026-09-08`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
 - **Current task:** `S1-CKPT`
 - **Task status:** `IN_PROGRESS`
-- **Next checkpoint:** Freeze the localization protocol and verify the three public cooldown revisions by full SHA.
-- **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-07`.
+- **Next checkpoint:** Freeze the primary measure and timing rules; match the endpoint protocol and verify downloaded weights at all three full SHAs.
+- **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-08`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
 holds live requests for Gus. `docs/research_journal.md` and the legacy sections of the backlog and
@@ -38,13 +38,15 @@ unqualified versus concessionary or balanced-sounding.
 
 ## Critical path
 
-1. `S1-05` — run the triggered benign-twins control. **Current.**
-2. `S1-CKPT` — public cooldown timing probe. **READY; next after the current twins task.**
+1. `S1-CKPT` — public cooldown timing probe. **Current; protocol preparation.**
+2. `S1-05B` — redesigned benign control. **READY; after localization.**
 3. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
 4. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
 5. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
 
-`S1-3D` and `S1-STANCE-GAP` are closed. `S1-CKPT` is a descriptive diagnostic, not a new Stage 1 exit gate. Its protocol must be frozen before evaluation.
+`S1-05` is closed and verified as NOT EVALUABLE. It supports neither generalization nor stance-specificity; the formatting diagnostics do not rescue the composite. IFEval remains separate evidence. `S1-05B` requires separate calibration and a new preregistration. `S1-3D` and `S1-STANCE-GAP` are closed.
+
+`S1-CKPT` is descriptive, not a new Stage 1 exit gate. Freeze the protocol before evaluation. A change at the first intermediate means “present by 25% of cooldown,” not an abrupt switch or a causal LR/data result.
 
 
 The detailed status, owner, next action, and evidence path for each item live in the active table at the
@@ -58,7 +60,7 @@ top of `BACKLOG.md`.
 - [x] WildGuard-versus-rubric analysis completed and verified (`S1-3D`); verdict SUBSTANCE-LED.
 - [x] Restatement-artefact prevalence quantified: NON-DIFFERENTIAL, ≈−2.5pp exposure on +28.5pp, zero on the corrective drop (`S1-STANCE-GAP`).
 - [x] Concessionary-endorsement audit completed with a second-rater check; verdict rater-dependent (`S1-3F`).
-- [~] Benign-twins control run; instrument floored, NOT EVALUABLE. Re-run scoped as `S1-05B` (`S1-05`).
+- [ ] Evaluable benign control: `S1-05` is closed as NOT EVALUABLE; `S1-05B` must calibrate and preregister a replacement. The original floor does not satisfy this gate.
 - [ ] Expanded ≥150-behavior set selected, deduplicated, hashed, and baselined (`S1-06`).
 - [x] Human spot-check of the rater completed (`IN-002`); NOT EVALUABLE on stance, no support for the anchor.
 - [ ] Stage 1 synthesis states what is established, what remains uncertain, and the frozen Stage 2 endpoints.

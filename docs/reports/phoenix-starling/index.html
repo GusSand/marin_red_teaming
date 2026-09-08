@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="marin-report-state" content="living">
-<meta name="marin-report-updated" content="2026-09-07">
+<meta name="marin-report-updated" content="2026-09-08">
 <meta name="marin-current-task" content="S1-CKPT">
 <meta name="marin-current-task-status" content="IN_PROGRESS">
 <title>Phoenix to Starling: What Changed?</title>
@@ -109,12 +109,13 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
       <tr><td>S1-STANCE-GAP · restatement artefact</td><td><span class="result"><b class="pass">Verified</b></span></td><td>Non-differential. Exposes about 2.5pp of the +28.5pp and none of the corrective drop.</td></tr>
       <tr><td>S1-3F · concessionary endorsement</td><td><span class="result"><b class="pending">Mixed</b></span></td><td>Endorsement rose in both forms. Three raters put unqualified at 45-74% of the increase; the threshold is undecidable.</td></tr>
       <tr><td>Expanded evaluation set</td><td><span class="result"><b class="fail">Blocked</b></span></td><td>The ≥150-behaviour target is not reachable from public sources; ceiling is 101.</td></tr>
-      <tr><td>Benign twins control</td><td><span class="result"><b class="pending">Not evaluable</b></span></td><td>Tests generality and freezes the Stage 2 endpoints.</td></tr>
-      <tr><td>S1-CKPT · public cooldown timing</td><td><span class="result"><b class="pending">Ready</b></span></td><td>Evaluate public steps 1,340,000, 1,360,000 and 1,380,000 after benign twins. Metadata checked; behavior evaluations not run.</td></tr>
+      <tr><td>S1-05 · benign twins control</td><td><span class="result"><b class="pending">Not evaluable · verified</b></span></td><td>The composite floored. No evidence for generalization or stance-specificity; formatting diagnostics do not rescue it. IFEval remains separate evidence.</td></tr>
+      <tr><td>S1-05B · redesigned benign control</td><td><span class="result"><b class="pending">Ready</b></span></td><td>After localization: calibrate component and composite feasibility on separate examples, then freeze a new preregistration.</td></tr>
+      <tr><td>S1-CKPT · public cooldown timing</td><td><span class="result"><b class="pending">In progress · protocol preparation</b></span></td><td>Freeze the primary measure and timing rules. Match the endpoint protocol and verify downloaded weights at the three pinned revisions. Metadata checked; no intermediate behavior result reported.</td></tr>
       <tr><td>Six-arm Phoenix replay</td><td><span class="result"><b class="pending">Blocked</b></span></td><td>Separates the causal effects of data mixture and learning-rate schedule. External replay allocation and Stage 1 closure remain open; public checkpoint availability is resolved.</td></tr>
     </tbody>
   </table></div>
-  <p class="small">Queue update, 7 Sep: public commit revisions permit coarse cooldown timing, not causal attribution. Raccoon is a Jellyfish deeper-cooldown branch and is parked. A FLAN-in/out continuation remains a scoped proposal. <a href="../../planning/09-07_public-cooldown-checkpoints.md">Config audit and revision inventory</a>.</p>
+  <p class="small">Queue update, 8 Sep: public commit revisions permit coarse cooldown timing, not causal attribution. A change at the first intermediate means “present by 25% of cooldown”; it cannot establish an abrupt change at the mixture switch. LR, accumulated mixture exposure, batch size, z-loss and training duration remain confounded. Raccoon is a Jellyfish deeper-cooldown branch and is parked. A FLAN-in/out continuation remains a scoped proposal. <a href="../../planning/09-07_public-cooldown-checkpoints.md">Config audit and revision inventory</a>.</p>
   <p class="small">Main evidence: <code>docs/experiments/08-28_phoenix-starling_distribution-decomposition.md</code> and <code>docs/experiments/08-31_gpt_out-of-sample_rater-check.md</code>. “Ready” and “queued” are progress labels, not findings.</p>
 </section>
 
