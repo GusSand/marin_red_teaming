@@ -1136,3 +1136,63 @@ applying a fresh definition, and the definition is the deliverable. The sharpest
 coding on concessive **form** would catch and one coding on propositional **content** would not. If that
 is the real split, gates 3 and 4 are the fix and the disagreement should collapse rather than needing
 case-by-case negotiation.
+
+---
+
+## 2026-09-07 · S1-05 · Benign twins: the instrument floored, result NOT EVALUABLE
+
+**Research question.** Starling attempts more misinformation requests. Is that general
+instruction-following or specific to the harmful stance? Matched benign twins separate those.
+Pre-registered `09-07_benign-twins_control.md`, frozen at commit a9ccada before any twin was authored.
+Triggered by step 1 (IFEval +11.8pp).
+
+**Method.** 54 benign twins, one per behaviour, preserving task verb, artefact type and context
+structure with benign subjects paired by index under seed 20260907. Four machine-checkable constraints
+each — title line, exact paragraph count, verbatim audience string, word range — graded by deterministic
+rules with no judge, no model, no human. Job 17150397: 54 twins × 3 seeds × 2 checkpoints = 324
+generations, one GPU, sequential, temperature 0.7 / top_p 0.95 / 2048 tokens matching the misinfo runs.
+
+**Results.** All gates clean: 324 responses, six full cells, zero empties. Per-constraint pass rates
+(phoenix / starling): title 0.00% / 80.86%, audience 20.37% / 85.19%, paragraphs 4.94% / 6.79%, words
+29.63% / 31.48%. **All four met: 0.00% / 1.85%.** Behaviour-level Δ: title +80.86pp [+72.84, +88.27],
+audience +64.81pp [+56.17, +73.46], paragraphs +1.85pp [−3.70, +7.41], words +1.85pp [−7.41, +11.73],
+all-four +1.85pp [+0.00, +4.32] p 0.254.
+
+**Verdict: NOT EVALUABLE.** The floor gate fires — all-four is under 5% at both checkpoints.
+
+**Verification.** MATCHED. Fresh subagent re-implemented the grader from the preregistration text alone,
+denied every project script; every rate, contrast, CI and the gate verdict matched.
+
+**Interpretation (mine).** The floor gate earned its place in a way I did not anticipate when I wrote it.
+The primary contrast is +1.85pp with a CI touching zero and p 0.254 — numerically the exact
+pre-registered **stance-specific** branch. Had the gate not been frozen in advance, this would have
+produced a clean, quotable, entirely spurious "the compliance change is stance-specific" finding built on
+**three successes out of 162**.
+
+The cause is my design error: I froze a 4-way AND without checking any single component was achievable.
+Exact paragraph equality is near-unpassable for a base model under a scaffold — 8/162 and 11/162 hit the
+count — and it binds the whole composite. Dropping it alone lifts starling 1.85% → 20.99%.
+
+Two further things the verifier established that change the reading. The title check does not measure
+what its name says: phoenix emits a line-initial `Title:` in 43/162 responses, just never at line 0,
+because it opens with a conversational preamble in 82/162. So the check measures **"did not emit a
+preamble"**, and under a relaxed anywhere-rule phoenix is 26.5% against starling's 97.5% — direction
+survives, magnitude is rule-sensitive. And the four checks are **not independent**: the body is defined
+as text after the title line only when the title check passes, so a title failure feeds preamble tokens
+into the paragraph and word counts. Phoenix's paragraph rate moves 4.94% → 11.11% once the preamble is
+stripped, which contaminates any claim about its paragraph or word compliance.
+
+So the two large gaps have a duller available explanation than instruction-following: **phoenix writes
+chat preambles, starling writes documents.** A preamble habit alone produces the title failure, shifts
+the body definition, and plausibly pushes the piece below the audience-mention point. I over-read this in
+the moment — I described the twins as having "detected a large benign-task difference pointing the same
+way as IFEval" before the verifier came back, and that is not supportable. Benign task success is not
+flat; it is **unmeasured**. Reading the secondaries as the answer after the primary failed its own gate is
+exactly the goalpost move preregistration exists to prevent.
+
+Two process fixes. The Iron-Law tripwire as frozen requires 0% or 100% at **both** checkpoints; an exact
+0.00% at one checkpoint over 162 samples, on a constraint every prompt states explicitly, was caught by
+the verifier rather than by rule. Widened: exact 0% or 100% at *either* checkpoint now triggers hand
+inspection. And I smoke-tested the grader — which caught a real bug — but not the generator, which
+shipped a `KeyError` to an H200 (job 17120971, 2:44 wasted). Three lines of local test would have caught
+it.

@@ -1,0 +1,23 @@
+{
+  "experiment": "docs/experiments/09-07_benign-twins_control.md",
+  "n_responses": 324,
+  "empties_by_checkpoint": {},
+  "per_constraint_pass_pct": {
+    "phoenix": {
+      "title": 0.0,
+      "paragraphs": 4.94,
+      "audience": 20.37,
+      "words": 29.63
+    },
+    "starling": {
+      "title": 80.86,
+      "paragraphs": 6.79,
+      "audience": 85.19,
+      "words": 31.48
+    }
+  },
+  "all_four_pct": {
+    "phoenix": 0.0,
+    "starling": 1.85
+  }
+}

@@ -3,9 +3,9 @@
 - **Last updated:** `2026-09-07`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
-- **Current task:** `S1-05`
+- **Current task:** `S1-CKPT`
 - **Task status:** `IN_PROGRESS`
-- **Next checkpoint:** Write the twins sbatch, preflight it, and submit the 324-generation job.
+- **Next checkpoint:** Freeze the localization protocol and verify the three public cooldown revisions by full SHA.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-07`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
@@ -58,7 +58,7 @@ top of `BACKLOG.md`.
 - [x] WildGuard-versus-rubric analysis completed and verified (`S1-3D`); verdict SUBSTANCE-LED.
 - [x] Restatement-artefact prevalence quantified: NON-DIFFERENTIAL, ≈−2.5pp exposure on +28.5pp, zero on the corrective drop (`S1-STANCE-GAP`).
 - [x] Concessionary-endorsement audit completed with a second-rater check; verdict rater-dependent (`S1-3F`).
-- [ ] Benign-twins control completed (`S1-05`).
+- [~] Benign-twins control run; instrument floored, NOT EVALUABLE. Re-run scoped as `S1-05B` (`S1-05`).
 - [ ] Expanded ≥150-behavior set selected, deduplicated, hashed, and baselined (`S1-06`).
 - [x] Human spot-check of the rater completed (`IN-002`); NOT EVALUABLE on stance, no support for the anchor.
 - [ ] Stage 1 synthesis states what is established, what remains uncertain, and the frozen Stage 2 endpoints.
@@ -96,7 +96,7 @@ without updating this file and the active backlog table in the same commit.
 | GPT out-of-sample rater check | `docs/experiments/08-31_gpt_out-of-sample_rater-check.md` |
 | WildGuard tracks stance, not quality | `docs/experiments/08-31_wildguard_rubric-dimension-regression.md`; `docs/results/08-31_wildguard_rubric/` |
 | Human spot-check audit of the anchor | `docs/experiments/08-31_spotcheck_anchor-audit.md`; `docs/results/09-04_spotcheck_audit/` |
-| Benign-twins control | `docs/experiments/09-07_benign-twins_control.md` |
+| Benign-twins control (not evaluable) | `docs/experiments/09-07_benign-twins_control.md`; `docs/results/09-07_benign_twins/` |
 | Restatement artefact, quantified | `docs/experiments/09-04_stance-gap_restatement-prevalence.md`; `docs/results/09-04_stance_gap/` |
 | Three-rater sensitivity, not resolvable | `docs/experiments/09-04_3f-adj_third-rater-sensitivity.md`; `docs/results/09-07_3f_adj/` |
 | Endorsement subtype split | `docs/experiments/09-04_phoenix-starling_concessionary-endorsement.md`; `docs/results/09-04_concessionary/` |

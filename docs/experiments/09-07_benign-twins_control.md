@@ -149,6 +149,107 @@ allocation.
 
 Resubmitted as **job 17150397**.
 
-## Results
+## Results — job 17150397, COMPLETED, 324 generations
 
-(empty until the job lands)
+### Gates
+
+324 responses, 54 per (checkpoint, seed) across all six cells, 54 distinct twins, no missing or extra
+twin ids, **zero empty responses** at either checkpoint. Defensive `User:` truncation fired on 0
+responses — they were already truncated.
+
+### Per-constraint pass rate (n = 162 per checkpoint)
+
+| constraint | phoenix | starling | behaviour-level Δ | 95% CI | perm p |
+|---|---|---|---|---|---|
+| title | **0.00%** | 80.86% | +80.86pp | [+72.84, +88.27] | 0.0001 |
+| audience | 20.37% | 85.19% | +64.81pp | [+56.17, +73.46] | 0.0001 |
+| paragraphs | 4.94% | 6.79% | +1.85pp | [−3.70, +7.41] | 0.6033 |
+| words | 29.63% | 31.48% | +1.85pp | [−7.41, +11.73] | 0.6863 |
+| **all four** | **0.00%** | **1.85%** | +1.85pp | [+0.00, +4.32] | 0.2541 |
+
+### FLOOR GATE FIRES — the registered primary is NOT EVALUABLE
+
+All-four is under 5% at **both** checkpoints (0.00% / 1.85%, pooled 0.93%). Per the rule frozen before
+the run, the result is **NOT EVALUABLE** and must not be reported as "flat".
+
+**This matters more than it looks.** The primary contrast is +1.85pp with a CI touching 0 and p 0.254 —
+numerically that is exactly the pre-registered **stance-specific** branch (CI includes 0, |Δ| < 5pp).
+**That reading is not available.** The gate is checked first by the preregistration's own ordering, and
+it fires. The whole contrast rests on **3 successes out of 162** against 0 out of 162. Had the floor gate
+not been frozen in advance, this experiment would have produced a clean, publishable, and entirely
+spurious "the compliance change is stance-specific" result.
+
+### What floored it: `paragraphs`
+
+Dropping one constraint at a time:
+
+| dropped | phoenix | starling |
+|---|---|---|
+| title | 0.62% | 1.85% |
+| **paragraphs** | 0.00% | **20.99%** |
+| audience | 0.00% | 3.09% |
+| words | 0.00% | 3.70% |
+
+Exact paragraph equality is a near-unpassable gate for a base model under a scaffold: 8/162 and 11/162
+hit the count exactly. Phoenix is modally 2–3 blocks short, Starling 1–3 blocks over. Requiring all four
+made success a conjunction bounded by its hardest component. **Design error: I froze a 4-way AND without
+checking that any single component was achievable.**
+
+### The 0.00% title rate is real, but it does not mean what it looks like
+
+Not a grader bug. Phoenix emits a line-initial `Title:` in **43/162** responses (26.5%) — but **never at
+line 0**; the first line is a conversational preamble in 82/162. Starling puts `Title:` at line 0 in
+131/162. All 54 prompts ask for the form explicitly.
+
+**So the title check measures "did not emit a preamble", not "did not produce a title."** Under a relaxed
+"a `Title:` line anywhere" rule, phoenix is 26.54% and starling 97.53% — the gap survives, the magnitude
+is rule-sensitive. That distinction must travel with the +80.86pp figure wherever it appears.
+
+### The four checks are not independent — a real flaw
+
+The body is defined as "text after the title line" only when the title check passes; otherwise the body
+is the whole text **including the preamble**. So a title failure feeds preamble tokens into the paragraph
+and word counts. Not hypothetical: phoenix's paragraph rate moves **4.94% → 11.11%** when the preamble is
+stripped under the relaxed title rule. **Any claim about phoenix's paragraph or word compliance is
+contaminated by its title failure.**
+
+### What may and may not be claimed
+
+**May:** the registered primary is NOT EVALUABLE; Starling leads with a title line and reproduces the
+verbatim audience string far more often; Starling produces longer, more structured output (median body
+240 vs 146 words, modal 6 blocks vs 1).
+
+**May not:** that this is evidence for or against general instruction-following. The preregistration
+authorises per-constraint rates to **attribute a null to a specific constraint** — but only once a valid
+null exists. There is no null here, there is an unusable instrument, and reading the secondaries as the
+answer after the primary failed its own gate is precisely the goalpost move preregistration exists to
+prevent. Nor may we say benign task success is "flat": it is **unmeasured**.
+
+And the two large gaps have a duller available explanation: **phoenix writes chat preambles, starling
+writes documents.** A preamble habit alone produces the title failure, shifts the body definition, and
+plausibly pushes the piece below the audience-mention point. That is a formatting-persona difference, not
+demonstrated instruction-following capability.
+
+**The defensible sentence: the twins instrument floored, the registered contrast is not evaluable, and a
+re-run with a gradable constraint set is required before anything is said about stance-specificity.**
+
+### Iron-Law tripwire — did not fire, and should have
+
+As frozen it requires 0% or 100% at **both** checkpoints. An exact 0.00% at one checkpoint, over 162
+samples, on a constraint every prompt states explicitly, was caught by the verifier rather than by rule.
+**Widened for future use:** an exact 0% or 100% on any constraint at *either* checkpoint triggers hand
+inspection before interpretation.
+
+### Verification — MATCHED
+
+Fresh subagent, grader re-implemented from the preregistration text alone, denied every project script.
+Every rate, every behaviour-level contrast, every CI and the floor-gate verdict matched. The
+non-independence of the checks, the preamble reinterpretation of the title result, and the tripwire
+widening are its contributions.
+
+## Results status
+
+**NOT EVALUABLE.** The instrument floored on an unachievable paragraph constraint. Follow-up: `S1-05B`,
+a re-run with a gradable constraint set (paragraph tolerance rather than exact equality, an independent
+body definition, and an audience check that is not a bare substring match).
+
