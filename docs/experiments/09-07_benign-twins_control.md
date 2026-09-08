@@ -131,6 +131,24 @@ IFEval behaviour exactly, so the recorded IFEval numbers are untouched. Its prov
 fixed — it had hardcoded `temperature 0.0, seed 0` and would have logged the wrong decoding for any
 non-greedy run.
 
+### Failed first attempt — job 17120971
+
+Died after 2:44 with `KeyError: 'prompt'` at write time. Generation itself was fine — all 54 prompts
+completed in 4 seconds — then the writer crashed. Cause: the prompt-key fallback was patched in the
+*prompt-building* line but the same key was dereferenced again in two *writer* lines. Both output files
+were created 0 bytes; they are quarantined at `phoenix/seed0_FAILED_17120971`, not deleted.
+
+Fixed at the root rather than patched again: the key is resolved once in a `ptext()` helper reused by
+builder and writer, and it raises cleanly if a row has neither key. The writer now also carries
+`twin_id` through, so the grader joins on an id instead of re-deriving it from text. Both row shapes and
+the missing-key case are exercised by a no-GPU test of the writer logic.
+
+**Lesson recorded:** the grader was smoke-tested and caught a real bug; the generator path was not, and
+shipped one. A three-line local test of the record-building logic would have caught this before an H200
+allocation.
+
+Resubmitted as **job 17150397**.
+
 ## Results
 
 (empty until the job lands)

@@ -37,8 +37,16 @@ if (out / "responses_raw.jsonl").exists():
 template = Path(a.template).read_text()
 assert "{instruction}" in template, "scaffold must contain {instruction}"
 rows = [json.loads(l) for l in Path(a.input).read_text().splitlines() if l.strip()]
-# accept either key: IFEval rows carry `prompt`, S1-05 twin rows carry `instruction`
-prompts = [template.replace("{instruction}", r.get("prompt", r.get("instruction"))) for r in rows]
+# Accept either key: IFEval rows carry `prompt`, S1-05 twin rows carry `instruction`. Resolved ONCE
+# here and reused by the writer below -- doing this inline in three places is what broke job 17120971,
+# which generated fine and then died on r["prompt"] at write time.
+def ptext(r):
+    t = r.get("prompt", r.get("instruction"))
+    if t is None:
+        raise SystemExit(f"row has neither 'prompt' nor 'instruction': {sorted(r)}")
+    return t
+
+prompts = [template.replace("{instruction}", ptext(r)) for r in rows]
 
 from vllm import LLM, SamplingParams  # noqa: E402
 import vllm, torch, transformers  # noqa: E402
@@ -56,8 +64,12 @@ def trunc(s):
 with (out / "responses_raw.jsonl").open("w") as fr, (out / "responses_truncated.jsonl").open("w") as ft:
     for r, o in zip(rows, outs):
         txt = o.outputs[0].text
-        fr.write(json.dumps({"prompt": r["prompt"], "response": txt}) + "\n")
-        ft.write(json.dumps({"prompt": r["prompt"], "response": trunc(txt)}) + "\n")
+        base = {"prompt": ptext(r)}
+        # carry the twin id through so the S1-05 grader can join without re-deriving it from text
+        if r.get("twin_id"):
+            base["twin_id"] = r["twin_id"]
+        fr.write(json.dumps({**base, "response": txt}) + "\n")
+        ft.write(json.dumps({**base, "response": trunc(txt)}) + "\n")
 
 n_empty = sum(1 for o in outs if not o.outputs[0].text.strip())
 n_fake_turn = sum(1 for o in outs if "\nUser:" in o.outputs[0].text)
