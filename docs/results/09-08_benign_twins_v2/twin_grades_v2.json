@@ -1,0 +1,52 @@
+{
+  "experiment": "docs/experiments/09-08_benign-twins_v2.md",
+  "constraint_set": "v2",
+  "n_responses": 324,
+  "empties": {
+    "phoenix": 0,
+    "starling": 0
+  },
+  "prompt_echo_pct": {
+    "phoenix": 0.0,
+    "starling": 0.0
+  },
+  "per_constraint_pass_pct": {
+    "phoenix": {
+      "title": 3.09,
+      "paragraphs": 39.51,
+      "audience": 14.81,
+      "length": 19.75
+    },
+    "starling": {
+      "title": 89.51,
+      "paragraphs": 32.1,
+      "audience": 85.8,
+      "length": 19.75
+    }
+  },
+  "mean_constraints_met": {
+    "phoenix": 0.7716,
+    "starling": 2.2716
+  },
+  "all_four_pct": {
+    "phoenix": 0.0,
+    "starling": 6.17
+  },
+  "primary": {
+    "n_behaviors": 54,
+    "phoenix_mean": 0.7716,
+    "starling_mean": 2.2716,
+    "delta_constraints": 1.5,
+    "ci95": [
+      1.3704,
+      1.6296
+    ],
+    "perm_p": 0.0
+  },
+  "floor_gate_fires": false,
+  "ceiling_gate_fires": false,
+  "unachievable_constraints": [],
+  "prompt_echo_failure": false,
+  "iron_law_tripped": [],
+  "verdict": "IF-CONSISTENT -- the compliance change appears on benign requests too"
+}

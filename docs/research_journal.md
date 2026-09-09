@@ -1250,3 +1250,67 @@ physical GPU and none is shared here.
 
 **Forward use.** An early change makes a 10%-of-budget screening checkpoint in Stage 2 genuinely
 informative rather than a formality. That is the only forward-looking claim this supports.
+
+---
+
+## 2026-09-08 · S1-05B — benign twins v2: the instrument works and still cannot answer the question
+
+**Research question.** Starling attempts more misinformation requests than Phoenix. Is that general
+instruction-following, or specific to the harmful stance? Matched benign twins separate those. v1
+(`S1-05`) returned NOT EVALUABLE because its 4-way-AND primary floored. v2 rebuilt the instrument.
+
+**Method.** Same 54 twins, same subjects, forms and index pairing under seed 20260907; only the
+requirement text changed. Four fixes against named v1 defects: the primary became the **mean constraints
+met (0–4)** instead of a conjunction; paragraphs became a band; the body became the whole truncated
+response so the four checks are computed on one string; the audience check gained an echo guard. Fresh
+generations, not a re-grade — I had seen v1's per-constraint results. Job `17249723`, one job, one GPU,
+sequential, 324 generations, phoenix and starling × 3 seeds, temperature 0.7, top_p 0.95.
+Preregistration frozen at `d41d951` before any twin was authored.
+
+**Results.** Phoenix 0.7716, Starling 2.2716 of 4. **Δ = +1.5000 constraints, 95% CI [+1.3704, +1.6296],
+sign-flip p < 1e-4**, 54/54 behaviours positive, against a +0.20 bar. Per constraint: title 3.09 → 89.51,
+audience 14.81 → 85.80, paragraphs 39.51 → 32.10, length 19.75 → 19.75. All-four 0.00% / 6.17%. No gate
+fires: no floor, no ceiling, no component under 5% at both checkpoints, 0 empties, 0 duplicates.
+**Frozen verdict: IF-CONSISTENT.**
+
+**Verification.** MATCHED. Fresh subagent, denied the grader, re-implemented all four checks from the
+preregistration text. Both means reproduce to four decimals; every per-constraint rate matches.
+
+**Interpretation (mine).** The redesign fixed what it set out to fix and the primary is sound. The
+inference it was built to license is not.
+
+**104.9% of the delta is title plus audience.** Drop those two and the same frozen rule returns
+STANCE-SPECIFIC on the remainder: paragraphs + length gives Δ = −0.0741, CI [−0.2346, +0.0864], p 0.359.
+The verdict is a function of which two constraints are kept. And the two survivors are one behaviour:
+Starling emits a title line somewhere in **162/162** responses, 78.4% of its audience passes are a literal
+`Dear <audience>` salutation, and 121/139 put the audience in the first two lines. One two-line document
+header satisfies two of four checks simultaneously. Phoenix opens with a chat preamble in 43.21% of
+responses against Starling's 10.49%. The v1 verifier's formatting-persona diagnosis is confirmed and was
+understated.
+
+The two checks that actually test a stated numeric requirement show **no Starling advantage**: paragraphs
+−0.0741, length exactly +0.0000. The length tie is coincidence (p ≈ 0.056 for two equal binomial draws)
+and it conceals opposite failure modes — Phoenix misses two-sided, Starling misses one-sided with 129/162
+over-long and a median above the top of every band. Equal rates, opposite behaviour.
+
+So the honest statement is that **a model switching from chat-preamble output to document output would
+produce this benign result and the +28.5pp attempt-strong shift together, with no change in
+instruction-following.** That is precisely the confound the twins exist to rule out. `S1-05B` measures a
+formatting persona difference with high confidence and does not separate the stance-specific and
+if-consistent worlds. The Stage 1 exit gate for an evaluable benign control stays open.
+
+**Defect found in verification.** Fix 4 was inert. The echo detector searches for the literal
+`Requirements:`, which the v2 prompt deliberately does not contain — `build_benign_twins.py:158` asserts
+its absence. The conjunctive guard never fired and the audience check reduced to the bare substring match
+v2 claimed to have fixed (graded passes equal raw substring passes exactly, 24 / 139). Measured against
+the prompt's real marker, echo is 2 Phoenix / 1 Starling, so nothing substantive turns on it, but the
+reported 0.00% did not mean what the plan said.
+
+**Two exact rates the widened Iron-Law tripwire still missed.** Phoenix all-four = 0.00% (it is the
+secondary, not a constraint) and Starling title-present-anywhere = 100.00% (the *graded* rate is 89.51%).
+Both hand-inspected, neither a bug. The tripwire has now failed to catch an exact rate that mattered
+twice.
+
+**Forward use.** `S1-05C` needs a constraint set whose components are not jointly satisfiable by one
+emitted header, plus a pre-registered inter-constraint correlation gate. A mean over four correlated
+checks is not four measurements, and the +0.20 bar was calibrated as though it were.

@@ -3,9 +3,9 @@
 - **Last updated:** `2026-09-08`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
-- **Current task:** `S1-05B`
-- **Task status:** `IN_PROGRESS`
-- **Next checkpoint:** Freeze the primary measure and timing rules; match the endpoint protocol and verify downloaded weights at all three full SHAs.
+- **Current task:** `S1-05C`
+- **Task status:** `READY`
+- **Next checkpoint:** Freeze a benign-control constraint set whose components are not jointly satisfiable by one emitted document header.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-08`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
@@ -36,17 +36,20 @@ already-endorsing items. **The instrument tracks stance, not prose.** Regressed 
 WildGuard's harmful label takes +0.404 unique out-of-fold AUC from stance and +0.009 from writing
 quality, whose interval spans zero — so a WildGuard harmful rate here reads closer to a stance rate than
 a harm-severity rate. The `S1-3F` audit will determine how much of the endorsement increase is
-unqualified versus concessionary or balanced-sounding.
+unqualified versus concessionary or balanced-sounding. **The benign control still does not separate
+stance-specific from general compliance.** Starling emits a document header where Phoenix emits a chat
+preamble — a persona shift that would produce both the benign gains and the +28.5pp attempt-strong shift
+without any change in instruction-following. That confound is now measured, not hypothetical, and
+`S1-SYNTH` must carry it.
 
 ## Critical path
 
-1. `S1-CKPT` — public cooldown timing probe. **Current; protocol preparation.**
-2. `S1-05B` — redesigned benign control. **READY; after localization.**
-3. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
-4. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
-5. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
+1. `S1-05C` — benign control on constraints orthogonal to document format. **Current; READY.**
+2. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
+3. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
+4. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
 
-`S1-05` is closed and verified as NOT EVALUABLE. It supports neither generalization nor stance-specificity; the formatting diagnostics do not rescue the composite. IFEval remains separate evidence. `S1-05B` requires separate calibration and a new preregistration. `S1-3D` and `S1-STANCE-GAP` are closed.
+`S1-05` is closed and verified as NOT EVALUABLE. `S1-05B` is closed and verified with a valid primary — Δ = +1.5000 constraints, IF-CONSISTENT under its frozen rule — but **the reading is withheld**: 104.9% of that delta is two checks a single `Title:` / `Dear <audience>,` header satisfies together, and the two checks testing a stated numeric requirement show no Starling advantage. It measures a formatting persona, not instruction-following. The evaluable-benign-control gate stays open. IFEval remains separate evidence. `S1-3D` and `S1-STANCE-GAP` are closed.
 
 `S1-CKPT` is descriptive, not a new Stage 1 exit gate. Freeze the protocol before evaluation. A change at the first intermediate means “present by 25% of cooldown,” not an abrupt switch or a causal LR/data result.
 
@@ -62,7 +65,7 @@ top of `BACKLOG.md`.
 - [x] WildGuard-versus-rubric analysis completed and verified (`S1-3D`); verdict SUBSTANCE-LED.
 - [x] Restatement-artefact prevalence quantified: NON-DIFFERENTIAL, ≈−2.5pp exposure on +28.5pp, zero on the corrective drop (`S1-STANCE-GAP`).
 - [x] Concessionary-endorsement audit completed with a second-rater check; verdict rater-dependent (`S1-3F`).
-- [ ] Evaluable benign control: `S1-05` is closed as NOT EVALUABLE; `S1-05B` must calibrate and preregister a replacement. The original floor does not satisfy this gate.
+- [ ] Evaluable benign control: `S1-05` NOT EVALUABLE (floored); `S1-05B` evaluable but not discriminating — its delta is carried by a document-header persona that would also explain the misinformation shift. `S1-05C` must use constraints orthogonal to document format, with a pre-registered inter-constraint correlation gate.
 - [ ] Expanded ≥150-behavior set selected, deduplicated, hashed, and baselined (`S1-06`).
 - [x] Human spot-check of the rater completed (`IN-002`); NOT EVALUABLE on stance, no support for the anchor.
 - [ ] Stage 1 synthesis states what is established, what remains uncertain, and the frozen Stage 2 endpoints.
@@ -101,7 +104,8 @@ without updating this file and the active backlog table in the same commit.
 | WildGuard tracks stance, not quality | `docs/experiments/08-31_wildguard_rubric-dimension-regression.md`; `docs/results/08-31_wildguard_rubric/` |
 | Human spot-check audit of the anchor | `docs/experiments/08-31_spotcheck_anchor-audit.md`; `docs/results/09-04_spotcheck_audit/` |
 | Cooldown localization (EARLY) | `docs/experiments/09-08_cooldown_localization.md`; `outputs/cooldown_localization.json` |
-| Benign-twins control (not evaluable) | `docs/experiments/09-07_benign-twins_control.md`; `docs/results/09-07_benign_twins/` |
+| Benign-twins control v1 (not evaluable) | `docs/experiments/09-07_benign-twins_control.md`; `docs/results/09-07_benign_twins/` |
+| Benign-twins control v2 (valid primary, reading withheld) | `docs/experiments/09-08_benign-twins_v2.md`; `docs/results/09-08_benign_twins_v2/` |
 | Restatement artefact, quantified | `docs/experiments/09-04_stance-gap_restatement-prevalence.md`; `docs/results/09-04_stance_gap/` |
 | Three-rater sensitivity, not resolvable | `docs/experiments/09-04_3f-adj_third-rater-sensitivity.md`; `docs/results/09-07_3f_adj/` |
 | Endorsement subtype split | `docs/experiments/09-04_phoenix-starling_concessionary-endorsement.md`; `docs/results/09-04_concessionary/` |

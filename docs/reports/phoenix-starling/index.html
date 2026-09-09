@@ -3,8 +3,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="marin-report-state" content="living">
 <meta name="marin-report-updated" content="2026-09-08">
-<meta name="marin-current-task" content="S1-05B">
-<meta name="marin-current-task-status" content="IN_PROGRESS">
+<meta name="marin-current-task" content="S1-05C">
+<meta name="marin-current-task-status" content="READY">
 <title>Phoenix to Starling: What Changed?</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap">
 <style>
@@ -73,7 +73,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <div class="masthead"><span>Marin red teaming · living report</span><span>Updated 31 Aug 2026</span><span>Stage 1 closure · Phoenix → Starling</span></div>
   <h1>What changed between Phoenix and Starling?</h1>
   <p class="deck">Starling follows instructions more often and is much more willing to advance the requested false thesis. The behavioral change is verified. Its training cause is not.</p>
-  <div class="metadata"><span>Experimenter: Gus Sandoval</span><span>Evidence cutoff: 8 Sep 2026</span><span>Current task: S1-05B · in progress</span><span>Status: living draft</span><span>Verified findings only in the main claims</span></div>
+  <div class="metadata"><span>Experimenter: Gus Sandoval</span><span>Evidence cutoff: 8 Sep 2026</span><span>Current task: S1-05C · ready</span><span>Status: living draft</span><span>Verified findings only in the main claims</span></div>
 </header>
 
 <section class="report-body" id="current-state">
@@ -111,8 +111,8 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
       <tr><td>Cooldown localization</td><td><span class="result"><b class="pass">Verified</b></span></td><td>The refusal change is present by 25% of the cooldown. A timing bound, not a cause.</td></tr>
       <tr><td>Expanded evaluation set</td><td><span class="result"><b class="fail">Blocked</b></span></td><td>The ≥150-behaviour target is not reachable from public sources; ceiling is 101.</td></tr>
       <tr><td>S1-05 · benign twins control</td><td><span class="result"><b class="pending">Not evaluable · verified</b></span></td><td>The composite floored. No evidence for generalization or stance-specificity; formatting diagnostics do not rescue it. IFEval remains separate evidence.</td></tr>
-      <tr><td>S1-05B · redesigned benign control</td><td><span class="result"><b class="pending">Ready</b></span></td><td>After localization: calibrate component and composite feasibility on separate examples, then freeze a new preregistration.</td></tr>
-      <tr><td>S1-CKPT · public cooldown timing</td><td><span class="result"><b class="pending">In progress · protocol preparation</b></span></td><td>Freeze the primary measure and timing rules. Match the endpoint protocol and verify downloaded weights at the three pinned revisions. Metadata checked; no intermediate behavior result reported.</td></tr>
+      <tr><td>S1-05B · redesigned benign control</td><td><span class="result"><b class="pending">Valid · reading withheld</b></span></td><td>Verified Δ = +1.50 of 4 constraints, but 105% of it is a title line and a salutation — one document header satisfying two checks. On the two checks that test a stated numeric requirement, Starling is not better.</td></tr>
+      <tr><td>S1-05C · format-orthogonal benign control</td><td><span class="result"><b class="pending">Ready</b></span></td><td>Constraints no single emitted line can satisfy jointly, with an inter-constraint correlation gate frozen before the primary is read.</td></tr>
       <tr><td>Six-arm Phoenix replay</td><td><span class="result"><b class="pending">Blocked</b></span></td><td>Separates the causal effects of data mixture and learning-rate schedule. External replay allocation and Stage 1 closure remain open; public checkpoint availability is resolved.</td></tr>
     </tbody>
   </table></div>
@@ -311,6 +311,8 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
 
   <h3>Q3: Why is the benign control not decisive for H1b?</h3>
   <p>A benign control should separate instruction following from safety: better format-following lifts compliance on everything. But <code>wildjailbreak:benign</code> scores non-refusal, not task success, so off-topic text passes, which is the exact failure it was meant to catch. It is also saturated at 96.4%. H1b needs a gradable benign task; until then it stays open.</p>
+  <p>Two purpose-built attempts have now failed, in opposite ways. <b>S1-05</b> asked for four constraints at once and floored — 0.00% and 1.85% — because exact paragraph equality is near-unpassable for a base model under a scaffold. <b>S1-05B</b> scored the mean of the same four and produced a clean, verified Δ = +1.50 of 4. That number is real and it still does not answer the question: <b>105% of it sits in two checks that one emitted header satisfies together.</b> Starling opens with <code>Title: X</code> and <code>Dear &lt;audience&gt;,</code> — a title line appears somewhere in 162 of 162 responses, and 78% of its audience passes are literal salutations — while Phoenix opens with a chat preamble in 43% of responses. Drop those two checks and the same pre-registered rule flips to stance-specific: Δ = −0.07, CI [−0.23, +0.09].</p>
+  <p>That leaves a live alternative to both hypotheses. <b>A shift from chat-preamble output to document output would produce the benign gains and the +28.5pp attempt-strong shift together, with no change in instruction following.</b> The confound is measured now, not speculative. <code>S1-05C</code> is the third attempt: verifiable constraints no single line can satisfy jointly, with a correlation gate frozen before the primary is read.</p>
 
   <h3>Q4: What about the 18 responses the judge did not label?</h3>
   <p>WildGuard returned no label for 71 rows in the misinformation subset: 53 blank responses (excluded by the spec) and 18 non-empty ones, concentrated early (jellyfish 8, kestrel 6, ocelot 2, phoenix 1, starling 1). Most are 6–11k characters; the judge's output failed to parse. The analysis treats them as not-harmful and non-refusal.</p>

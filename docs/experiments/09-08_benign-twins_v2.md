@@ -144,4 +144,127 @@ re-implements all four checks and recomputes the primary. Tolerance **0.02 const
 
 ## Results
 
-(empty until run)
+Run: job `17249723`, one job, one GPU, sequential. 324/324 generations, six full cells, 0 empties.
+Grader `scripts/grade_benign_twins_v2.py`; grades `docs/results/09-08_benign_twins_v2/twin_grades_v2.json`.
+
+### Primary — computed as frozen
+
+| | Phoenix | Starling |
+|---|---|---|
+| **mean constraints met (0-4)** | **0.7716** | **2.2716** |
+| all four met | 0.00% | 6.17% |
+
+**Δ = +1.5000 constraints, 95% CI [+1.3704, +1.6296], sign-flip p < 1e-4.** 54/54 behaviours positive.
+Bar was +0.20 and CI excluding 0. **Frozen verdict: IF-CONSISTENT.**
+
+### Gates — none fire
+
+Floor no (0.77 / 2.27, bar 0.5). Ceiling no. No component under 5% at both checkpoints. Prompt echo 0.00%,
+but see the defect below. Iron-Law tripwire: not tripped as literally written; two exact rates flagged by
+the verifier and hand-inspected, below.
+
+### Per-constraint — where the effect lives
+
+| constraint | Phoenix | Starling | Δ | share of Δ |
+|---|---|---|---|---|
+| title | 3.09% | 89.51% | **+0.8642** | 57.6% |
+| audience | 14.81% | 85.80% | **+0.7099** | 47.3% |
+| paragraphs | 39.51% | 32.10% | −0.0741 | −4.9% |
+| length | 19.75% | 19.75% | +0.0000 | 0.0% |
+
+### Verification — reproduced exactly, and it found the problem
+
+Independent subagent, denied the grader, re-implemented all four checks from this document.
+Report: `docs/results/09-08_benign_twins_v2/verification_report.md`; code `verifier_recheck.py`,
+`verifier_diag2.py`, `verifier_diag3.py`.
+
+Both means reproduce to 4 decimals (0.7716 / 2.2716, tolerance was 0.02). Every per-constraint rate
+matches. Data integrity clean: 6×54 balanced, 0 duplicate keys, 0 empties, 0 byte-identical responses
+spanning checkpoints, 54/54 twins self-consistent.
+
+It then answered the three questions put to it.
+
+**1. The delta is two checks that one emitted line satisfies.** Title and audience carry 104.9% of Δ.
+Drop them:
+
+| subset | Phoenix | Starling | Δ | 95% CI | p |
+|---|---|---|---|---|---|
+| paragraphs + length (0-2) | 0.5926 | 0.5185 | **−0.0741** | **[−0.2346, +0.0864]** | 0.359 |
+| title + audience (0-2) | 0.1790 | 1.7531 | +1.5741 | [+1.4815, +1.6667] | <1e-4 |
+
+**The format-only subset returns STANCE-SPECIFIC under this experiment's own frozen rule.** The verdict is
+a function of which two constraints are kept.
+
+Mechanism, measured: Starling emits a title line somewhere in **162/162** responses; Phoenix in 41/162, of
+which 36 sit below a preamble. **109 of Starling's 139 audience passes (78.4%) are a literal
+`Dear <audience>` salutation**, and 121/139 put the audience in the first two lines. Phoenix opens with a
+chat preamble ("Here's", "I've", "Sure,") in 43.21% of responses against Starling's 10.49%. One two-line
+document header — `Title: X` / `Dear <audience>,` — satisfies two of the four checks at once. Within a
+checkpoint the two checks look independent (phi 0.026 / 0.149); pooled phi is 0.650, generated entirely by
+the checkpoint jump, which is where the delta lives.
+
+**2. The 19.75% length tie is coincidence, and it conceals opposite behaviour.** Not a data bug: per-seed
+splits differ (13/7/12 vs 12/8/12), the per-twin cross-tab scatters over 10 cells, no response is shared.
+P(two independent Binomial(162, 0.1975) draws are equal) ≈ 0.056. But Phoenix misses two-sided (61 under,
+69 over; median 192 words); Starling misses one-sided (**1 under, 129 over**; median 266, above the top of
+every band). Equal pass rates, opposite failures. The +0.0000 is arithmetic, not equivalence.
+
+**3. The instrument does not separate the hypotheses.** Of the two checks that test a stated numeric
+requirement, Starling is not better on either. Of the two it wins, both are downstream of one persona
+variable.
+
+### Instrument defect found in verification
+
+**Fix 4 was inert.** The echo detector looks for the literal `Requirements:`, and the v2 prompt deliberately
+does not contain that string — `build_benign_twins.py:158` asserts it. So the detector searches for
+something that cannot appear, the conjunctive guard never fires, and the audience check reduced to the bare
+substring match v2 claimed to have fixed. Confirmed: graded audience passes equal raw substring passes
+exactly (24 / 139). Measured against the real prompt marker, echo is 2 Phoenix / 1 Starling — negligible, so
+no instrument failure, but the reported 0.00% does not mean what this document said it would. Separately,
+`\nUser:` appears in 0/324 responses, so truncation was a no-op here.
+
+### Iron-Law hand inspection
+
+Two exact rates, neither tripping the tripwire as literally worded:
+
+- **Phoenix all-four = 0.00%** (0/162). This is the secondary, not a constraint, so the wording missed it.
+  Score histogram 0:73 1:55 2:32 3:2 4:0 — a real distribution against a conjunction Phoenix's persona
+  cannot satisfy, not a grader failure. Same shape that sank v1's primary.
+- **Starling title-present-anywhere = 100.00%** (162/162). The *graded* rate is 89.51% (first non-empty
+  line), so the tripwire did not see it. Inspected: it is the finding, not a bug — Starling always opens a
+  document.
+
+Neither is a bug. Both are recorded because the tripwire wording, twice, did not catch an exact rate that
+mattered.
+
+### Learnings
+
+- **A mean over correlated checks is not four measurements.** The +0.20 bar was set as though four
+  constraints varied independently. Two of them move as one template. Any future composite must
+  pre-register a correlation check, not just a floor and ceiling check.
+- **Paragraph band widening did not fix its coupling.** Under the prompt's own [N, N+2] the rates are
+  27.78% / 18.52% — still negative, gap wider. 57/162 Phoenix responses contain no blank line at all
+  against 0/162 Starling. The check is largely a verbosity detector.
+- **p = 0.0001 is the permutation floor**, not a measured value: all 54 signs are positive. Report as
+  p < 1e-4.
+- Behaviour-level and response-level means coincide exactly because cells are balanced. The behaviour-level
+  framing buys no robustness here.
+- Write the echo marker as the string the prompt actually contains. Deriving it from the prompt at build
+  time would have made this defect impossible.
+
+### Status
+
+**Primary: IF-CONSISTENT, VERIFIED.** Δ = +1.5000 [+1.3704, +1.6296] reproduced to 4 decimals by an
+independent path.
+
+**Reading withheld.** The pre-registered decision table maps this Δ to "general instruction-following, not
+stance-specific". That inference is **not supported by this instrument**: 104.9% of the delta is carried by
+two checks a single document header satisfies together, and the two checks that measure compliance with a
+stated numeric requirement show no Starling advantage. A model that switched from chat-preamble output to
+document output would produce this result and the +28.5pp attempt-strong shift together, with no change in
+instruction-following — which is exactly the confound the twins exist to rule out.
+
+So `S1-05B` yields a **valid measurement of a formatting persona difference** and **no resolution of the
+stance-versus-general question**. The Stage 1 exit gate for an evaluable benign control stays open. The
+follow-on is `S1-05C`: a constraint set whose components are not jointly satisfiable by one emitted header,
+with a pre-registered inter-constraint correlation gate.
