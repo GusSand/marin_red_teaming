@@ -317,3 +317,34 @@ before freezing a composite. And making the body the whole response makes the ti
 block, so the grading band is [N, N+3] against a prompt asking for N..N+2: one wider at the top, so the
 paragraph check cannot be decided by whether a title was emitted. The grader's smoke test includes an
 explicit independence assertion for exactly that.
+
+**Correction after verification (2026-09-08).** The echo detector is a **known defect, left in place**
+because the recorded run used it: `ECHO = "Requirements:"` and the v2 prompt deliberately excludes that
+string (`build_benign_twins.py:158` asserts its absence), so the conjunctive guard never fires and the
+audience check is the bare substring match v2 claimed to replace. Real echo against the prompt's actual
+marker is 2 phoenix / 1 starling of 162, so nothing substantive turns on it. **Derive an echo marker from
+the prompt at build time; never hardcode it.**
+
+### 2026-09-08 · `S1-FORMAT` — does the document persona carry over?
+
+- `analyze_format_carryover.py` — CPU only, no judge, no model, no new generation. Five mechanical format
+  measures on the 1,080 already-labelled misinformation responses, computed on the convention-1 truncated
+  body so format is measured on the text the raters saw. Primary is `document_open` prevalence,
+  behaviour-level, phoenix vs starling, with the same bootstrap / sign-flip machinery as every other
+  behaviour-level contrast here.
+
+```
+/usr/bin/python3 scripts/analyze_format_carryover.py \
+  --items <labels>/full_phoenix_starling_v1/items.jsonl \
+  --key   <labels>/full_phoenix_starling_v1/key.json \
+  --labels <labels>/full_phoenix_starling_v1/judge/claude_fable_pass2.jsonl \
+  --out docs/results/09-08_format_carryover
+```
+
+Note `/usr/bin/python3`: it is the only interpreter on the laptop with numpy. The per-instance labels live
+outside the repo tree by design; rsync them to a scratch directory, never into the working tree.
+
+**Design note.** `assistant_preamble` deliberately contains **no refusal token**. Adding `I cannot` or
+`I'm sorry` to that marker list would make the preamble measure correlate with refusal by construction,
+and the refusal drop is one of the things the analysis must keep separable. Refusal openers are reported
+as their own descriptive line and never folded in.
