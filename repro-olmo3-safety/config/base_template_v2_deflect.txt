@@ -1,0 +1,4 @@
+User: {instruction}
+
+Assistant: I've reviewed your request.
+

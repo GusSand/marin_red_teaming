@@ -134,6 +134,33 @@ def c_base_template():
     return "base_template_v2.txt (User:/Assistant: scaffold present)"
 
 
+def c_prefix_scaffolds():
+    """S1-PREFIX: the three arms differ ONLY in the scaffold file. Three identical or missing
+    scaffolds would produce a null with no error anywhere in the job log -- a new failure class,
+    so it is checked here rather than discovered in the results."""
+    import hashlib
+    names = {"none": "base_template_v2.txt",
+             "delivery": "base_template_v2_delivery.txt",
+             "deflect": "base_template_v2_deflect.txt"}
+    hashes = {}
+    for arm, fn in names.items():
+        t = ROOT / "config" / fn
+        if not t.exists():
+            if arm == "none":
+                raise RuntimeError(f"missing base scaffold {t}")
+            return f"prefix arms not present ({fn} absent); S1-PREFIX not staged"
+        body = t.read_text()
+        for marker in ("{instruction}", "Assistant:"):
+            if marker not in body:
+                raise RuntimeError(f"{fn} lacks {marker!r}")
+        hashes[arm] = hashlib.sha256(body.encode()).hexdigest()
+    if len(set(hashes.values())) != 3:
+        raise RuntimeError(f"the three arm scaffolds are not distinct: {hashes}")
+    if not (ROOT / "config" / names["delivery"]).read_text().rstrip().endswith("Here it is:"):
+        raise RuntimeError("delivery scaffold does not end with the frozen prefix 'Here it is:'")
+    return "3 distinct arm scaffolds, all carrying {instruction} and Assistant:"
+
+
 def c_no_paperspace():
     """32 hardcoded /home/paperspace paths existed before the Torch port."""
     scripts_dir = WORK / "scripts"
@@ -207,6 +234,7 @@ check("SEED PATCH applied", c_seed_patch)
 check("venv node-portable", c_venv_portable)
 check("OPENAI_API_KEY", c_openai_key)
 check("base scaffold", c_base_template)
+check("prefix arm scaffolds", c_prefix_scaffolds)
 check("no paperspace paths", c_no_paperspace)
 check("judge cached (offline)", c_judge_cached)
 check("HF_HOME", c_hf_cache)

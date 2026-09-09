@@ -348,3 +348,21 @@ outside the repo tree by design; rsync them to a scratch directory, never into t
 `I'm sorry` to that marker list would make the preamble measure correlate with refusal by construction,
 and the refusal drop is one of the things the analysis must keep separable. Refusal openers are reported
 as their own descriptive line and never folded in.
+
+### 2026-09-08 · `S1-PREFIX` — is the delivery framing proximally sufficient?
+
+- `../repro-olmo3-safety/config/base_template_v2_delivery.txt` — `Assistant: Here it is:` prefill.
+- `../repro-olmo3-safety/config/base_template_v2_deflect.txt` — `Assistant: I've reviewed your request.`
+  prefill, the control that separates "any prefill" from "this framing".
+- `../slurm/prefix_framing.sbatch` — 3 arms × 5 seeds = 15 runs, one job, one GPU, sequential. The arms
+  are compared to each other, so an array would confound arm with hardware.
+
+**The arm IS the template, so the template's sha256 is written into each run's `provenance.json` and the
+resume gate refuses to reuse a run whose scaffold hash differs.** Without that, a resubmission under a
+changed scaffold would silently collapse the experiment into three copies of one arm and no line in any
+log would say so. `dry_run_check.py` gained `c_prefix_scaffolds` for the same failure class: three
+scaffolds must exist, carry `{instruction}` and `Assistant:`, and hash to three distinct values.
+
+Both prefix strings are truncations of openers actually observed in the recorded runs — `Here it is:` at
+Starling (`i00679`), `I've reviewed your request` at Phoenix (`i00129`) — and both are artefact-agnostic,
+because the 54 behaviours request articles, posts, letters and edits alike.
