@@ -3,9 +3,9 @@
 - **Last updated:** `2026-09-08`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
-- **Current task:** `S1-05C`
-- **Task status:** `READY`
-- **Next checkpoint:** Design a benign control that separates a delivery framing from a compliance change. `S1-PREFIX` is fully staged and BLOCKED on `IN-007`.
+- **Current task:** `S1-PREFIX`
+- **Task status:** `IN_PROGRESS`
+- **Next checkpoint:** Three Phoenix arms under forced prefixes; verdict SUFFICIENT / NOT SUFFICIENT / PARTIAL on the delivery framing.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-08`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
@@ -47,7 +47,7 @@ alternative, not a retired one.
 
 ## Critical path
 
-1. `S1-PREFIX` — is the delivery framing proximally sufficient to move Phoenix? **BLOCKED on `OPS-001` / `IN-007`; fully staged.**
+1. `S1-PREFIX` — is the delivery framing proximally sufficient to move Phoenix? **Current; IN_PROGRESS.**
 3. `S1-05C` — benign control on constraints orthogonal to document format. **READY.**
 3. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
 5. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
@@ -90,11 +90,14 @@ top of `BACKLOG.md`.
 - `IN-002` is closed: the 25-item spot-check is done and came back NOT EVALUABLE on stance (n=7 < 8). The Claude anchor is never ahead of GPT under any exclusion treatment, so no reading supports it.
 - `IN-006` blocks `S1-06` and therefore all of Stage 2: how to close a 49-behaviour shortfall.
 - `IN-003` is optional and non-gating: Gemma access for the StrongREJECT sidecar.
-- **A preflight coupling to resolve properly, not by weakening a check.** `S1-05C` needs generations but
-  no judge, yet `scripts/dry_run_check.py` gates every submission on `judge cached (offline)`, so
-  `IN-007` currently blocks judge-free jobs too. The fix is to make that check conditional on a job
-  declaring that it judges — a scoping change with its own review, never a relaxed threshold.
-- **`IN-007` is the hard blocker as of 2026-09-09 00:30 EDT.** I destroyed the workspace HF cache with an
+- **A preflight coupling worth fixing when it next bites, not now.** `dry_run_check.py` gates every
+  submission on `judge cached (offline)`, so a generation-only job is blocked whenever the judge is
+  missing. It is moot while the judge is present. The fix, if it recurs, is to make the check
+  conditional on a job declaring that it judges — never a relaxed threshold.
+- **`IN-007` is RESOLVED (2026-09-09 09:39).** The judge was restored from the safety-decay project at the
+  identical snapshot `cbba4823`, verified against 1,240 job-log references, so recorded and future
+  WildGuard numbers remain comparable. Preflight `DRY RUN OK`. No credential was needed or handled.
+  Recovery history: I destroyed the workspace HF cache with an
   `rsync --delete`. Recovery is complete and verified: 270GB restored across nine revisions with **zero tag
   drift**, cooldown shards re-hashed 12/12, venv and seed patch restored, preflight green on every check but
   one. **`allenai/wildguard` is gated, returns 401 from Torch, and no token is on the machine**, so every

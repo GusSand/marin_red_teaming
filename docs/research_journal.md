@@ -1619,3 +1619,25 @@ fix the prompt or the judge rather than relabel.
 **Consequence for recorded results: none.** Every Stage 1 number uses `claude_fable_pass2.jsonl`, clean
 at source and post-parse. The 08-29 judge-selection verdict is untouched. What is new is that the primary
 labels have been audited against the locked vocabulary instead of assumed to conform.
+
+---
+
+## 2026-09-09 · IN-007 resolved without a credential; S1-PREFIX unblocked
+
+WildGuard was restored by copying `/scratch/gs157/safety-decay/hf_cache/hub/models--allenai--wildguard`
+into this workspace's cache — the same route it arrived by on 2026-08-27, which
+`logs/wildguard_copy.log` recorded as nothing but `COPY_DONE`. Copy, not move; the source project is
+untouched at 14G. No token was requested or handled.
+
+**The check that mattered, and it is not the licence.** The restored copy is snapshot
+`cbba4823f3e8020e5a74a5e29bf85072def6f2ff`. That SHA appears **1,240 times** across this project's job
+logs as the judge every recorded result was produced with. Same weights, so recorded and future
+WildGuard numbers stay comparable. A *different* WildGuard revision would have passed the preflight,
+loaded cleanly, and silently made every new number non-comparable with the study — the judge-side
+version of the tag-drift problem, and the reason `logs/` surviving the incident mattered twice.
+
+Preflight is `DRY RUN OK` on all twelve checks. `S1-PREFIX` submits with its frozen design unchanged.
+
+**Recovery closed.** Total damage from the `rsync --delete`: about 12 hours of blocked GPU work,
+270GB re-downloaded, and one 14G copy. No evidence lost, no recorded result invalidated, no number
+changed.
