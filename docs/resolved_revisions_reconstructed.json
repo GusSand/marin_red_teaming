@@ -1,0 +1,18 @@
+{
+  "_note": "Tag -> commit SHA, RECONSTRUCTED 2026-09-09 from surviving Slurm job logs after the rsync --delete incident destroyed docs/resolved_revisions.json and the workspace HF cache. Each SHA is the snapshot path safety-eval was invoked with, taken from the '--model_name_or_path .../snapshots/<sha> --hf_revision <tag>' line of the run's own log. These ARE the weights every recorded result was produced on. Any re-download must resolve to these SHAs; a mismatch is tag drift and invalidates comparability with the recorded runs.",
+  "_source": "/scratch/gs157/marin-red-teaming/logs/*.log",
+  "_cross_check": "the three cooldown SHAs match the values hardcoded in slurm/cooldown_localization.sbatch, which were frozen independently in the S1-CKPT preregistration",
+  "tags": {
+    "kestrel": "56ef403a3636884c171b662fb2ff9f1dfe1c51b9",
+    "ocelot": "e4d18c1d4b8c1f3ec9b9b6fd3e1a7472505abd6f",
+    "jellyfish": "c92465e482614bd2b3d44c7d3aebc57ba50de53a",
+    "phoenix": "5837472e13444e91e49fccc1cc010bb48138760a",
+    "starling": "66279e715ef6881b972c86c31596cb1e57354f99",
+    "deeper-starling": "d57287aa62aeb5d09881958862c860554d19941d"
+  },
+  "cooldown_revisions": {
+    "cooldown-1340000": "de183cad08bae55f8a07d346442efe20469d2144",
+    "cooldown-1360000": "83e7d73c64bbec3be13b6f62650e9495b3590c12",
+    "cooldown-1380000": "34b1c23173e12f88f0a1999c57f68d5b8d7f7adb"
+  }
+}

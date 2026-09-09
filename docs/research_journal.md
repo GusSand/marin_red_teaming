@@ -1440,3 +1440,51 @@ in an ephemeral session scratchpad. The twins job wrote to `$WORK/runs/`, inside
 every harmbench run copies its `all.json` out to the labels directory. **Any job that produces raw model
 outputs must preserve them outside the workspace**, the way `run_row.sh` already does. `benign_twins_v2.sbatch`
 did not, and that is a design gap to fix before it runs again.
+
+### Correction to the incident entry, same night, found while checking tag drift
+
+Two things in the table above were wrong or incomplete. Recorded here rather than edited into the
+paragraph, so the first assessment stays visible.
+
+**1. Per-run provenance was lost too, and I did not list it.** Every Torch-era run directory under
+`repro-olmo3-safety/runs/` — traj2, traj4, determinism, seedcheck, ifeval, cooldown localization — held
+`provenance.json`, `metrics.json` and `command.txt` recording hostname, GPU UUID, driver, engine flags,
+seed, model SHA and harness SHA. Those directories were created on Torch and never existed locally, so
+`--delete` removed them. **The labels directory preserves only `all.json`.** That is the layer this
+project calls load-bearing: "a reproducibility claim that cannot name the GPU it ran on is not checkable."
+
+**Partly reconstructible, not fully.** `logs/` survived (209 files, excluded from the sync) and carries the
+GPU model, host, job id, heartbeat utilization and the full safety-eval command line per run. Committed
+analysis outputs carry some of the rest (`ifeval_summary.json` keeps `n_empty`, `n_fake_next_turn`, `gpu`
+and `ifeval_sha` per tag). What is gone as a machine-readable per-run artifact is the GPU **UUID** and the
+consolidated provenance object. Comparisons already drawn and published are unaffected — they were
+verified against those files when they were made — but a future auditor now has to reconstruct from logs.
+
+**2. `docs/resolved_revisions.json` was never committed**, so the tag-drift baseline the whole prefetch
+design exists to provide was destroyed with the cache. **Recovered.** Every run log records the exact
+snapshot path safety-eval was invoked with, so the tag→SHA map is reconstructible from the logs, and it is
+now committed as `docs/resolved_revisions_reconstructed.json`:
+
+| tag | SHA |
+|---|---|
+| kestrel | `56ef403a…` |
+| ocelot | `e4d18c1d…` |
+| jellyfish | `c92465e4…` |
+| phoenix | `5837472e…` |
+| starling | `66279e71…` |
+| deeper-starling | `d57287aa…` |
+
+Independent cross-check: the three cooldown SHAs extracted the same way (`de183cad`, `83e7d73c`,
+`34b1c231`) match the values frozen independently in the `S1-CKPT` preregistration and hardcoded in
+`slurm/cooldown_localization.sbatch`. Two of the re-downloaded tags have already resolved to the recorded
+SHAs (kestrel, ocelot), so no drift so far.
+
+`scripts/check_tag_drift.py` now compares the cache against that baseline and **fails loudly on a
+mismatch**. It must pass before any run is compared to a recorded result. A tag that moved on the Hub
+would otherwise produce different weights while every provenance file still looked identical — the exact
+failure the original prefetch script was written to prevent, and which I re-enabled by losing its output.
+
+**The general lesson, which is not "be careful with rsync".** The workspace held three classes of thing:
+inputs recreatable from public sources, outputs preserved outside it, and **a provenance layer that lived
+only there**. The first two survived by design. The third had no copy anywhere, and it was the layer whose
+whole purpose is to survive. Provenance belongs in the repo, next to the result it describes.
