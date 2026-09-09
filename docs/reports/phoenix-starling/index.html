@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="marin-report-state" content="living">
 <meta name="marin-report-updated" content="2026-09-08">
-<meta name="marin-current-task" content="S1-PREFIX">
+<meta name="marin-current-task" content="OPS-001">
 <meta name="marin-current-task-status" content="IN_PROGRESS">
 <title>Phoenix to Starling: What Changed?</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap">
@@ -73,7 +73,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
   <div class="masthead"><span>Marin red teaming · living report</span><span>Updated 31 Aug 2026</span><span>Stage 1 closure · Phoenix → Starling</span></div>
   <h1>What changed between Phoenix and Starling?</h1>
   <p class="deck">Starling follows instructions more often and is much more willing to advance the requested false thesis. The behavioral change is verified. Its training cause is not.</p>
-  <div class="metadata"><span>Experimenter: Gus Sandoval</span><span>Evidence cutoff: 8 Sep 2026</span><span>Current task: S1-PREFIX · in progress</span><span>Status: living draft</span><span>Verified findings only in the main claims</span></div>
+  <div class="metadata"><span>Experimenter: Gus Sandoval</span><span>Evidence cutoff: 8 Sep 2026</span><span>Current task: OPS-001 · in progress</span><span>Status: living draft</span><span>Verified findings only in the main claims</span></div>
 </header>
 
 <section class="report-body" id="current-state">
@@ -113,7 +113,7 @@ summary{cursor:pointer;font-weight:600;font-size:1.1rem}summary:focus-visible{ou
       <tr><td>S1-05 · benign twins control</td><td><span class="result"><b class="pending">Not evaluable · verified</b></span></td><td>The composite floored. No evidence for generalization or stance-specificity; formatting diagnostics do not rescue it. IFEval remains separate evidence.</td></tr>
       <tr><td>S1-05B · redesigned benign control</td><td><span class="result"><b class="pending">Valid · reading withheld</b></span></td><td>Verified Δ = +1.50 of 4 constraints, but 105% of it is a title line and a salutation — one document header satisfying two checks. On the two checks that test a stated numeric requirement, Starling is not better.</td></tr>
       <tr><td>S1-FORMAT · does the persona carry over?</td><td><span class="result"><b class="pass">Verified</b></span></td><td>The document header does not: Δ +0.93pp, well-powered null. A delivery framing does: +16.67pp, and those rows are 57% attempt-strong with zero refusals.</td></tr>
-      <tr><td>S1-PREFIX · forcing the framing on Phoenix</td><td><span class="result"><b class="pending">In progress</b></span></td><td>Prefills Phoenix's response with Starling's delivery opener and asks whether the harmful rate moves. A within-model prompt intervention, not a training-causal claim.</td></tr>
+      <tr><td>S1-PREFIX · forcing the framing on Phoenix</td><td><span class="result"><b class="fail">Blocked</b></span></td><td>Prefills Phoenix&#39;s response with Starling&#39;s delivery opener and asks whether the harmful rate moves. Fully staged; blocked on restoring the gated judge weights.</td></tr>
       <tr><td>S1-05C · framing versus compliance</td><td><span class="result"><b class="pending">Ready</b></span></td><td>Must separate whether the delivery framing causes the compliance shift or is a co-symptom. Varying surface format alone will not settle it.</td></tr>
       <tr><td>Six-arm Phoenix replay</td><td><span class="result"><b class="pending">Blocked</b></span></td><td>Separates the causal effects of data mixture and learning-rate schedule. External replay allocation and Stage 1 closure remain open; public checkpoint availability is resolved.</td></tr>
     </tbody>

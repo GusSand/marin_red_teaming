@@ -3,9 +3,9 @@
 - **Last updated:** `2026-09-08`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
-- **Current task:** `S1-PREFIX`
+- **Current task:** `OPS-001`
 - **Task status:** `IN_PROGRESS`
-- **Next checkpoint:** Three Phoenix arms under forced prefixes; verdict SUFFICIENT / NOT SUFFICIENT / PARTIAL on the delivery framing.
+- **Next checkpoint:** Finish restoring the Torch workspace. Everything but the gated WildGuard judge is recovered or in flight; that needs `IN-007`.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-08`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
@@ -47,11 +47,12 @@ alternative, not a retired one.
 
 ## Critical path
 
-1. `S1-PREFIX` — is the delivery framing proximally sufficient to move Phoenix? **Current; IN_PROGRESS.**
-2. `S1-05C` — benign control on constraints orthogonal to document format. **READY.**
+1. `OPS-001` — recover the Torch workspace. **Current; IN_PROGRESS.**
+2. `S1-PREFIX` — is the delivery framing proximally sufficient to move Phoenix? **BLOCKED on `OPS-001` / `IN-007`; fully staged.**
+3. `S1-05C` — benign control on constraints orthogonal to document format. **READY.**
 3. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
-4. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
-5. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
+5. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
+6. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
 
 `S1-05` is closed and verified as NOT EVALUABLE. `S1-05B` is closed and verified with a valid primary — Δ = +1.5000 constraints, IF-CONSISTENT under its frozen rule — but **the reading is withheld**: 104.9% of that delta is two checks a single `Title:` / `Dear <audience>,` header satisfies together, and the two checks testing a stated numeric requirement show no Starling advantage. It measures a formatting persona, not instruction-following. The evaluable-benign-control gate stays open. IFEval remains separate evidence. `S1-3D` and `S1-STANCE-GAP` are closed.
 
@@ -89,6 +90,10 @@ top of `BACKLOG.md`.
 - `IN-002` is closed: the 25-item spot-check is done and came back NOT EVALUABLE on stance (n=7 < 8). The Claude anchor is never ahead of GPT under any exclusion treatment, so no reading supports it.
 - `IN-006` blocks `S1-06` and therefore all of Stage 2: how to close a 49-behaviour shortfall.
 - `IN-003` is optional and non-gating: Gemma access for the StrongREJECT sidecar.
+- **`IN-007` is the hard blocker as of 2026-09-08 23:50 EDT.** I destroyed the workspace HF cache with an
+  `rsync --delete`. safety-eval, the interpreter, the venv and the twins v2 raw generations are recovered;
+  the public marin weights are re-downloading. **`allenai/wildguard` is gated, returns 401 from Torch, and
+  no token is on the machine**, so every judged run is blocked. Full account in the journal.
 
 ## Parked until the critical path lands
 

@@ -209,7 +209,14 @@ Rules that follow:
 ### Never-dos on Torch
 
 - No compute on login nodes. sbatch only, and never interactive `srun`: it blocks and hangs you.
-- Never edit files directly on Torch. **This repo is the source of truth**; rsync up.
+- Never edit files directly on Torch. **This repo is the source of truth**; sync up with
+  `bash scripts/sync_to_torch.sh` and nothing else.
+- **Never pass `--delete` to a workspace sync.** On 2026-09-08 an ad-hoc
+  `rsync -az --delete ... ./ torch:$WORK/` destroyed every workspace directory the repo does not
+  track: `hf_cache/hub/` (~100GB of weights, including the **gated** WildGuard judge, which cannot
+  be re-downloaded without a token), `pythons/` (the interpreter the venv symlinks to),
+  the `safety-eval` working tree, and `runs/twins_v2/`. Stale remote files are harmless. Deleted
+  weights are hours of download and, for a gated repo, a hard block on a human.
 - Do not attempt ssh auth yourself. The Duo flow is Gus-only.
 - Large transfers go through `torch-dtn`, not the login node.
 - Never delete checkpoints, datasets, or logs. Never change access/sharing.
