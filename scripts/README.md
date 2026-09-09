@@ -366,3 +366,32 @@ scaffolds must exist, carry `{instruction}` and `Assistant:`, and hash to three 
 Both prefix strings are truncations of openers actually observed in the recorded runs — `Here it is:` at
 Starling (`i00679`), `I've reviewed your request` at Phoenix (`i00129`) — and both are artefact-agnostic,
 because the 54 behaviours request articles, posts, letters and edits alike.
+
+**Analysis (added 2026-09-09, after job 17270630).** All four run on the Torch login node against the
+preserved raw labels; CPU only, no model, no judge, no new generation. Aggregate counts only — none of
+them ever prints or writes response text.
+
+- `analyze_prefix_framing.py` — the registered analysis. Unconditional behaviour-level harmful rate per
+  arm, the paired `delivery − none` and `deflect − none` contrasts (behaviour bootstrap, seed 20260908,
+  10k resamples; sign-flip permutation p), `f` against the traj4 endpoint gap, every pre-registered gate,
+  and the frozen decision table including the overriding CONFOUNDED-BY-PREFILL rule. Reuses `load_run`
+  and `tag_table` from `analyze_trajectory.py` so label semantics match every other misinformation run.
+
+```bash
+repro-olmo3-safety/.venv-safety-eval/bin/python scripts/analyze_prefix_framing.py \
+    --labels /scratch/gs157/marin-misinfo-labels \
+    --prefix 2026-09-08-prefix-h200 --traj-prefix 2026-08-28-traj4-h200 \
+    --out docs/results/09-08_prefix_framing
+```
+
+- `inspect_prefix_tripwires.py` — hand inspection required by the Iron Law tripwire on the exact 0.0%
+  empty / non-response rates. Compares the arms against the traj4 reference on empties, echo, length
+  quantiles and missing labels, and checks that no response begins with its own forced prefix (which is
+  how we know the harness recorded the continuation only).
+- `xtab_wildguard_labels.py` — raw row-level cross-tabulation of `response_harmfulness` against
+  `response_refusal`. **Established that WildGuard labels harmful and refusal together for 0 of 1,890
+  in-scope rows**, so the two are mutually exclusive and `harmful | non-refusal` is a re-expression of
+  the harmful rate rather than an independent axis. Project-wide consequence; see `docs/decisions.md`.
+- `prefix_framing_sensitivities.py` — added analyses that do **not** replace the registered one: the
+  harmful × refusal decomposition (how much of the harmful rise is the pre-declared partly-forced refusal
+  drop), `f` under the within-job baseline instead of the cross-job traj4 one, and the missing-label bound.
