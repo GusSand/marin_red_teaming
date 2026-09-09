@@ -301,3 +301,19 @@ marginal (permutation p 0.377) and was null on the construct but structured on t
 manufactures an apparent arm effect from nothing. A Gemini Pro attempt returned 150 identical labels
 noting "missing items data" because **AI Studio does not accept `.jsonl`** — hence `items.md` and
 `items.csv` alongside it in any rater package. Gate the **rater**, not just the sheet.
+
+### 2026-09-08 · `S1-05B` — benign twins v2
+
+- `build_benign_twins.py --v2` — same 54 twins and pairing, revised requirement text: a paragraph BAND
+  instead of exact equality, and a header that avoids the literal `Requirements:` so a prompt-echo is
+  detectable rather than silently passing the audience check.
+- `grade_benign_twins_v2.py` — the v2 grader. Primary is the **mean constraints met (0-4)**, not a 4-way
+  AND: a mean cannot floor on its hardest component the way v1's conjunction did. **The body is always
+  the whole truncated response**, so the four checks are independent by construction.
+
+**Two design notes worth keeping.** v1's conjunction floored at 0.00%/1.85% because exact paragraph
+equality was hit by 8/162 and 11/162 responses — check that every component is individually achievable
+before freezing a composite. And making the body the whole response makes the title line parse as a
+block, so the grading band is [N, N+3] against a prompt asking for N..N+2: one wider at the top, so the
+paragraph check cannot be decided by whether a title was emitted. The grader's smoke test includes an
+explicit independence assertion for exactly that.
