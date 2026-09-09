@@ -3,9 +3,9 @@
 - **Last updated:** `2026-09-08`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
-- **Current task:** `S1-05C`
-- **Task status:** `READY`
-- **Next checkpoint:** Freeze a benign-control constraint set whose components are not jointly satisfiable by one emitted document header.
+- **Current task:** `S1-FORMAT`
+- **Task status:** `IN_PROGRESS`
+- **Next checkpoint:** Measure document-open prevalence in the 1,080 labelled misinformation responses; verdict CARRIES / DOES NOT CARRY / PARTIAL.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-08`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
@@ -44,10 +44,11 @@ without any change in instruction-following. That confound is now measured, not 
 
 ## Critical path
 
-1. `S1-05C` — benign control on constraints orthogonal to document format. **Current; READY.**
-2. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
-3. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
-4. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
+1. `S1-FORMAT` — does the document persona appear in the misinformation set? **Current; IN_PROGRESS.**
+2. `S1-05C` — benign control on constraints orthogonal to document format. **READY; design informed by `S1-FORMAT`.**
+3. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
+4. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
+5. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
 
 `S1-05` is closed and verified as NOT EVALUABLE. `S1-05B` is closed and verified with a valid primary — Δ = +1.5000 constraints, IF-CONSISTENT under its frozen rule — but **the reading is withheld**: 104.9% of that delta is two checks a single `Title:` / `Dear <audience>,` header satisfies together, and the two checks testing a stated numeric requirement show no Starling advantage. It measures a formatting persona, not instruction-following. The evaluable-benign-control gate stays open. IFEval remains separate evidence. `S1-3D` and `S1-STANCE-GAP` are closed.
 
@@ -106,6 +107,7 @@ without updating this file and the active backlog table in the same commit.
 | Cooldown localization (EARLY) | `docs/experiments/09-08_cooldown_localization.md`; `outputs/cooldown_localization.json` |
 | Benign-twins control v1 (not evaluable) | `docs/experiments/09-07_benign-twins_control.md`; `docs/results/09-07_benign_twins/` |
 | Benign-twins control v2 (valid primary, reading withheld) | `docs/experiments/09-08_benign-twins_v2.md`; `docs/results/09-08_benign_twins_v2/` |
+| Format carry-over test | `docs/experiments/09-08_format-carryover.md` |
 | Restatement artefact, quantified | `docs/experiments/09-04_stance-gap_restatement-prevalence.md`; `docs/results/09-04_stance_gap/` |
 | Three-rater sensitivity, not resolvable | `docs/experiments/09-04_3f-adj_third-rater-sensitivity.md`; `docs/results/09-07_3f_adj/` |
 | Endorsement subtype split | `docs/experiments/09-04_phoenix-starling_concessionary-endorsement.md`; `docs/results/09-04_concessionary/` |

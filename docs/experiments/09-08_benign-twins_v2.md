@@ -264,7 +264,22 @@ stated numeric requirement show no Starling advantage. A model that switched fro
 document output would produce this result and the +28.5pp attempt-strong shift together, with no change in
 instruction-following — which is exactly the confound the twins exist to rule out.
 
-So `S1-05B` yields a **valid measurement of a formatting persona difference** and **no resolution of the
-stance-versus-general question**. The Stage 1 exit gate for an evaluable benign control stays open. The
+**Which half of the frozen branch survives.** The IF-consistent row bundles two claims: *not
+stance-specific*, and *general instruction-following*. They separate here.
+
+| claim | supported? | why |
+|---|---|---|
+| Something general differs on benign topics | **yes** | Δ +1.50, 54/54 behaviours, CI far from 0. Benign output is not flat. |
+| That general difference is instruction-following | **no** | The two checks testing a stated numeric requirement show no Starling advantage: paragraphs −0.0741, length +0.0000. |
+| That general difference is what moved the misinformation set | **untested** | This experiment never looks at the misinformation responses. |
+
+The pre-registered stance-specific branch — "benign task success is flat" — is **not** what the data show,
+so `S1-05B` does argue against a purely stance-specific account. What it cannot supply is the mechanism,
+and the mechanism matters: a document-persona shift and an instruction-following improvement have
+different Stage 2 endpoints. A persona shift also does not obviously explain the 12.2pp **refusal** drop,
+which is a stance behaviour rather than a formatting one.
+
+So `S1-05B` yields a **valid measurement of a formatting persona difference**, **evidence against a purely
+stance-specific account**, and **no resolution of the mechanism**. The Stage 1 exit gate for an evaluable benign control stays open. The
 follow-on is `S1-05C`: a constraint set whose components are not jointly satisfiable by one emitted header,
 with a pre-registered inter-constraint correlation gate.
