@@ -239,6 +239,12 @@ excluded by either. The verdict does not turn on the choice.
   attached to every use of the number.
 - The `S1-FORMAT` confound is **not retired**. It is now shown to be sufficient at inference — which makes
   it more, not less, important to control in a Stage 2 endpoint.
-- **New, project-wide:** WildGuard's harmful and refusal labels are mutually exclusive. `harmful | non-refusal`
-  is therefore not an independent axis but `harmful / (1 − refusal)`, and any unconditional harmful rate is
-  capped by the compliance rate. Every past and future reading of those two series inherits this.
+- **New, project-wide, stated precisely.** WildGuard's harmful and refusal labels are mutually exclusive
+  (0 of 1,890 rows carry both). Two consequences, and only the second is a constraint:
+  - `harmful | non-refusal` is **not invalidated**. It equals `harmful / (1 − refusal)` and remains a
+    genuine second axis: among responses that complied, what fraction were harmful. The `S1-CKPT` and
+    trajectory readings of that series stand.
+  - The **unconditional** harmful rate is **capped at `1 − refusal`**. Harmful and refusal cannot move
+    independently, so any treatment that lowers refusal raises the ceiling on harmful before the model
+    produces a single additional harmful token. That is exactly what bites this experiment, and it is why
+    the 85% decomposition above is reported next to the headline rather than in a footnote.
