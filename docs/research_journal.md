@@ -1488,3 +1488,23 @@ failure the original prefetch script was written to prevent, and which I re-enab
 inputs recreatable from public sources, outputs preserved outside it, and **a provenance layer that lived
 only there**. The first two survived by design. The third had no copy anywhere, and it was the layer whose
 whole purpose is to survive. Provenance belongs in the repo, next to the result it describes.
+
+### Recovery status, 00:15 EDT
+
+**No tag drift.** All six marin-8b-base tags re-downloaded (180GB) and every one resolves to exactly the
+SHA the recorded results were produced on, checked against the log-reconstructed baseline:
+
+| tag | recorded runs | re-download |
+|---|---|---|
+| kestrel | `56ef403a3636` | `56ef403a3636` |
+| ocelot | `e4d18c1d4b8c` | `e4d18c1d4b8c` |
+| jellyfish | `c92465e48261` | `c92465e48261` |
+| phoenix | `5837472e1344` | `5837472e1344` |
+| starling | `66279e715ef6` | `66279e715ef6` |
+| deeper-starling | `d57287aa62ae` | `d57287aa62ae` |
+
+`docs/resolved_revisions.json` is now **committed**, which it never was before. The three cooldown
+revisions are downloading; they are addressed by SHA and each shard is hashed against its recorded LFS
+object id before any job may use them, so that path was already protected.
+
+Remaining after that: **WildGuard only** (`IN-007`).
