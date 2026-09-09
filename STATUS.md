@@ -3,9 +3,9 @@
 - **Last updated:** `2026-09-08`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
-- **Current task:** `S1-FORMAT`
-- **Task status:** `IN_PROGRESS`
-- **Next checkpoint:** Measure document-open prevalence in the 1,080 labelled misinformation responses; verdict CARRIES / DOES NOT CARRY / PARTIAL.
+- **Current task:** `S1-05C`
+- **Task status:** `READY`
+- **Next checkpoint:** Freeze a design that separates a delivery framing from a compliance change. Varying surface format alone will not do it.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-08`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
@@ -37,18 +37,20 @@ WildGuard's harmful label takes +0.404 unique out-of-fold AUC from stance and +0
 quality, whose interval spans zero — so a WildGuard harmful rate here reads closer to a stance rate than
 a harm-severity rate. The `S1-3F` audit will determine how much of the endorsement increase is
 unqualified versus concessionary or balanced-sounding. **The benign control still does not separate
-stance-specific from general compliance.** Starling emits a document header where Phoenix emits a chat
-preamble — a persona shift that would produce both the benign gains and the +28.5pp attempt-strong shift
-without any change in instruction-following. That confound is now measured, not hypothetical, and
-`S1-SYNTH` must carry it.
+stance-specific from general compliance, and the confound has a name now.** The document-header
+explanation is excluded on the misinformation set (Δ +0.93pp [−2.22, +3.70], well powered, MDE 4.34pp).
+What transfers instead is a **delivery framing**: Starling opens with a handoff into the artifact
+16.67pp more often (p < 1e-4), and those rows are 57% attempt-strong with zero refusals, against Phoenix's
+`I've`-style deflections at 57% not-attempting. **A single deliver-the-requested-artifact disposition
+would produce both the benign gains and the +28.5pp shift.** `S1-SYNTH` must carry that as a live
+alternative, not a retired one.
 
 ## Critical path
 
-1. `S1-FORMAT` — does the document persona appear in the misinformation set? **Current; IN_PROGRESS.**
-2. `S1-05C` — benign control on constraints orthogonal to document format. **READY; design informed by `S1-FORMAT`.**
-3. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
-4. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
-5. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
+1. `S1-05C` — separate the delivery framing from the compliance change. **Current; READY.**
+2. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
+3. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
+4. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
 
 `S1-05` is closed and verified as NOT EVALUABLE. `S1-05B` is closed and verified with a valid primary — Δ = +1.5000 constraints, IF-CONSISTENT under its frozen rule — but **the reading is withheld**: 104.9% of that delta is two checks a single `Title:` / `Dear <audience>,` header satisfies together, and the two checks testing a stated numeric requirement show no Starling advantage. It measures a formatting persona, not instruction-following. The evaluable-benign-control gate stays open. IFEval remains separate evidence. `S1-3D` and `S1-STANCE-GAP` are closed.
 
@@ -66,7 +68,7 @@ top of `BACKLOG.md`.
 - [x] WildGuard-versus-rubric analysis completed and verified (`S1-3D`); verdict SUBSTANCE-LED.
 - [x] Restatement-artefact prevalence quantified: NON-DIFFERENTIAL, ≈−2.5pp exposure on +28.5pp, zero on the corrective drop (`S1-STANCE-GAP`).
 - [x] Concessionary-endorsement audit completed with a second-rater check; verdict rater-dependent (`S1-3F`).
-- [ ] Evaluable benign control: `S1-05` NOT EVALUABLE (floored); `S1-05B` evaluable but not discriminating — its delta is carried by a document-header persona that would also explain the misinformation shift. `S1-05C` must use constraints orthogonal to document format, with a pre-registered inter-constraint correlation gate.
+- [ ] Evaluable benign control: `S1-05` NOT EVALUABLE (floored); `S1-05B` evaluable but not discriminating. `S1-FORMAT` excluded the document-header explanation and located a delivery-framing one instead. `S1-05C` must separate cause from co-symptom; varying surface format alone will not.
 - [ ] Expanded ≥150-behavior set selected, deduplicated, hashed, and baselined (`S1-06`).
 - [x] Human spot-check of the rater completed (`IN-002`); NOT EVALUABLE on stance, no support for the anchor.
 - [ ] Stage 1 synthesis states what is established, what remains uncertain, and the frozen Stage 2 endpoints.
@@ -107,7 +109,7 @@ without updating this file and the active backlog table in the same commit.
 | Cooldown localization (EARLY) | `docs/experiments/09-08_cooldown_localization.md`; `outputs/cooldown_localization.json` |
 | Benign-twins control v1 (not evaluable) | `docs/experiments/09-07_benign-twins_control.md`; `docs/results/09-07_benign_twins/` |
 | Benign-twins control v2 (valid primary, reading withheld) | `docs/experiments/09-08_benign-twins_v2.md`; `docs/results/09-08_benign_twins_v2/` |
-| Format carry-over test | `docs/experiments/09-08_format-carryover.md` |
+| Format carry-over: header no, framing yes | `docs/experiments/09-08_format-carryover.md`; `docs/results/09-08_format_carryover/` |
 | Restatement artefact, quantified | `docs/experiments/09-04_stance-gap_restatement-prevalence.md`; `docs/results/09-04_stance_gap/` |
 | Three-rater sensitivity, not resolvable | `docs/experiments/09-04_3f-adj_third-rater-sensitivity.md`; `docs/results/09-07_3f_adj/` |
 | Endorsement subtype split | `docs/experiments/09-04_phoenix-starling_concessionary-endorsement.md`; `docs/results/09-04_concessionary/` |

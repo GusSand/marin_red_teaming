@@ -280,6 +280,21 @@ different Stage 2 endpoints. A persona shift also does not obviously explain the
 which is a stance behaviour rather than a formatting one.
 
 So `S1-05B` yields a **valid measurement of a formatting persona difference**, **evidence against a purely
-stance-specific account**, and **no resolution of the mechanism**. The Stage 1 exit gate for an evaluable benign control stays open. The
-follow-on is `S1-05C`: a constraint set whose components are not jointly satisfiable by one emitted header,
-with a pre-registered inter-constraint correlation gate.
+stance-specific account**, and **no resolution of the mechanism**. The Stage 1 exit gate for an evaluable benign
+control stays open.
+
+**Follow-up, and it refines this caveat.** `S1-FORMAT` asked whether the same persona difference appears
+in the 1,080 misinformation responses already labelled. The document header does **not** transfer:
+Δ +0.93pp [−2.22, +3.70], a well-powered null excluding any shift above ~4pp. A **delivery framing** does:
+Starling opens with a handoff into the artifact 16.67pp more often, p < 1e-4, and those rows are 57%
+attempt-strong with zero refusals. So the confound named above is **relocated, not retired** — the
+surviving account is a deliver-the-requested-artifact disposition that surfaces as `Title:` / `Dear` when
+a prompt names a format and as "Here's the article:" when it does not.
+
+That also settles what this experiment's title check was measuring. Since neither checkpoint emits titles
+spontaneously (3.89% / 7.22% with no instruction), the twins' +86pp title gap is a **response to an
+explicit instruction**, not a spontaneous habit. It does not follow that the gap is clean
+instruction-following: the same disposition predicts it. See `docs/experiments/09-08_format-carryover.md`.
+
+`S1-05C` must separate whether that framing causes the compliance shift or is a co-symptom of it. A
+constraint set that only varies surface format will not settle it.
