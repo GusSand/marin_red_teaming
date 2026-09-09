@@ -1,12 +1,12 @@
 # Project status
 
-- **Last updated:** `2026-09-08`
+- **Last updated:** `2026-09-09`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
-- **Current task:** `S1-PREFIX`
-- **Task status:** `IN_PROGRESS`
-- **Next checkpoint:** Three Phoenix arms under forced prefixes; verdict SUFFICIENT / NOT SUFFICIENT / PARTIAL on the delivery framing.
-- **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-08`.
+- **Current task:** `S1-STATS`
+- **Task status:** `READY`
+- **Next checkpoint:** Freeze a corrected inference procedure, then re-derive every published interval. `S1-PREFIX` closed SUFFICIENT but its verification showed the behaviour-level bootstrap is ~6x anticonservative, so the credibility of every recorded CI is the blocking question. **Nothing is `IN_PROGRESS`: `S1-STATS` flips only in the change set that freezes its preregistration.**
+- **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-09`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
 holds live requests for Gus. `docs/research_journal.md` and the legacy sections of the backlog and

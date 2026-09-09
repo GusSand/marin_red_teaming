@@ -395,3 +395,19 @@ repro-olmo3-safety/.venv-safety-eval/bin/python scripts/analyze_prefix_framing.p
 - `prefix_framing_sensitivities.py` — added analyses that do **not** replace the registered one: the
   harmful × refusal decomposition (how much of the harmful rise is the pre-declared partly-forced refusal
   drop), `f` under the within-job baseline instead of the cross-job traj4 one, and the missing-label bound.
+
+### 2026-09-09 · `S1-STATS` — is the inference procedure calibrated?
+
+- `calibrate_behavior_bootstrap.py` — null calibration for the behaviour-level bootstrap this project uses
+  in every contrast. Splits one tag's seeds into all disjoint half-vs-half pairs, where the true difference
+  is **zero by construction**, and counts how often the frozen procedure rejects. Also reports per-seed
+  instability and seed-level (t) intervals for the `S1-PREFIX` contrasts.
+
+```bash
+repro-olmo3-safety/.venv-safety-eval/bin/python scripts/calibrate_behavior_bootstrap.py \
+    --labels /scratch/gs157/marin-misinfo-labels
+```
+
+Result on phoenix's ten seeds: the CI excludes 0 in **27.8%** of the 126 disjoint 5-vs-5 splits (refusal
+34.9%) against a nominal 5%. Published intervals are roughly half their proper width. See
+`docs/decisions.md` 2026-09-09.
