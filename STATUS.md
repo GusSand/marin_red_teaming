@@ -3,9 +3,9 @@
 - **Last updated:** `2026-09-08`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
-- **Current task:** `OPS-001`
+- **Current task:** `S1-JUDGE-VOCAB`
 - **Task status:** `IN_PROGRESS`
-- **Next checkpoint:** Finish restoring the Torch workspace. Everything but the gated WildGuard judge is recovered or in flight; that needs `IN-007`.
+- **Next checkpoint:** Audit every local judge output for out-of-vocabulary label values. The only unblocked work while `IN-007` holds.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-08`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
@@ -47,7 +47,7 @@ alternative, not a retired one.
 
 ## Critical path
 
-1. `OPS-001` — recover the Torch workspace. **Current; IN_PROGRESS.**
+1. `S1-JUDGE-VOCAB` — audit the judge outputs for out-of-vocabulary labels. **Current; IN_PROGRESS.** Promoted because everything else is blocked.
 2. `S1-PREFIX` — is the delivery framing proximally sufficient to move Phoenix? **BLOCKED on `OPS-001` / `IN-007`; fully staged.**
 3. `S1-05C` — benign control on constraints orthogonal to document format. **READY.**
 3. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
@@ -90,10 +90,11 @@ top of `BACKLOG.md`.
 - `IN-002` is closed: the 25-item spot-check is done and came back NOT EVALUABLE on stance (n=7 < 8). The Claude anchor is never ahead of GPT under any exclusion treatment, so no reading supports it.
 - `IN-006` blocks `S1-06` and therefore all of Stage 2: how to close a 49-behaviour shortfall.
 - `IN-003` is optional and non-gating: Gemma access for the StrongREJECT sidecar.
-- **`IN-007` is the hard blocker as of 2026-09-08 23:50 EDT.** I destroyed the workspace HF cache with an
-  `rsync --delete`. safety-eval, the interpreter, the venv and the twins v2 raw generations are recovered;
-  the public marin weights are re-downloading. **`allenai/wildguard` is gated, returns 401 from Torch, and
-  no token is on the machine**, so every judged run is blocked. Full account in the journal.
+- **`IN-007` is the hard blocker as of 2026-09-09 00:30 EDT.** I destroyed the workspace HF cache with an
+  `rsync --delete`. Recovery is complete and verified: 270GB restored across nine revisions with **zero tag
+  drift**, cooldown shards re-hashed 12/12, venv and seed patch restored, preflight green on every check but
+  one. **`allenai/wildguard` is gated, returns 401 from Torch, and no token is on the machine**, so every
+  judged run is blocked. No evidence was lost and no recorded result changed. Full account in the journal.
 
 ## Parked until the critical path lands
 

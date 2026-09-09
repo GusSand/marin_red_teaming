@@ -1508,3 +1508,36 @@ revisions are downloading; they are addressed by SHA and each shard is hashed ag
 object id before any job may use them, so that path was already protected.
 
 Remaining after that: **WildGuard only** (`IN-007`).
+
+### OPS-001 closed, 00:30 EDT — workspace restored, one thing left
+
+Preflight on Torch is green on every check but one:
+
+```
+ok    python imports (torch 2.8.0, vllm 0.11.0, transformers 4.57.1)
+ok    safety-eval pinned sha (060cc903d647)
+ok    SEED PATCH applied (applied)
+ok    venv node-portable (…/pythons/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12)
+ok    base scaffold · prefix arm scaffolds · no paperspace paths · HF_HOME · scratch disk
+FAIL  judge cached (offline): WildGuard not cached
+```
+
+**A second regression the preflight caught, which I had caused and not noticed.** Restoring safety-eval
+with `git checkout -- .` returned it to pristine pinned state and **wiped the seed patch** — the change
+that makes `SAFETYEVAL_SAMPLING_SEED` actually control sampling. Every seeded run depends on it, and a run
+without it would have produced plausible numbers under the wrong seed and recorded the seed anyway.
+Reapplied from `scripts/patches/seed_fix_generation_utils.patch`; the preflight now reports `applied`.
+Worth naming: the preflight caught two silent-wrong-answer failures in this recovery that I would not
+have caught by inspection.
+
+**Final state.** 270GB of weights restored, nine revisions, **`TAG DRIFT CHECK OK — 9 revisions match the
+SHAs the recorded results were produced on`**. The three cooldown snapshots re-verified shard by shard
+against their recorded LFS object ids: `VERIFIED: True`, 12/12. Venv, interpreter, safety-eval tree and
+seed patch all restored. `benign_twins_v2.sbatch` now preserves its raw generations and provenance to the
+labels tree, so the gap that made the twins' survival a matter of luck is closed.
+
+**Not restored: WildGuard.** `IN-007`. Every judged run stays blocked.
+
+**Cost of the incident:** about 50 minutes of my time and 270GB of re-download. **No evidence lost, no
+recorded result invalidated, no number changed.** That is entirely because the labels live outside the
+workspace and the job logs were excluded from the sync — two decisions made months ago for other reasons.

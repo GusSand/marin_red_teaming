@@ -59,6 +59,17 @@ for TAG in phoenix starling; do
             --model "$MODEL" --template "$TEMPLATE" --input "$TWINS" --out "$OUT" \
             --tag "twins-$TAG-s$SEED" --seed "$SEED" \
             --temperature 0.7 --top-p 0.95 --max-new-tokens 2048
+        # PRESERVE RAW OUTPUTS OUTSIDE THE WORKSPACE (added after the 2026-09-09 rsync --delete
+        # incident). run_row.sh has always copied its all.json to the labels tree; this job wrote
+        # only into $WORK/runs, which is inside the blast radius of any workspace-wide operation.
+        # Its 324 generations survived that incident by luck alone.
+        PRESERVE="/scratch/gs157/marin-misinfo-labels/benign_twins_v2/raw"
+        mkdir -p "$PRESERVE"
+        cp -f "$OUT/responses_raw.jsonl" "$PRESERVE/${TAG}_s${SEED}_raw.jsonl" \
+            || log_die "failed to preserve raw generations for $TAG seed$SEED"
+        cp -f "$OUT/provenance.json" "$PRESERVE/${TAG}_s${SEED}_provenance.json" \
+            || log_die "failed to preserve provenance for $TAG seed$SEED"
+        log INFO "preserved $TAG seed$SEED -> $PRESERVE"
     done
 done
 
