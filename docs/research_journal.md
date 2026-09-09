@@ -1541,3 +1541,81 @@ labels tree, so the gap that made the twins' survival a matter of luck is closed
 **Cost of the incident:** about 50 minutes of my time and 270GB of re-download. **No evidence lost, no
 recorded result invalidated, no number changed.** That is entirely because the labels live outside the
 workspace and the job logs were excluded from the sync — two decisions made months ago for other reasons.
+
+---
+
+## 2026-09-09 · S1-JUDGE-VOCAB — two out-of-vocabulary labels, one stimulus, and a gate that should always have existed
+
+**Research question.** The `08-31` spot-check found `stance="refutes"` on `c0040` — not one of the four
+locked stance values, accepted silently by the parser. How many such values exist across every judge
+output and rater sheet, and are they concentrated in one source?
+
+**Method.** CPU only, read-only, no model. Every `.csv` and `judge/*.jsonl` under
+`/scratch/gs157/marin-misinfo-labels/`, classified by header and audited against the vocabulary read
+from `config/judge_rubric_v1/`. The audit is explicitly forbidden from repairing anything. Promoted
+from `PARKED` because `IN-007` blocks every judged run.
+
+**Results.** 21 rubric-schema files, 6,405 rows, **2 out-of-vocabulary instances on 1 distinct
+stimulus** — both `stance="refutes"`, both from olmo32 (`c0040` and `i00051`). Zero in
+`claude_fable_pass2.jsonl`, the primary labels. Zero in both qwen72 files. Zero in all fifteen rater
+CSVs. Zero case- or whitespace-only variants, zero quality-null violations, zero out-of-range quality.
+Positive control fired. **Verdict: ISOLATED.**
+
+**Verification.** MATCHED, and it improved the work in three places. Counts reproduced exactly by
+independent code; an independent grep over the tree gives `refuses 1054 / endorses 1028 / corrects 827 /
+hedges 629 / refutes 2`, summing to 3,540 exactly, and `claude_fable_pass2` gives 128/282/201/469,
+matching the `S1-3D` crosstab. The verifier also established something I had not checked: that file is
+an **exact field-for-field merge of the four `claude_parts_v2` sheets**, 0 mismatches across 1,080 cids
+and six fields — so "clean" holds at source, not only post-parse, which matters because it is the one
+judge file with no `raw_*` fields.
+
+**What it caught in my work.**
+
+*Scope drift, and in the worst possible places.* My typed 25-path list omitted
+`gpt_slice_v1/sheet_gpt.csv` — the out-of-sample GPT rater sheet, filled by an external model through a
+manual hand-off, structurally the highest OOV risk in the project — and audited the Gemini sheet that
+**failed** the validity gate while skipping the `gemini_pro` sheet actually used in `S1-3F-ADJ`. It also
+globbed pass-1 and reported three of four parts as complete. Scope is now **discovered from the labels
+root**, not typed: every file is opened, classified by header, and either audited or listed as
+out-of-schema with the header that excluded it. On re-run, `sheet_gpt.csv` is clean.
+
+*Two instances, one stimulus.* All 150 calibration items are verbatim members of the 1,080, and the
+`c0040` / `i00051` judge rows are byte-identical. "2 in 6,405" implied two independent draws.
+
+*A check that could not fail.* The quality-null rule tests exactly the invariant the local-judge writer
+enforces — it nulls quality whenever `task == no_attempt` — so on those four files it verified the writer
+against itself, 537/537 and 288/288. Now flagged non-informative rather than reported as a pass.
+
+**A file that was not where it should have been.** `sheet_third_gemini_pro.csv` backs `gemini_pro`, one
+of the three raters in the recorded `S1-3F-ADJ` result, and was **not in the labels directory at all** —
+it existed only in an ephemeral session scratchpad, not regenerable, since it came from a manual AI
+Studio hand-off. Now preserved. Same failure class as the twins generations and worse: a labelled
+artifact behind a published finding. That is twice in one night that a published result rested on a file
+living somewhere temporary. Also recorded: `claude_parts_pass1_confounded/sheet_part2.csv` does not exist
+anywhere; pass 1 holds parts 1, 3 and 4. Nothing recorded depends on pass 1, but a glob was hiding it.
+
+**Interpretation (mine).** `refutes` is not a parse failure — `raw_stance` is well-formed JSON and the
+parser did its job. olmo32 chose a token outside the enum. The stimulus is a first-person post in Fauci's
+voice that concedes the event and then defends it; qwen72 called it `corrects`, Claude and both human
+anchors `endorses` with the note "ambiguous". Hard item, but `corrects` was available — the vocabulary is
+not too coarse here.
+
+It currently lands in **no-attempt**: `refutes` matches no stance branch, so the rule falls through to
+`task`, and olmo32 also called `task=no_attempt` on a complete 2,471-character artefact whose
+`raw_quality` was 3/5/4. **The OOV stance is not what broke the row; the `task` label is.** And the
+pattern is a property of the judge, not of my file selection — on the same 1,080 olmo32 gives refuse 634
+against Claude's 128 and qwen72's 180, and `endorses` 60 against both others' 469. It collapses endorse
+mass into refusal-adjacent categories, and `refutes` is a coinage in that neighbourhood. Consistent with
+olmo32 failing judge selection on 08-29.
+
+**The count is not the finding; the gap is.** ISOLATED is right under the frozen rule and says less than
+a reader will assume. Two values do not close a parser gap — they say that on this corpus one judge, on
+one stimulus, exercised it. Nothing rejected the value. So the closing action is a gate:
+`scripts/judge_dimensions.py` now validates every `relevance` / `task` / `stance` against the locked
+vocabulary, still writes the emitted value rather than silently rewriting it, flags the row `oov_<dim>`,
+records the counts in the run's provenance, and **fails the run above a 1% rate** with an instruction to
+fix the prompt or the judge rather than relabel.
+
+**Consequence for recorded results: none.** Every Stage 1 number uses `claude_fable_pass2.jsonl`, clean
+at source and post-parse. The 08-29 judge-selection verdict is untouched. What is new is that the primary
+labels have been audited against the locked vocabulary instead of assumed to conform.

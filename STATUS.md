@@ -3,9 +3,9 @@
 - **Last updated:** `2026-09-08`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
-- **Current task:** `S1-JUDGE-VOCAB`
-- **Task status:** `IN_PROGRESS`
-- **Next checkpoint:** Audit every local judge output for out-of-vocabulary label values. The only unblocked work while `IN-007` holds.
+- **Current task:** `S1-05C`
+- **Task status:** `READY`
+- **Next checkpoint:** Design a benign control that separates a delivery framing from a compliance change. `S1-PREFIX` is fully staged and BLOCKED on `IN-007`.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-08`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
@@ -47,8 +47,7 @@ alternative, not a retired one.
 
 ## Critical path
 
-1. `S1-JUDGE-VOCAB` — audit the judge outputs for out-of-vocabulary labels. **Current; IN_PROGRESS.** Promoted because everything else is blocked.
-2. `S1-PREFIX` — is the delivery framing proximally sufficient to move Phoenix? **BLOCKED on `OPS-001` / `IN-007`; fully staged.**
+1. `S1-PREFIX` — is the delivery framing proximally sufficient to move Phoenix? **BLOCKED on `OPS-001` / `IN-007`; fully staged.**
 3. `S1-05C` — benign control on constraints orthogonal to document format. **READY.**
 3. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
 5. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
@@ -73,6 +72,7 @@ top of `BACKLOG.md`.
 - [ ] Evaluable benign control: `S1-05` NOT EVALUABLE (floored); `S1-05B` evaluable but not discriminating. `S1-FORMAT` excluded the document-header explanation and located a delivery-framing one instead. `S1-05C` must separate cause from co-symptom; varying surface format alone will not.
 - [ ] Expanded ≥150-behavior set selected, deduplicated, hashed, and baselined (`S1-06`).
 - [x] Human spot-check of the rater completed (`IN-002`); NOT EVALUABLE on stance, no support for the anchor.
+- [x] Primary labels audited against the locked rubric vocabulary (`S1-JUDGE-VOCAB`); ISOLATED, zero out-of-vocabulary values in `claude_fable_pass2.jsonl`, clean at source as well as post-parse.
 - [ ] Stage 1 synthesis states what is established, what remains uncertain, and the frozen Stage 2 endpoints.
 
 ## Stage 2 entry criteria
@@ -90,6 +90,10 @@ top of `BACKLOG.md`.
 - `IN-002` is closed: the 25-item spot-check is done and came back NOT EVALUABLE on stance (n=7 < 8). The Claude anchor is never ahead of GPT under any exclusion treatment, so no reading supports it.
 - `IN-006` blocks `S1-06` and therefore all of Stage 2: how to close a 49-behaviour shortfall.
 - `IN-003` is optional and non-gating: Gemma access for the StrongREJECT sidecar.
+- **A preflight coupling to resolve properly, not by weakening a check.** `S1-05C` needs generations but
+  no judge, yet `scripts/dry_run_check.py` gates every submission on `judge cached (offline)`, so
+  `IN-007` currently blocks judge-free jobs too. The fix is to make that check conditional on a job
+  declaring that it judges — a scoping change with its own review, never a relaxed threshold.
 - **`IN-007` is the hard blocker as of 2026-09-09 00:30 EDT.** I destroyed the workspace HF cache with an
   `rsync --delete`. Recovery is complete and verified: 270GB restored across nine revisions with **zero tag
   drift**, cooldown shards re-hashed 12/12, venv and seed patch restored, preflight green on every check but
@@ -116,6 +120,7 @@ without updating this file and the active backlog table in the same commit.
 | Cooldown localization (EARLY) | `docs/experiments/09-08_cooldown_localization.md`; `outputs/cooldown_localization.json` |
 | Benign-twins control v1 (not evaluable) | `docs/experiments/09-07_benign-twins_control.md`; `docs/results/09-07_benign_twins/` |
 | Benign-twins control v2 (valid primary, reading withheld) | `docs/experiments/09-08_benign-twins_v2.md`; `docs/results/09-08_benign_twins_v2/` |
+| Label vocabulary audit | `docs/experiments/09-09_judge-vocabulary-audit.md`; `docs/results/09-09_vocab_audit/` |
 | Prefix framing intervention | `docs/experiments/09-08_prefix_framing-intervention.md` |
 | Format carry-over: header no, framing yes | `docs/experiments/09-08_format-carryover.md`; `docs/results/09-08_format_carryover/` |
 | Restatement artefact, quantified | `docs/experiments/09-04_stance-gap_restatement-prevalence.md`; `docs/results/09-04_stance_gap/` |

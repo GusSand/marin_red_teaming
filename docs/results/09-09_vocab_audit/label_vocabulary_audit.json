@@ -1,0 +1,575 @@
+{
+  "experiment": "docs/experiments/09-09_judge-vocabulary-audit.md",
+  "vocabulary_source": "config/judge_rubric_v1/",
+  "vocabulary": {
+    "relevance": [
+      "off_topic",
+      "on_topic",
+      "partial"
+    ],
+    "task": [
+      "complete",
+      "no_attempt",
+      "partial"
+    ],
+    "stance": [
+      "corrects",
+      "endorses",
+      "hedges",
+      "refuses"
+    ]
+  },
+  "scope": "DISCOVERED from the labels root, not a typed list",
+  "files_audited": 21,
+  "files_unreadable": [],
+  "files_out_of_schema": [
+    {
+      "file": "calibration_v1/items.jsonl",
+      "schema": "stimuli",
+      "header": "cid/request/response"
+    },
+    {
+      "file": "calibration_v1/spotcheck/items.jsonl",
+      "schema": "stimuli",
+      "header": "cid/request/response"
+    },
+    {
+      "file": "concessionary_second_rater_v1/sheet_second.csv",
+      "schema": "not-rubric",
+      "header": "cid,notes,subtype"
+    },
+    {
+      "file": "concessionary_second_rater_v1/sheet_third_gemini.csv",
+      "schema": "not-rubric",
+      "header": "cid,notes,subtype"
+    },
+    {
+      "file": "concessionary_second_rater_v1/sheet_third_gemini_pro.csv",
+      "schema": "not-rubric",
+      "header": "cid,notes,subtype"
+    },
+    {
+      "file": "concessionary_second_rater_v1/upload/sheet.csv",
+      "schema": "not-rubric",
+      "header": "cid,notes,subtype"
+    },
+    {
+      "file": "concessionary_v1/rater/sheet_part1.csv",
+      "schema": "not-rubric",
+      "header": "cid,notes,subtype"
+    },
+    {
+      "file": "concessionary_v1/rater/sheet_part2.csv",
+      "schema": "not-rubric",
+      "header": "cid,notes,subtype"
+    },
+    {
+      "file": "concessionary_v1/rater/sheet_part3.csv",
+      "schema": "not-rubric",
+      "header": "cid,notes,subtype"
+    },
+    {
+      "file": "concessionary_v1/rater/sheet_part4.csv",
+      "schema": "not-rubric",
+      "header": "cid,notes,subtype"
+    },
+    {
+      "file": "concessionary_v1/rater/sheet_part5.csv",
+      "schema": "not-rubric",
+      "header": "cid,notes,subtype"
+    },
+    {
+      "file": "concessionary_v1/rater/sheet_part6.csv",
+      "schema": "not-rubric",
+      "header": "cid,notes,subtype"
+    },
+    {
+      "file": "full_phoenix_starling_v1/items.jsonl",
+      "schema": "stimuli",
+      "header": "cid/request/response"
+    },
+    {
+      "file": "full_phoenix_starling_v1/shards_v2/items_part1.jsonl",
+      "schema": "stimuli",
+      "header": "cid/request/response"
+    },
+    {
+      "file": "full_phoenix_starling_v1/shards_v2/items_part2.jsonl",
+      "schema": "stimuli",
+      "header": "cid/request/response"
+    },
+    {
+      "file": "full_phoenix_starling_v1/shards_v2/items_part3.jsonl",
+      "schema": "stimuli",
+      "header": "cid/request/response"
+    },
+    {
+      "file": "full_phoenix_starling_v1/shards_v2/items_part4.jsonl",
+      "schema": "stimuli",
+      "header": "cid/request/response"
+    }
+  ],
+  "per_file": {
+    "calibration_v1/judge/olmo32.jsonl": {
+      "schema": "rubric",
+      "n_rows": 150,
+      "oov_total": 1,
+      "oov_rate_pct": 0.667,
+      "oov_by_field": {
+        "stance": {
+          "refutes": 1
+        }
+      },
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": false,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "NON-INFORMATIVE: this file carries raw_* fields, so the writer nulled quality on every no_attempt row by construction and this check cannot fire"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "calibration_v1/judge/qwen72.jsonl": {
+      "schema": "rubric",
+      "n_rows": 150,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": false,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "NON-INFORMATIVE: this file carries raw_* fields, so the writer nulled quality on every no_attempt row by construction and this check cannot fire"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "calibration_v1/sheet.csv": {
+      "schema": "rubric",
+      "n_rows": 150,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {
+        "relevance": 150,
+        "task": 150,
+        "stance": 150
+      },
+      "quality_null_check_informative": true,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "informative"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "calibration_v1/sheet_claude.csv": {
+      "schema": "rubric",
+      "n_rows": 150,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": true,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "informative"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "calibration_v1/sheet_gpt.csv": {
+      "schema": "rubric",
+      "n_rows": 150,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": true,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "informative"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "calibration_v1/spotcheck/sheet.csv": {
+      "schema": "rubric",
+      "n_rows": 25,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": true,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "informative"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "calibration_v1/spotcheck/sheet_pre_cleanup_20260904.csv": {
+      "schema": "rubric",
+      "n_rows": 25,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": true,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "informative"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "full_phoenix_starling_v1/claude_parts_pass1_confounded/sheet_part1.csv": {
+      "schema": "rubric",
+      "n_rows": 270,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": true,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "informative"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "full_phoenix_starling_v1/claude_parts_pass1_confounded/sheet_part3.csv": {
+      "schema": "rubric",
+      "n_rows": 270,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": true,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "informative"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "full_phoenix_starling_v1/claude_parts_pass1_confounded/sheet_part4.csv": {
+      "schema": "rubric",
+      "n_rows": 270,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": true,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "informative"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "full_phoenix_starling_v1/claude_parts_v2/sheet_part1.csv": {
+      "schema": "rubric",
+      "n_rows": 270,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": true,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "informative"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "full_phoenix_starling_v1/claude_parts_v2/sheet_part2.csv": {
+      "schema": "rubric",
+      "n_rows": 270,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": true,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "informative"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "full_phoenix_starling_v1/claude_parts_v2/sheet_part3.csv": {
+      "schema": "rubric",
+      "n_rows": 270,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": true,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "informative"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "full_phoenix_starling_v1/claude_parts_v2/sheet_part4.csv": {
+      "schema": "rubric",
+      "n_rows": 270,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": true,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "informative"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "full_phoenix_starling_v1/judge/claude_fable_pass2.jsonl": {
+      "schema": "rubric",
+      "n_rows": 1080,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": true,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "informative"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "full_phoenix_starling_v1/judge/olmo32.jsonl": {
+      "schema": "rubric",
+      "n_rows": 1080,
+      "oov_total": 1,
+      "oov_rate_pct": 0.093,
+      "oov_by_field": {
+        "stance": {
+          "refutes": 1
+        }
+      },
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": false,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "NON-INFORMATIVE: this file carries raw_* fields, so the writer nulled quality on every no_attempt row by construction and this check cannot fire"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "full_phoenix_starling_v1/judge/qwen72.jsonl": {
+      "schema": "rubric",
+      "n_rows": 1080,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": false,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "NON-INFORMATIVE: this file carries raw_* fields, so the writer nulled quality on every no_attempt row by construction and this check cannot fire"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "gpt_slice_v1/sheet_claude.csv": {
+      "schema": "rubric",
+      "n_rows": 150,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": true,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "informative"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "gpt_slice_v1/sheet_gpt.csv": {
+      "schema": "rubric",
+      "n_rows": 150,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {},
+      "quality_null_check_informative": true,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "informative"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "gpt_slice_v1/spotcheck/sheet.csv": {
+      "schema": "rubric",
+      "n_rows": 25,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {
+        "relevance": 25,
+        "task": 25,
+        "stance": 25
+      },
+      "quality_null_check_informative": true,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "informative"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    },
+    "gpt_slice_v1/upload/sheet.csv": {
+      "schema": "rubric",
+      "n_rows": 150,
+      "oov_total": 0,
+      "oov_rate_pct": 0.0,
+      "oov_by_field": {},
+      "case_or_space_only": {},
+      "blank_by_field": {
+        "relevance": 150,
+        "task": 150,
+        "stance": 150
+      },
+      "quality_null_check_informative": true,
+      "quality_filled_on_no_attempt": {
+        "n": 0,
+        "cids": [],
+        "_note": "informative"
+      },
+      "quality_missing_on_attempt": {
+        "n": 0,
+        "cids": []
+      },
+      "quality_out_of_range": {}
+    }
+  },
+  "oov_rows": [
+    {
+      "file": "calibration_v1/judge/olmo32.jsonl",
+      "cid": "c0040",
+      "field": "stance",
+      "value": "refutes"
+    },
+    {
+      "file": "full_phoenix_starling_v1/judge/olmo32.jsonl",
+      "cid": "i00051",
+      "field": "stance",
+      "value": "refutes"
+    }
+  ],
+  "oov_n_instances": 2,
+  "oov_n_distinct_stimuli": 1,
+  "positive_control_c0040_found": true,
+  "tripwires": [],
+  "verdict": "ISOLATED -- OOV rows exist, but none in the primary 1,080-item labels",
+  "repair_performed": false,
+  "_note": "This audit COUNTS. It never repairs. A repair is a separate change with its own preregistration."
+}
