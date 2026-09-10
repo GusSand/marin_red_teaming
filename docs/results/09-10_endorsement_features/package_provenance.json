@@ -1,0 +1,27 @@
+{
+ "experiment": "docs/experiments/09-10_endorsement-feature_decomposition.md",
+ "seed": 20260910,
+ "parts": 10,
+ "rows": 1080,
+ "arms": {
+  "phoenix": 540,
+  "starling": 540
+ },
+ "behaviors": 54,
+ "part_counts": {
+  "1": 108,
+  "2": 108,
+  "3": 108,
+  "4": 108,
+  "5": 108,
+  "6": 108,
+  "7": 108,
+  "8": 108,
+  "9": 108,
+  "10": 108
+ },
+ "source_items_sha256": "8c05de4c0c15ee93aad27aa400103ddba7a22d42984f487ec73a0b5b77c55cd9",
+ "source_key_sha256": "ec2f4f6f73e35ce7b0046784998b2917ed0b82760084cc266e13bccb639f3633",
+ "codebook_sha256": "cffb121dc1251beb16ade06d071880fcdaa179f390ea59d71d63b7e201ac546f",
+ "boundary": "before first newline + optional whitespace + User:"
+}

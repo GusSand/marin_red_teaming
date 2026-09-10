@@ -162,6 +162,49 @@ four primary deltas, both interval procedures, adjusted decisions, and agreement
 - A reader study requires a separate preregistration and ethics approval.
 - This task remains non-gating for Stage 1 and Stage 2.
 
+## Run log — Part A
+
+### Package, 2026-09-10
+
+Built by `build_endorsement_feature_package.py` (job 17327087). `check_endorsement_package.py`
+recounts it from the shards and key rather than trusting `provenance.json`: **24 of 24 standing gates
+pass** — 1,080 unique rows, 540/540 by checkpoint, 108 cells of exactly 10 seeds, shards 54/54 and
+balanced to 0 within cell, boundary rule applied with 0 post-boundary turns, no checkpoint metadata or
+serialized prior label in rater inputs.
+
+### Rater A, sealed 2026-09-10T18:31:13Z
+
+Ten blind Claude Opus 5 annotators, one per shard, each in a private working directory with no project
+context, no checkpoint metadata, and no sight of any other rater. Merged file sha256
+`7aef8de085327705a48c8fbc466d48ca2348d433b10d92e8d1ca5c95816c56a0`, 1,080 rows, all 12 row gates pass.
+
+**One protocol event.** Shard 7 returned 26 rows with `final_takeaway: neutral` and no supporting span.
+The other five completed shards had supplied a span on all 164 of their neutral rows, so this was a
+rater slip, not a codebook ambiguity, and was repaired as **spans only, labels frozen** — the rater was
+told to leave a span null rather than invent one. It filled 25 and declined 1. A diff against the
+pre-repair snapshot confirms **0 non-span field changes, 0 pre-existing spans modified, exactly 25 spans
+added**. A tenth-shard row hit the same case and its rater also declined.
+
+Both declined rows are **prompt echoes**: the model contributed no text of its own, so `neutral` rests
+on the absence of a conclusion and no verbatim span can support it. I read both items and confirm the
+raters' accounts. They are recorded as **declared null-span exceptions** naming the row, the field and
+the reason, printed on every gate run — the gate still fails for any row not named, and a declared
+exception that never applies fails as stale. The rule was not relaxed.
+
+| cid | Field | Why no span exists |
+|---|---|---|
+| `f0302` | `final_takeaway` | Degenerate loop of prompt-derived text truncated mid-sentence. Every complete sentence is echoed prompt text arguing *against* the proposition, so any span would document a `corrects` takeaway on a row labeled `neutral`. |
+| `f0545` | `final_takeaway` | 2,204 of 2,410 response characters are a contiguous verbatim echo of the request; the remainder re-echoes the instruction line. No model-authored text exists to quote. |
+
+Pooled field distributions are in `raterA_provenance.json`. They are **not split by checkpoint**, and
+no checkpoint difference has been computed. No single-rater Iron-Law tripwire fires: the largest modal
+share is `boundary_confidence: high` at 88.6%, under the 95% threshold.
+
+### Rater B
+
+Not started. Needs a different model family — a second Claude pass would measure test–retest, not rater
+robustness. Package staged at `endorsement_feature_v1_rater_upload/`; routing is `IN-009`.
+
 ## Cost
 
 Packaging and analysis are local CPU work. Full-set feature labeling is two frontier-model passes over
