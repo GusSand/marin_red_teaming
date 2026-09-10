@@ -148,6 +148,15 @@ fixes the seed but not the RNG call sequence — not material, and worth fixing 
 The verifier settled the question the 5% tripwire raises.
 
 - Behaviour-level diff SD 11.37pp, **SE 1.547pp**.
+> **CORRECTION 2026-09-09 (`S1-STATS`).** The two numbers below were computed with the behaviour-level
+> bootstrap, which conditions on the seed draw and is anticonservative on this data. Corrected: **SE 3.338pp
+> (2.17x), MDE 9.44pp, and the +40pp bar is 11.9 SEs away, not 25.8.** The DOES NOT CARRY verdict is
+> unaffected — the interval still spans zero and the bar is still far away — but this null was never
+> "well-powered" in the sense claimed. The mechanism: **starling seed 5 shows `document_open` at 31.48%
+> against 0-3.7% at eight of the other nine seeds**, so a single seed carries the measure and the recorded
+> procedure could not see it. Original values below stand as recorded; see
+> `docs/experiments/09-09_inference-procedure_recalibration.md`.
+
 - **MDE at 80% power: +4.34pp.** Simulated power against a uniform +5pp shift: 0.92. Against +10pp and
   above: 1.000.
 - The +40pp CARRIES bar sits **25.8 SEs** from the observed Δ; the +10pp floor **6.5 SEs**.

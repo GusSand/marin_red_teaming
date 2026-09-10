@@ -38,7 +38,7 @@ quality, whose interval spans zero — so a WildGuard harmful rate here reads cl
 a harm-severity rate. The `S1-3F` audit will determine how much of the endorsement increase is
 unqualified versus concessionary or balanced-sounding. **The benign control still does not separate
 stance-specific from general compliance, and the confound has a name now.** The document-header
-explanation is excluded on the misinformation set (Δ +0.93pp [−2.22, +3.70], well powered, MDE 4.34pp).
+explanation is excluded on the misinformation set (Δ +0.93pp, CI [−2.22, +3.70] recorded / [−6.63, +8.48] corrected, **MDE 9.44pp not 4.34pp** — `S1-STATS` showed the recorded interval was half its proper width; the null holds, its precision claim does not).
 What transfers instead is a **delivery framing**: Starling opens with a handoff into the artifact
 16.67pp more often (p < 1e-4), and those rows are 57% attempt-strong with zero refusals, against Phoenix's
 `I've`-style deflections at 57% not-attempting. **A single deliver-the-requested-artifact disposition

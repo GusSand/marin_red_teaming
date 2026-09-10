@@ -124,7 +124,15 @@ Run 2026-09-09, CPU only on the Torch login node. Evidence:
 `docs/results/09-09_procedure_selection/procedure_selection.json` and `rederived_intervals.json`.
 Scripts: `scripts/select_inference_procedure.py`, `scripts/rederive_intervals.py`.
 
-**Status: UNVERIFIED** — independent reproduction pending.
+**Status: VERIFIED — REPRODUCED WITH CONCERNS** (2026-09-09). A fresh verifier, denied all three analysis
+scripts, wrote four implementations from the preregistration and matched **32 of 32 calibration cells**
+within the 3.0pp tolerance (max |Δ| 1.6pp; `P1` and `P3` are closed-form and matched to the digit at all 16
+of their cells, so the two implementations are the same estimator rather than two things that happen to
+agree). Spot-check contrasts matched to **0.19pp** on any bound. It independently recomputed
+`document_open` end to end from raw items and reproduced the SE inflation.
+
+It also found a defect in this document, which is recorded below rather than quietly fixed. **`S1-05B`'s
+re-derivation is not yet independently confirmed** — see the open item at the end.
 
 ### Selection: NO CANDIDATE PASSES
 
@@ -144,9 +152,18 @@ Type-I error over the 126 disjoint 5-vs-5 splits at each tag. Nominal 5%.
 Against the frozen `[2.0%, 12.0%]` bar: **all four fail.** `P0` fails on the high side, at up to 40.5%.
 `P1`, `P2` and `P3` each fail on the **low** side — too conservative in at least one cell.
 
-**Frozen consequence, applied:** keep `P0` as the recorded procedure and label every interval in this
-project as **conditional on the seed draw**. No new candidate is invented here; that is what the plan
-forbids and the prohibition is doing its job.
+**The frozen rule contradicts itself, and that is the finding.** Found in verification. This document
+states that `P0` "is not eligible to win" — and its no-winner branch then hands the win to `P0`. The rule
+cannot be executed as written without violating its own eligibility clause. So it is **not** executed as
+written.
+
+**Recorded outcome: the procedure decision is OPEN.** Not "keep `P0`", not "adopt `P1`".
+
+**Action taken instead, which requires no selection at all:** report `P0` and `P1` side by side on every
+in-scope contrast, and **rest each verdict on the wider of the two intervals.** This is monotonically a
+weakening of every claim — it cannot manufacture a finding — so it is not exposed to the
+selection-on-outcome objection that blocks re-running with a friendlier bar. It is available immediately
+and it is what the classification table below does.
 
 ### The bar was mis-specified, and that is not self-corrected here
 
@@ -157,11 +174,28 @@ only because one cell rejected 0 of 126 times, under a 2.0% floor.
 under-coverage is a false claim. They are not symmetric errors and should not share a rejection rule. That
 is a design error in this preregistration, made by the agent that wrote it.
 
+**The floor is also below the estimator's own resolution.** With 126 splits the achievable rates near the
+bottom are 0.00%, 0.79%, 1.59%, 2.38% — **nothing can land in [1.6%, 2.4%)**, so clearing a 2.0% floor
+requires at least 3 rejections in 126. Verification's simulation puts the per-cell standard deviation of a
+126-split type-I estimate at **1.4–1.9pp**, so the floor sits entirely inside the estimator's noise: a
+procedure with exactly nominal coverage fails it by chance a meaningful fraction of the time. This document
+correctly warned that the 1.9pp binomial error understates the uncertainty, and then set a floor 2.0pp
+above zero anyway.
+
 It is **not** repaired by re-running with a one-sided bar. Choosing the bar after seeing which candidates
 clear it selects on the outcome — the same failure the plan explicitly guards against one paragraph above.
 The decision is escalated as **`IN-008`**: either Gus approves adopting `P1`, or a successor experiment
-pre-registers a one-sided bar **before** looking at these rates again. Until then `P0` stands as recorded
-and every interval carries the conditional-on-seeds label.
+pre-registers a one-sided bar **before** looking at these rates again.
+
+**The tie-break never fired.** No candidate passed, so the `S1-PREFIX` median-width criterion was never
+applied. Stated plainly so it is not mistaken for a step that ran.
+
+**`P1` was underspecified at freeze time.** This document says "seed as the unit — **paired** *t* interval".
+The calibration design compares disjoint seed halves, where pairing is impossible, so the procedure actually
+evaluated there is **Welch**. That refinement was made after the freeze. It is necessary and benign —
+verification checked Welch against pooled-variance and no cell moved by more than 2.3pp and no conclusion
+changed — but it is recorded here rather than left standing as though "paired t" had been the thing tested.
+The paired form is calibrated separately in the gap check below.
 
 ### Re-derivation — ADDED analysis, clearly labelled
 
@@ -196,16 +230,35 @@ Across **20 in-scope contrasts** spanning `S1-TRAJ`, `S1-CKPT`, `S1-05B`, `S1-FO
 | `S1-FORMAT` | **UNCHANGED verdict, WEAKENED power claim** | see below |
 | `S1-05B` | **UNCHANGED verdict, NOT RESOLVABLE at 3 seeds** | see below |
 
-**`S1-FORMAT` — the predicted case.** DOES NOT CARRY stands: `document_open` still spans zero and is
-nowhere near the +40pp CARRIES bar. But the recorded **"well-powered null, MDE 4.34pp"** does not survive.
-The interval widens from 5.92pp to 15.11pp, so the minimum detectable effect is roughly **11pp**, not
-4.34pp. The verdict was never close enough for this to matter — but the *precision* claim attached to it
-was overstated and is corrected here. **This was written down as the expected outcome before the run.**
+**`S1-FORMAT` — the predicted case, recomputed end to end in verification.** DOES NOT CARRY stands:
+`document_open` still spans zero and is nowhere near the +40pp CARRIES bar. But the recorded
+**"well-powered null, SE 1.547pp, MDE 4.34pp, +40pp bar 25.8 SEs away"** does not survive.
 
-**`S1-05B` — the honest limit.** At **3 seeds** `P1` has 2 degrees of freedom and returns [+58.34, +241.66]
-against `P0`'s [+137.04, +162.35]. The verdict does not flip — both exclude zero — but the point estimate
-of +1.50 constraints carries far less precision than recorded. As pre-registered, the correct statement is
-**"not resolvable at this seed count"**, not a flipped verdict.
+| quantity | recorded | corrected |
+|---|---|---|
+| SE | 1.547pp | **3.338pp** (2.17x) |
+| MDE at 80% power | 4.34pp | **9.44pp** |
+| distance to the +40pp bar | 25.8 SEs | **11.9 SEs** |
+
+**And the mechanism is visible in the raw data: `starling` seed 5 shows `document_open` at 31.48%, against
+0–3.7% at eight of the other nine starling seeds.** One seed carries the entire measure. `P0` is
+structurally blind to that, which is exactly why it reported a tight interval. **The null was "well-powered"
+only under an assumption the data itself contradicts.** The verdict was never close enough for this to
+change it — but `docs/decisions.md` carries the precision claim as a recorded line, and it is corrected
+there by a new dated line rather than by editing the original.
+
+**This was written down as the expected outcome before the run.** The single-seed mechanism was not, and is
+verification's find.
+
+**`S1-05B` — the honest limit, and the one item still open.** At **3 seeds** `P1` has 2 degrees of freedom
+and returns [+0.58, +2.42] constraints against `P0`'s [+1.37, +1.63]. The verdict does not flip — both
+exclude zero — but the recorded ±0.13-constraint precision does not survive. As pre-registered, the correct
+statement is **"not resolvable at this seed count"**, not a flipped verdict.
+
+**Not yet independently confirmed.** The verifier could not locate the per-seed constraint counts, which are
+not in `twin_grades_v2.json`, and correctly declined to close the item rather than assume. The raw grades do
+exist, at `benign_twins_v2/twins.jsonl` and `benign_twins_v2/raw/responses.jsonl`; the path has been handed
+over and the recompute is pending. **`S1-05B` stays UNVERIFIED in this task until it returns.**
 
 ### ADDED gap check: the paired variant, which the registered calibration did not cover
 
@@ -262,9 +315,41 @@ verdict, and it must not be quoted as a result. But it belongs in Stage 1's pict
 Phoenix to Starling is not only a shift in the mean, it is a **tightening of the distribution**. Flagged
 for `S1-SYNTH` as a hypothesis worth its own preregistration, not as a finding.
 
+### Four limits on the calibration evidence itself, from verification
+
+1. **The eight cells are four correlated seed-draws, not eight independent experiments.** All 126 splits in
+   a cell are re-partitions of *one* draw of 10 seeds, not 126 experiments; and harmful and refusal within a
+   tag come from the same responses. Effective replication is four checkpoints from one training run, on one
+   prompt set, under one judge.
+2. **The "confirmation set" is less independent than the framing implies** — same 54 prompts, same judge,
+   same hardware, checkpoints from one run. It guards against fitting to phoenix's particular seed noise. It
+   does not establish generalisation.
+3. **`P1` is not certified calibrated, only not grossly anti-conservative.** Verification's simulation
+   (200 synthetic null datasets per cell, per-seed additive shift — *synthetic, not a measurement*) puts
+   `P1`'s true type-I at 4.2–4.7% with per-cell estimator sd 1.4–1.9pp, which makes deeper-starling's 0.0%
+   about 2.3 sd low in one of eight cells: unremarkable. But that null model is close to the model `P1`
+   assumes, so it establishes the estimator's noise level, not calibration against whatever real dependence
+   the generations carry. Per-cell uncertainty is about ±2pp. **That is enough to prefer `P1` over a
+   procedure running at 28–40%. It is not enough to quote `P1` as calibrated to a couple of points.**
+4. **Unlabeled rows were not re-examined for this exercise.** 23 of 2,160 behaviour-seed cells carry no
+   WildGuard label and are coded 0 on both series; **21 of 23 are jellyfish, 10 of them in jellyfish seed 2
+   alone.** That is bounded for the *contrasts* in `sensitivity_missing_labels.json`, but jellyfish's
+   between-seed dispersion is a direct input here. Excluding the 16 affected behaviours moves jellyfish
+   harmful sd from 13.57pp to 12.00pp and jellyfish refusal `P1` from 5.6% to 3.2%. Nothing changes; the
+   line is carried rather than omitted.
+
 ### What a reader should take from this
 
 Every substantive conclusion in this project survives. **No direction reverses and no significance call
-changes.** What was wrong is the *precision*: published intervals are roughly half their proper width, so
-large effects were never at risk and narrow-interval claims — power, MDE, "well-powered null" — were.
-The one such claim in the corpus has been corrected.
+changes.**
+
+But "0 of 20 flip" is the wrong headline on its own, and verification was right to push on it. The accurate
+version:
+
+> **0 of 20 direction verdicts flip. At least 2 of 20 precision or power claims weaken, one of them a
+> recorded line in the decision log. Every interval in the in-scope set is roughly half the width it should
+> be** — the `P0`/`P1` median width ratio is 2.16x on harmful and 2.47x on refusal across the null splits,
+> independently corroborated by the 2.17x measured directly on `S1-FORMAT`.
+
+Any claim shaped **"narrow interval, therefore null"** or **"N standard errors from the bar"** is
+width-dependent, and those do change. Claims shaped "this effect is large and in this direction" do not.
