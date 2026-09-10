@@ -1,10 +1,10 @@
 #!/bin/bash
 # S1-ENDORSE-V2 Part A: build the blinded 1,080-row package. No outcomes are analyzed.
-# Submit: bash scripts/submit.sh slurm/endorsement_feature_package.sbatch
+# Submit after `python3 scripts/check_project_state.py --require-in-progress`:
+#   sbatch slurm/endorsement_feature_package.sbatch
 #SBATCH --job-name=endorse-pkg
 #SBATCH --account=torch_pr_173_tandon_advanced
-#SBATCH --partition=h200_tandon
-#SBATCH --gres=gpu:1
+#SBATCH --partition=cpu_short
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=8G
 #SBATCH --time=00:10:00
