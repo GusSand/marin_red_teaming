@@ -125,7 +125,10 @@ def main():
             if v is True and not any(norm(fl) in k for k in present):
                 missing_span.append((cid, f"concession:{fl}", True))
 
-    for field, bad in bad_value.items():
+    # Iterate VALUES, not bad_value: a defaultdict only holds fields that failed, so a clean field
+    # would otherwise emit no line and look identical to a field that was never checked.
+    for field in VALUES:
+        bad = bad_value.get(field, [])
         gate(not bad, f"{field} values in vocabulary: {len(bad)} invalid {bad[:3]}")
     gate(not bad_flag, f"concession flags boolean: {len(bad_flag)} invalid {bad_flag[:3]}")
     gate(not missing_span, f"every non-none decision carries a span: {len(missing_span)} missing "
