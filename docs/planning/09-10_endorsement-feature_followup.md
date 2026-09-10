@@ -1,8 +1,9 @@
 # Endorsement-feature follow-up
 
 **Task:** `S1-ENDORSE-V2`  
-**Status:** PARKED  
-**Document state:** planning only; not a preregistration
+**Status:** Part A promoted 2026-09-10
+**Document state:** planning record; the frozen Part A protocol is
+`docs/experiments/09-10_endorsement-feature_decomposition.md`
 
 ## Why this exists
 

@@ -3,9 +3,9 @@
 - **Last updated:** `2026-09-10`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
-- **Current task:** `S1-05C`
-- **Task status:** `READY`
-- **Next checkpoint:** A benign control that separates Starling's deliver-the-requested-artifact framing from a compliance change. **Nothing is `IN_PROGRESS`: `S1-05C` flips only in the change set that freezes its preregistration.** Its design must now also answer `S1-STATS` — format measures swing 0-65pp across seeds of one checkpoint, so a 3-seed or 5-seed format contrast will not support a precision claim.
+- **Current task:** `S1-ENDORSE-V2`
+- **Task status:** `IN_PROGRESS`
+- **Next checkpoint:** Build the blinded 1,080-row Part A package under the frozen feature codebook. Run two independent full-set raters. Seal both outputs before the disagreement audit or checkpoint analysis. `S1-05C` remains READY.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-09`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
@@ -48,11 +48,12 @@ alternative, not a retired one.
 
 ## Critical path
 
-1. `S1-05C` — benign control on constraints orthogonal to document format. **Current; READY. Nothing is `IN_PROGRESS`.**
-2. `S1-PREFIX-B` — content-free compliance prefill arm, to separate a delivery disposition from mere refusal suppression. **READY.** Sequenced after `S1-05C` because the benign control is a Stage 1 exit gate and this is not.
-3. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
-4. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
-5. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
+1. `S1-ENDORSE-V2` — feature-level decomposition of the unresolved endorsement composition. **Current; IN_PROGRESS; non-gating.**
+2. `S1-05C` — benign control on constraints orthogonal to document format. **READY.**
+3. `S1-PREFIX-B` — content-free compliance prefill arm, to separate a delivery disposition from mere refusal suppression. **READY.** Sequenced after `S1-05C` because the benign control is a Stage 1 exit gate and this is not.
+4. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
+5. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
+6. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
 
 `S1-PREFIX` is closed and VERIFIED (REPRODUCED WITH CONCERNS): the delivery prefill moves Phoenix
 +29.63pp and the `deflect` control does not, an overshoot past Starling's own endpoint. Carry the
@@ -113,7 +114,7 @@ top of `BACKLOG.md`.
 ## Parked until the critical path lands
 
 StrongREJECT credential work, the style-perturbation design (`S1-3C`, kept parked by the `S1-3D`
-verdict), the endorsement-feature follow-up (`S1-ENDORSE-V2`), bibliography work, W&B integration,
+verdict), bibliography work, W&B integration,
 Safety Gap Toolkit adaptation, GRAM, the Raccoon branch diagnostic (`S1-RACCOON`), a scoped FLAN continuation (`S2-FLAN-SCREEN`), and other new research directions. A parked item may not become current
 without updating this file and the active backlog table in the same commit.
 

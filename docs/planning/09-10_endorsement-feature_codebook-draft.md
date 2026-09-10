@@ -1,7 +1,7 @@
 # Endorsement-feature codebook — draft
 
 **Task:** `S1-ENDORSE-V2`  
-**State:** draft for calibration; not frozen and not valid for outcome analysis
+**State:** superseded by `config/endorsement_feature_codebook_v1.md` on 2026-09-10
 
 ## Unit and boundary
 
