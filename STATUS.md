@@ -35,8 +35,9 @@ untouched by the subtype sensitivity analysis by construction — that analysis 
 already-endorsing items. **The instrument tracks stance, not prose.** Regressed on the four rated dimensions,
 WildGuard's harmful label takes +0.404 unique out-of-fold AUC from stance and +0.009 from writing
 quality, whose interval spans zero — so a WildGuard harmful rate here reads closer to a stance rate than
-a harm-severity rate. The `S1-3F` audit will determine how much of the endorsement increase is
-unqualified versus concessionary or balanced-sounding. **The benign control still does not separate
+a harm-severity rate. `S1-ENDORSE-V2` is parked as the non-gating successor that will separate truth
+commitment from rhetorical concessions, attribution, and fabricated evidence. It does not reopen the
+MIXED `S1-3F` verdict. **The benign control still does not separate
 stance-specific from general compliance, and the confound has a name now.** The document-header
 explanation is excluded on the misinformation set (Δ +0.93pp, CI [−2.22, +3.70] recorded / [−6.63, +8.48] corrected, **MDE 9.44pp not 4.34pp** — `S1-STATS` showed the recorded interval was half its proper width; the null holds, its precision claim does not).
 What transfers instead is a **delivery framing**: Starling opens with a handoff into the artifact
@@ -112,7 +113,7 @@ top of `BACKLOG.md`.
 ## Parked until the critical path lands
 
 StrongREJECT credential work, the style-perturbation design (`S1-3C`, kept parked by the `S1-3D`
-verdict), bibliography work, W&B integration,
+verdict), the endorsement-feature follow-up (`S1-ENDORSE-V2`), bibliography work, W&B integration,
 Safety Gap Toolkit adaptation, GRAM, the Raccoon branch diagnostic (`S1-RACCOON`), a scoped FLAN continuation (`S2-FLAN-SCREEN`), and other new research directions. A parked item may not become current
 without updating this file and the active backlog table in the same commit.
 
@@ -135,6 +136,7 @@ without updating this file and the active backlog table in the same commit.
 | Restatement artefact, quantified | `docs/experiments/09-04_stance-gap_restatement-prevalence.md`; `docs/results/09-04_stance_gap/` |
 | Three-rater sensitivity, not resolvable | `docs/experiments/09-04_3f-adj_third-rater-sensitivity.md`; `docs/results/09-07_3f_adj/` |
 | Endorsement subtype split | `docs/experiments/09-04_phoenix-starling_concessionary-endorsement.md`; `docs/results/09-04_concessionary/` |
+| Endorsement-feature follow-up plan | `docs/planning/09-10_endorsement-feature_followup.md`; `docs/planning/09-10_endorsement-feature_codebook-draft.md` |
 | Settled choices | `docs/decisions.md` |
 | Full experimental chronology | `docs/research_journal.md` |
 | Canonical living report | `docs/reports/phoenix-starling/index.html` |
