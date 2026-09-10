@@ -101,6 +101,7 @@ Each writes into `/scratch/gs157/marin-misinfo-labels/`. Recreate commands and h
 | `build_3f_sample.py` | `concessionary_v1` — the endorsing universe, sharded for rating. |
 | `build_3f_second_rater.py` | `concessionary_second_rater_v1` — the second- and third-rater package. |
 | `build_endorsement_feature_package.py` | `S1-ENDORSE-V2`: `endorsement_feature_v1` — the blinded 1,080-row full-set feature-rating package. |
+| `check_endorsement_package.py` | `S1-ENDORSE-V2`: recounts the built package against the pre-registered standing gates. Independent of the builder — it reads shards and key, not `provenance.json`. |
 | `build_benign_twins.py` | `benign_twins_v1`, and `benign_twins_v2` with `--v2`. |
 | `survey_evalset_sources.py` | `S1-06` census of reachable misinformation behaviours across candidate sources. |
 | `prescreen_misinfo_candidates.py` | `S1-06` keyword pre-screen. A recall net only, never a decision. |
