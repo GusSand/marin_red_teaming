@@ -1,0 +1,321 @@
+{
+  "experiment": "docs/experiments/09-09_inference-procedure_recalibration.md",
+  "nboot": 10000,
+  "rng_seed": 20260909,
+  "calibration": {
+    "phoenix": {
+      "harmful": {
+        "P0": {
+          "rej": 35,
+          "n": 126,
+          "type1_pct": 27.8,
+          "median_width_pp": 14.81
+        },
+        "P1": {
+          "rej": 6,
+          "n": 126,
+          "type1_pct": 4.8,
+          "median_width_pp": 32.04
+        },
+        "P2": {
+          "rej": 3,
+          "n": 126,
+          "type1_pct": 2.4,
+          "median_width_pp": 30.74
+        },
+        "P3": {
+          "rej": 5,
+          "n": 126,
+          "type1_pct": 4.0,
+          "median_width_pp": 30.2
+        }
+      },
+      "refusal": {
+        "P0": {
+          "rej": 44,
+          "n": 126,
+          "type1_pct": 34.9,
+          "median_width_pp": 13.33
+        },
+        "P1": {
+          "rej": 7,
+          "n": 126,
+          "type1_pct": 5.6,
+          "median_width_pp": 32.94
+        },
+        "P2": {
+          "rej": 8,
+          "n": 126,
+          "type1_pct": 6.3,
+          "median_width_pp": 30.0
+        },
+        "P3": {
+          "rej": 8,
+          "n": 126,
+          "type1_pct": 6.3,
+          "median_width_pp": 30.29
+        }
+      }
+    },
+    "starling": {
+      "harmful": {
+        "P0": {
+          "rej": 13,
+          "n": 126,
+          "type1_pct": 10.3,
+          "median_width_pp": 11.85
+        },
+        "P1": {
+          "rej": 9,
+          "n": 126,
+          "type1_pct": 7.1,
+          "median_width_pp": 17.14
+        },
+        "P2": {
+          "rej": 0,
+          "n": 126,
+          "type1_pct": 0.0,
+          "median_width_pp": 20.0
+        },
+        "P3": {
+          "rej": 2,
+          "n": 126,
+          "type1_pct": 1.6,
+          "median_width_pp": 18.15
+        }
+      },
+      "refusal": {
+        "P0": {
+          "rej": 20,
+          "n": 126,
+          "type1_pct": 15.9,
+          "median_width_pp": 9.26
+        },
+        "P1": {
+          "rej": 9,
+          "n": 126,
+          "type1_pct": 7.1,
+          "median_width_pp": 14.69
+        },
+        "P2": {
+          "rej": 1,
+          "n": 126,
+          "type1_pct": 0.8,
+          "median_width_pp": 16.67
+        },
+        "P3": {
+          "rej": 1,
+          "n": 126,
+          "type1_pct": 0.8,
+          "median_width_pp": 15.31
+        }
+      }
+    },
+    "deeper-starling": {
+      "harmful": {
+        "P0": {
+          "rej": 3,
+          "n": 126,
+          "type1_pct": 2.4,
+          "median_width_pp": 12.22
+        },
+        "P1": {
+          "rej": 7,
+          "n": 126,
+          "type1_pct": 5.6,
+          "median_width_pp": 13.52
+        },
+        "P2": {
+          "rej": 0,
+          "n": 126,
+          "type1_pct": 0.0,
+          "median_width_pp": 19.26
+        },
+        "P3": {
+          "rej": 0,
+          "n": 126,
+          "type1_pct": 0.0,
+          "median_width_pp": 16.47
+        }
+      },
+      "refusal": {
+        "P0": {
+          "rej": 9,
+          "n": 126,
+          "type1_pct": 7.1,
+          "median_width_pp": 9.26
+        },
+        "P1": {
+          "rej": 0,
+          "n": 126,
+          "type1_pct": 0.0,
+          "median_width_pp": 15.47
+        },
+        "P2": {
+          "rej": 0,
+          "n": 126,
+          "type1_pct": 0.0,
+          "median_width_pp": 16.3
+        },
+        "P3": {
+          "rej": 0,
+          "n": 126,
+          "type1_pct": 0.0,
+          "median_width_pp": 15.05
+        }
+      }
+    },
+    "jellyfish": {
+      "harmful": {
+        "P0": {
+          "rej": 51,
+          "n": 126,
+          "type1_pct": 40.5,
+          "median_width_pp": 14.81
+        },
+        "P1": {
+          "rej": 6,
+          "n": 126,
+          "type1_pct": 4.8,
+          "median_width_pp": 42.37
+        },
+        "P2": {
+          "rej": 7,
+          "n": 126,
+          "type1_pct": 5.6,
+          "median_width_pp": 36.67
+        },
+        "P3": {
+          "rej": 7,
+          "n": 126,
+          "type1_pct": 5.6,
+          "median_width_pp": 37.67
+        }
+      },
+      "refusal": {
+        "P0": {
+          "rej": 38,
+          "n": 126,
+          "type1_pct": 30.2,
+          "median_width_pp": 13.7
+        },
+        "P1": {
+          "rej": 7,
+          "n": 126,
+          "type1_pct": 5.6,
+          "median_width_pp": 32.39
+        },
+        "P2": {
+          "rej": 7,
+          "n": 126,
+          "type1_pct": 5.6,
+          "median_width_pp": 30.37
+        },
+        "P3": {
+          "rej": 10,
+          "n": 126,
+          "type1_pct": 7.9,
+          "median_width_pp": 30.06
+        }
+      }
+    }
+  },
+  "bar": {
+    "lo_pct": 2.0,
+    "hi_pct": 12.0
+  },
+  "candidates": {
+    "P0": {
+      "all_rates": [
+        27.8,
+        34.9,
+        10.3,
+        15.9,
+        2.4,
+        7.1,
+        40.5,
+        30.2
+      ],
+      "passes_bar": false,
+      "eligible": false
+    },
+    "P1": {
+      "all_rates": [
+        4.8,
+        5.6,
+        7.1,
+        7.1,
+        5.6,
+        0.0,
+        4.8,
+        5.6
+      ],
+      "passes_bar": false,
+      "eligible": true
+    },
+    "P2": {
+      "all_rates": [
+        2.4,
+        6.3,
+        0.0,
+        0.8,
+        0.0,
+        0.0,
+        5.6,
+        5.6
+      ],
+      "passes_bar": false,
+      "eligible": true
+    },
+    "P3": {
+      "all_rates": [
+        4.0,
+        6.3,
+        1.6,
+        0.8,
+        0.0,
+        0.0,
+        5.6,
+        7.9
+      ],
+      "passes_bar": false,
+      "eligible": true
+    }
+  },
+  "tiebreak_delivery_minus_none": {
+    "P0": {
+      "delta_pp": 29.63,
+      "ci95_pp": [
+        21.11,
+        37.78
+      ],
+      "width_pp": 16.67
+    },
+    "P1": {
+      "delta_pp": 29.63,
+      "ci95_pp": [
+        13.95,
+        45.31
+      ],
+      "width_pp": 31.36
+    },
+    "P2": {
+      "delta_pp": 29.63,
+      "ci95_pp": [
+        15.56,
+        44.07
+      ],
+      "width_pp": 28.52
+    },
+    "P3": {
+      "delta_pp": 29.63,
+      "ci95_pp": [
+        15.73,
+        43.53
+      ],
+      "width_pp": 27.79
+    }
+  },
+  "selected": null,
+  "verdict": "NO CANDIDATE PASSES -- keep P0 as the recorded procedure and label every interval as conditional on the seed draw. Do NOT add a candidate now."
+}

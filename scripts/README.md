@@ -411,3 +411,23 @@ repro-olmo3-safety/.venv-safety-eval/bin/python scripts/calibrate_behavior_boots
 Result on phoenix's ten seeds: the CI excludes 0 in **27.8%** of the 126 disjoint 5-vs-5 splits (refusal
 34.9%) against a nominal 5%. Published intervals are roughly half their proper width. See
 `docs/decisions.md` 2026-09-09.
+
+- `select_inference_procedure.py` — runs the four candidates against the frozen calibration protocol and
+  applies the frozen bar and tie-break. Selection on phoenix, confirmation on starling / deeper-starling /
+  jellyfish. ~5 minutes.
+- `rederive_intervals.py` — every in-scope recorded contrast under all four candidates, side by side.
+  Covers `S1-TRAJ`, `S1-CKPT`, `S1-PREFIX` (from `all.json`), `S1-FORMAT` (from `items`/`key`, reusing
+  `measure`/`tag_of`) and `S1-05B` (from the preserved twins responses, reusing `grade`). Reports only,
+  declares no canonical interval, because selection returned NO CANDIDATE PASSES.
+
+```bash
+L=/scratch/gs157/marin-misinfo-labels
+repro-olmo3-safety/.venv-safety-eval/bin/python scripts/select_inference_procedure.py \
+    --labels $L --out docs/results/09-09_procedure_selection
+repro-olmo3-safety/.venv-safety-eval/bin/python scripts/rederive_intervals.py \
+    --labels $L --items $L/full_phoenix_starling_v1/items.jsonl \
+    --key $L/full_phoenix_starling_v1/key.json \
+    --twins $L/benign_twins_v2/twins.jsonl \
+    --twin-responses $L/benign_twins_v2/raw/responses.jsonl \
+    --out docs/results/09-09_procedure_selection
+```
