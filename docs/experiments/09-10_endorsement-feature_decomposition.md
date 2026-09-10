@@ -200,10 +200,34 @@ Pooled field distributions are in `raterA_provenance.json`. They are **not split
 no checkpoint difference has been computed. No single-rater Iron-Law tripwire fires: the largest modal
 share is `boundary_confidence: high` at 88.6%, under the 95% threshold.
 
-### Rater B
+### Rater B — package built 2026-09-10, not yet run
 
-Not started. Needs a different model family — a second Claude pass would measure test–retest, not rater
-robustness. Package staged at `endorsement_feature_v1_rater_upload/`; routing is `IN-009`.
+Target is **GPT**, or another non-Claude frontier model. A second Claude pass would measure test–retest,
+not rater robustness.
+
+The `f####` ids are **not** re-blinded. They are already opaque and shuffled, the package gate proves
+they carry no checkpoint signal, and reusing them is what lets rater B join one-to-one onto sealed
+rater A. Re-cid'ing would break that join.
+
+Package at `endorsement_feature_v1_raterB_gpt/`: `upload/` holds the ten frozen shards in `.jsonl`,
+`.csv` and `.md`, the frozen `PROMPT.md` with the output contract, and an empty `sheet_part<N>.csv` in
+a 25-column schema for interfaces that cannot return `.jsonl`. No `key.json` is emitted.
+
+`check_gpt_rater_package.py` verifies it before handover: **80 of 80 checks pass** — no key material,
+items byte-identical to the frozen shards, csv and md carrying the same cids and exact response text,
+sheet headers parsing under the converter schema, and no checkpoint token in `upload/` or in any file
+beside it.
+
+That last check caught a real leak. `provenance.json` had embedded the source package's provenance
+verbatim, which carries an `arms` breakdown naming both checkpoints and their counts. Only the hash and
+the non-revealing fields are carried now.
+
+Both return paths are dry-run tested end to end. `sheet_to_labels.py --selftest` round-trips all 1,080
+sealed rater A labels through the sheet schema unchanged in canonical form, and a simulated filled
+`sheet_part1.csv` converts and passes all 12 row gates. The sheet schema is defined once, in the
+converter that has to parse it back, so the shipped header and the parser cannot drift.
+
+Routing is `IN-009`.
 
 ## Cost
 

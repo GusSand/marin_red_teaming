@@ -8,7 +8,8 @@ hashes that make the off-repo labels verifiable.
 | Artifact | Location | sha256 |
 |---|---|---|
 | Blinded package | `/scratch/gs157/marin-misinfo-labels/endorsement_feature_v1/` | see `package_provenance.json` |
-| External rater package | `/scratch/gs157/marin-misinfo-labels/endorsement_feature_v1_rater_upload/` | `manifest.json` in that directory |
+| GPT rater-B package | `/scratch/gs157/marin-misinfo-labels/endorsement_feature_v1_raterB_gpt/` | `provenance.json` in that directory; 80/80 checks via `check_gpt_rater_package.py` |
+| First generic rater staging (superseded) | `/scratch/gs157/marin-misinfo-labels/endorsement_feature_v1_rater_upload/` | `manifest.json` in that directory |
 | Rater A sealed labels | `/scratch/gs157/marin-misinfo-labels/endorsement_feature_v1_raterA/labels.jsonl` | `7aef8de085327705a48c8fbc466d48ca2348d433b10d92e8d1ca5c95816c56a0` |
 | Rater B sealed labels | not yet — `IN-009` | — |
 
