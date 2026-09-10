@@ -1,9 +1,15 @@
 # scripts/
 
-Reproduction scripts for the Olmo 3 7B safety-number reproduction (BACKLOG Task 1).
+Reproduction scripts for this project. Two eras live here: the Olmo 3 7B safety-number reproduction
+(BACKLOG Task 1, July) and the Phoenix→Starling red-teaming program (Stage 1, from 2026-08-27).
 
 Only scripts needed to reproduce results live here. Throwaway/temporary scripts go in
 their own subdir and are not committed.
+
+**Two ways to read this file.** [Index](#index--every-script-one-line) lists every script in one line
+each, grouped by what it does — start there to find something. The dated sections below it are the
+narrative record: what each experiment ran, in the order it ran, with the reasoning that shaped the code.
+Every script appears in the index; only scripts tied to a Stage 1 experiment get a dated section.
 
 ## Current scripts
 - `check_project_state.py` — validates `STATUS.md` against the machine-marked active tables in
@@ -16,6 +22,9 @@ their own subdir and are not committed.
   for editors:** any backticked task ID appearing in a BLOCKED row's Next action is read as a blocker, so
   do not mention completed tasks there — put that history in the Outcome column instead. The rule caught
   its first real stale state within the hour, when `S1-3F` closed and `S1-SYNTH` still named it.
+  It also requires the canonical living report's task pointer and update date to agree with `STATUS.md`.
+  Run before commits. `submit.sh` runs it with `--require-in-progress` before any GPU submission, so a
+  merely queued or stale task cannot consume compute.
 
 - `compare_3f_raters.py` — S1-3F second-rater agreement (`IN-004`). Three-subtype agreement, Cohen's κ,
   the confusion matrix, per-class recall/precision, per-arm splits, and the `concessionary`/
@@ -23,9 +32,7 @@ their own subdir and are not committed.
   raw one: the slice is stratified equally by primary subtype, which flatters κ by ~0.10 because it
   undersamples the class where the raters disagree. Also runs the post-hoc robustness projection —
   applying the observed transition matrix to all 469 to test whether the registered verdict survives the
-  second rater. It did not. It also requires the canonical living report's task pointer and update date to agree
-  with `STATUS.md`. Run before commits. `submit.sh` runs it with `--require-in-progress` before any GPU
-  submission, so a merely queued or stale task cannot consume compute.
+  second rater. It did not.
 - `setup_safety_eval.sh` — Gate 1: build isolated venv `.venv-safety-eval`, `pip install -e .`
   + requirements + `vllm==0.11.0`; print torch/transformers/vllm/GPU provenance to
   `logs/gate1_setup.log`. Isolated so it never touches the base env (torch 2.10 / transformers 5.0).
@@ -35,6 +42,116 @@ their own subdir and are not committed.
   an existing metrics.json. Chat template = None → model's own `apply_chat_template`
   (correct for Olmo 3 Instruct and Think). Example (Gate 2):
   `scripts/run_row.sh allenai/Olmo-3-7B-Instruct main harmbench:default 2026-07-26-instruct-harmbench-r1 0`
+
+## Index — every script, one line
+
+Dated sections below carry the reasoning; this table is the lookup. `†` marks a script with no dated
+section, either because it predates the Stage 1 program or because it is infrastructure rather than an
+experiment step.
+
+### Project control
+| Script | What it does |
+|---|---|
+| `check_project_state.py` | Validates `STATUS.md` against the active tables, enforces the WIP limit, checks blockers and living-report freshness. The pre-commit hook and `submit.sh` both run it. |
+| `submit.sh` | The only sanctioned GPU submission path. Runs `dry_run_check.py` and refuses to `sbatch` without `DRY RUN OK`. |
+| `dry_run_check.py` | Preflight: env, paths, cached weights, judge presence, seed patch. A CPU minute against a dead GPU job. |
+| `sync_to_torch.sh` † | The only sanctioned way to push this repo to the Torch workspace. **Refuses `--delete`** — added after the 2026-09-08 incident destroyed 270GB of untracked workspace state. |
+| `check_tag_drift.py` † | Compares the HF cache's resolved tag SHAs against `docs/resolved_revisions_reconstructed.json`. A moved tag fails the run. The `OPS-001` guard. |
+| `log_lib.sh` † | Shared logging, sourced by every shell script here. Do not execute it. |
+
+### Generation and evaluation harness
+| Script | What it does |
+|---|---|
+| `setup_safety_eval.sh` | Gate 1: build the isolated `.venv-safety-eval`, pin vllm 0.11.0, print provenance. |
+| `run_row.sh` | Run one safety-eval generation row, writing `command.txt`, `provenance.json`, `metrics.json`, `all.json`. Refuses to overwrite. |
+| `run_suite.sh` † | Generic suite runner: a list of `folder:config` rows × 3 seeds on one model, sequential on one GPU. |
+| `smoke_test.sh` † | Smallest-subset end-to-end run on a small cached model. |
+| `prefetch_revisions.py` † | Download and verify pinned model revisions into the HF cache before a run. |
+| `prefetch_cooldown_revisions.py` | `S1-CKPT`: download the three pinned cooldown revisions and verify every shard. |
+| `judge_check.py` † | Gate 1 judge sanity check: does WildGuard load and label two hand-made pairs correctly? |
+| `rejudge_missing.py` † | Label completion, not a rerun: re-judge non-empty responses WildGuard left unlabelled, identical pinned judge. |
+| `check_seed_divergence.py` † | Gate check: prove the sampler seed is actually in force on Torch. |
+| `compare_determinism.py` † | Compare determinism runs at three levels, because token-exact equality alone misleads. |
+
+### Rubric annotation pipeline
+| Script | What it does |
+|---|---|
+| `export_items.py` † | Export all non-empty misinfo responses for a set of runs as blinded judge items plus a key. Builds `full_phoenix_starling_v1`. |
+| `shard_tool.py` † | Annotator-side helper: dump one blinded shard for rating, then check the returned sheet. |
+| `annotate.py` † | Resumable keystroke annotator for the calibration set under `config/judge_rubric_v1`. |
+| `merge_sheets.py` † | Merge the four annotator part-sheets into one judge-style jsonl. Validates before merging; fails loudly rather than dropping rows. |
+| `judge_dimensions.py` | Run a local judge on blinded items with the locked rubric. **Validates every emitted label against the locked vocabulary and fails above a 1% rate** (added by `S1-JUDGE-VOCAB`). |
+| `rubric_lib.py` † | The six-category derivation and shared rubric helpers, extracted 2026-08-29 so later analyses do not re-implement them. |
+| `audit_label_vocabulary.py` | `S1-JUDGE-VOCAB`: count label values outside the locked vocabulary. Discovers its scope from the data root, never a typed list. |
+| `retest_agreement.py` † | Test-retest reliability of the blind rubric annotator, pass 1 versus pass 2. |
+| `compare_anchors.py` † | Inter-rater agreement between two anchor sheets, per dimension and on the derived six categories. |
+| `compare_judges.py` † | Judge selection against the human calibration sheet, against the pre-registered macro-F1 and recall bars. |
+
+### Dataset builders
+Each writes into `/scratch/gs157/marin-misinfo-labels/`. Recreate commands and hashes:
+`docs/DATA_INVENTORY.md`.
+
+| Script | Builds |
+|---|---|
+| `build_calibration_set.py` | `calibration_v1` — the 150-response blinded human calibration set. |
+| `build_spotcheck.py` † | `calibration_v1/spotcheck/` — items where the anchor disagrees with both local judges. |
+| `build_gpt_slice.py` | `gpt_slice_v1` — the out-of-sample GPT rater slice, on items calibration never touched. |
+| `build_stance_gap_sample.py` | `stance_gap_v1` — the restatement-artefact sample. |
+| `build_3f_sample.py` | `concessionary_v1` — the endorsing universe, sharded for rating. |
+| `build_3f_second_rater.py` | `concessionary_second_rater_v1` — the second- and third-rater package. |
+| `build_benign_twins.py` | `benign_twins_v1`, and `benign_twins_v2` with `--v2`. |
+| `survey_evalset_sources.py` | `S1-06` census of reachable misinformation behaviours across candidate sources. |
+| `prescreen_misinfo_candidates.py` | `S1-06` keyword pre-screen. A recall net only, never a decision. |
+| `build_evalset_candidates.py` | `evalset_v1` — the blinded candidate package for the expanded set. |
+
+### Analysis
+| Script | What it does |
+|---|---|
+| `decompose_distribution.py` | The main result: behaviour-level distribution decomposition, Phoenix → Starling. |
+| `analyze_trajectory.py` † | The 08-27 base-trajectory refusal-versus-capability analysis. |
+| `analyze_wrappers.py` † | Step 4 wrapper sensitivity from WildGuard labels. |
+| `analyze_stance_gap.py` | `S1-STANCE-GAP` prevalence and paired delta. |
+| `analyze_3f.py` / `analyze_3f_adj.py` | `S1-3F` and `S1-3F-ADJ` endorsement-subtype shares. |
+| `compare_3f_raters.py` | `S1-3F` second-rater agreement, with the population-weighted κ. |
+| `analyze_cooldown_localization.py` | `S1-CKPT`: where in the cooldown the behaviour change appears. |
+| `analyze_format_carryover.py` | `S1-FORMAT`: does the document persona carry to prompts naming no format? |
+| `analyze_prefix_framing.py` | `S1-PREFIX`: the prefill intervention's arm contrasts. |
+| `prefix_framing_sensitivities.py` | `S1-PREFIX` pre-registered sensitivity analyses. |
+| `inspect_prefix_tripwires.py` | `S1-PREFIX` hand inspection, triggered by the Iron Law tripwire. |
+| `grade_benign_twins.py` / `grade_benign_twins_v2.py` | Rule-based constraint grading for `S1-05` and `S1-05B`. |
+| `report_benign.py` † | Benign-set compliance for the H1b control. |
+| `wildguard_rubric_regression.py` | `S1-3D`: which rubric dimension WildGuard's `harmful` label tracks. |
+| `xtab_wildguard_labels.py` † | Iron Law hand inspection: is (harmful AND refusal) empty by construction? |
+| `score_spotcheck_audit.py` | Score the 25-item human spot-check against the anchor and the local judges. |
+| `verify_gpt_rater_check.py` | Independent verification path for the GPT rater check. Deliberately imports nothing from `compare_anchors.py`. |
+| `sensitivity_missing_labels.py` † | Worst-case sensitivity of the pre-registered contrasts to unlabelled rows. |
+| `ifeval_generate.py` / `ifeval_summary.py` | Step 1 IFEval generation and the pre-registered trigger. |
+| `harmbench_gap_analysis.py` † | Break the HarmBench refusal gap down by category and list the behaviours where two models differ. |
+| `extract_failures.py` † | Sample failure examples per model per SemanticCategory. |
+| `audit_grades.py` † | Programmatic audit of WildGuard grades for likely mis-grades. No LLM reads harmful content. |
+| `grade_audit_llamaguard.py` † | Inter-rater grade audit: Llama-Guard-3-8B versus WildGuard. |
+| `make_delta_report.py` † | Join `runs/*/metrics.json` against `targets.json` into `report/deltas.md`. |
+
+### Inference procedure (`S1-STATS`)
+| Script | What it does |
+|---|---|
+| `calibrate_behavior_bootstrap.py` | Null calibration of the incumbent procedure on 126 disjoint 5-vs-5 splits of one checkpoint against itself. |
+| `calibrate_paired_variant.py` | The same calibration for the paired variant. |
+| `select_inference_procedure.py` | The frozen head-to-head between `P0` and `P1`. |
+| `rederive_intervals.py` | Re-derive every recorded interval under both procedures and report the wider. |
+
+### Task 1 era — Olmo 3 reproduction and tamper-resistance †
+Preserved for provenance. None of these are on the Stage 1 critical path.
+
+| Script | What it does |
+|---|---|
+| `run_master.sh`, `run_master2.sh`, `run_master3.sh` | The Marin-first master chains: full suite, base re-run under a `User:`/`Assistant:` scaffold, then the WildGuard-Test rows. |
+| `run_gate3.sh` | Gate 3: four clean rows × 3 runs on Olmo-3-7B-Instruct. |
+| `run_posttrain.sh` | Post-master3 runs: the Llama-Guard grade audit and the WMDP base-capability diagnostic. |
+| `run_base_capability.sh`, `base_capability_wmdp.py` | Logprob-MC WMDP scoring across Marin-8b-base revisions — the format-independent method for base models. |
+| `olmo_posttraining_studyB.sh`, `studyB_reseed.sh`, `studyB_reseed_rest.sh` | Study B: the Olmo post-training trajectory framing test and its reseed. |
+| `marin32b_remainder_scopecut.sh` | One-off 32B scope-cut orchestration. |
+| `tamper_attack.py`, `tamper_merge.py`, `tamper_run.sh`, `plot_tamper_collapse.py` | The pre-registered tamper-resistance LoRA attack, its merge step, driver, and figure. |
 
 ## Invocation reference (safety-eval @ 060cc903)
 Single row: `python evaluation/eval.py generators --use_vllm --model_name_or_path <m>
@@ -435,3 +552,53 @@ repro-olmo3-safety/.venv-safety-eval/bin/python scripts/rederive_intervals.py \
   (unpaired), but every recorded contrast is applied paired. This re-runs the same 126 splits pairing seed
   *i* with seed *i*, an artificial pairing of independent seeds. ADDED analysis; does not replace the
   registered calibration.
+
+### 2026-09-09 · `S1-JUDGE-VOCAB` — do any labels sit outside the locked rubric vocabulary?
+
+- `audit_label_vocabulary.py` — walks every rubric-schema file under the labels root and counts values
+  outside `config/judge_rubric_v1`. Verdict ISOLATED: 21 files, 6,405 rows, **2 out-of-vocabulary
+  instances on 1 distinct stimulus**, both `stance="refutes"` from `olmo32`, a judge that had already
+  failed selection. Zero in `claude_fable_pass2.jsonl`, the primary labels. No recorded number changed.
+
+  **Scope is discovered from the data root, never typed.** The first frozen list omitted
+  `gpt_slice_v1/sheet_gpt.csv` — an externally filled sheet, the highest out-of-vocabulary risk in the
+  project — and audited the Gemini sheet that *failed* the validity gate while skipping the `gemini_pro`
+  sheet the recorded `S1-3F-ADJ` result actually rests on. A typed list passes silently on an absent
+  file; a glob cannot fail a completeness gate.
+
+- `judge_dimensions.py` — **the finding was the gap, not the count.** Nothing in the pipeline rejected an
+  out-of-vocabulary value. It now validates `relevance` / `task` / `stance` against the locked
+  vocabulary, still writes the emitted value (never silently rewrites), flags the row `oov_<dim>`,
+  records counts in provenance, and **fails the run above a 1% rate** with an instruction to fix the
+  prompt or the judge rather than relabel.
+
+  One caveat carried into the result: the quality-null validity check tests exactly the invariant this
+  script enforces, so on the four local-judge files it *could not fail* (537/537, 288/288). Reported as
+  non-informative, not as a pass. It stays informative for the human-facing CSVs.
+
+Evidence: `docs/experiments/09-09_judge-vocabulary-audit.md`; `docs/results/09-09_vocab_audit/`.
+
+### 2026-09-08/09 · `OPS-001` — workspace recovery, and the guards that came out of it
+
+An ad-hoc `rsync -az --delete ./ torch:$WORK/` destroyed every Torch workspace path the repo does not
+track: `hf_cache/hub/` (~100GB of weights including the gated WildGuard judge), `pythons/`, the
+`safety-eval` working tree, and `runs/twins_v2/`. Recovery restored 270GB across nine revisions with zero
+tag drift. **No evidence was lost and no recorded number changed** — all of it lives in
+`/scratch/gs157/marin-misinfo-labels/`, outside the workspace, which is the reason the tree is laid out
+that way (`docs/DATA_INVENTORY.md`).
+
+Three guards exist now because they did not before:
+
+- `sync_to_torch.sh` — **refuses `--delete`.** It was already the only sanctioned sync path; the
+  incident came from bypassing it. The refusal makes the rule mechanical instead of prose.
+- `check_tag_drift.py` — compares the cache's resolved tag SHAs against the reconstructed baseline in
+  `docs/resolved_revisions_reconstructed.json` (rebuilt from surviving job logs, because the incident took
+  the original `docs/resolved_revisions.json` snapshot with it) and fails on a moved tag. The load-bearing check during recovery was
+  not the licence but the **revision**: the restored judge is snapshot `cbba4823`, which appears 1,240
+  times in this project's job logs. A different revision would have passed preflight, loaded cleanly, and
+  silently broken comparability with every recorded WildGuard number.
+- `benign_twins_v2.sbatch` — preserves raw outputs outside the workspace. Its 324 generations survived
+  the incident by luck alone.
+
+Evidence: `docs/research_journal.md`, 2026-09-08 and 2026-09-09 incident entries;
+`docs/resolved_revisions.json`.
