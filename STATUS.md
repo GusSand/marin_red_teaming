@@ -1,6 +1,6 @@
 # Project status
 
-- **Last updated:** `2026-09-09`
+- **Last updated:** `2026-09-10`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
 - **Current task:** `S1-05C`
@@ -47,11 +47,17 @@ alternative, not a retired one.
 
 ## Critical path
 
-1. `S1-PREFIX` — is the delivery framing proximally sufficient to move Phoenix? **Current; IN_PROGRESS.**
-3. `S1-05C` — benign control on constraints orthogonal to document format. **READY.**
+1. `S1-05C` — benign control on constraints orthogonal to document format. **Current; READY. Nothing is `IN_PROGRESS`.**
+2. `S1-PREFIX-B` — content-free compliance prefill arm, to separate a delivery disposition from mere refusal suppression. **READY.** Sequenced after `S1-05C` because the benign control is a Stage 1 exit gate and this is not.
 3. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
-5. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
-6. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
+4. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
+5. `S2-00` — finalize and launch the six-arm causal replay after its external inputs arrive.
+
+`S1-PREFIX` is closed and VERIFIED (REPRODUCED WITH CONCERNS): the delivery prefill moves Phoenix
++29.63pp and the `deflect` control does not, an overshoot past Starling's own endpoint. Carry the
+**narrow** claim only — a refusal-suppressing prefill is proximally sufficient; this framing is not
+shown to be the mechanism. `S1-STATS` is closed and VERIFIED; its procedure decision is `IN-008`,
+open. State every interval at the **wider** width until that resolves.
 
 `S1-05` is closed and verified as NOT EVALUABLE. `S1-05B` is closed and verified with a valid primary — Δ = +1.5000 constraints, IF-CONSISTENT under its frozen rule — but **the reading is withheld**: 104.9% of that delta is two checks a single `Title:` / `Dear <audience>,` header satisfies together, and the two checks testing a stated numeric requirement show no Starling advantage. It measures a formatting persona, not instruction-following. The evaluable-benign-control gate stays open. IFEval remains separate evidence. `S1-3D` and `S1-STANCE-GAP` are closed.
 
