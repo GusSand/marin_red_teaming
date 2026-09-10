@@ -53,6 +53,10 @@ def main():
                          "--shard-items rather than of the whole universe")
     ap.add_argument("--shard-items", nargs="+",
                     help="the item files these labels cover; implies --shard-only")
+    ap.add_argument("--null-span-exception", action="append", default=[], metavar="CID:FIELD=REASON",
+                    help="declare one row/field where no verbatim span can support a real decision. "
+                         "The gate still fails for every row not named here. Exceptions are printed "
+                         "in full so they live in the evidence rather than in a relaxed threshold.")
     a = ap.parse_args()
 
     items = {}
@@ -143,8 +147,22 @@ def main():
         bad = bad_value.get(field, [])
         gate(not bad, f"{field} values in vocabulary: {len(bad)} invalid {bad[:3]}")
     gate(not bad_flag, f"concession flags boolean: {len(bad_flag)} invalid {bad_flag[:3]}")
+    declared = {}
+    for spec in a.null_span_exception:
+        where, _, reason = spec.partition("=")
+        cid, _, field = where.partition(":")
+        declared[(cid, field)] = reason
+    excused = [m for m in missing_span if (m[0], m[1]) in declared]
+    missing_span = [m for m in missing_span if (m[0], m[1]) not in declared]
     gate(not missing_span, f"every non-none decision carries a span: {len(missing_span)} missing "
                            f"{missing_span[:3]}")
+    if excused:
+        print(f"--- declared null-span exceptions ({len(excused)}); these did NOT fail the gate")
+        for cid, field, val in excused:
+            print(f"  {cid} {field}={val}: {declared[(cid, field)]}")
+    unused = sorted(set(declared) - {(m[0], m[1]) for m in excused})
+    if unused:
+        fails.append(f"FAIL declared exception never applied (stale?): {unused}")
     gate(not unverbatim, f"every span verbatim in its response: {len(unverbatim)} violations "
                          f"{unverbatim[:2]}")
 
