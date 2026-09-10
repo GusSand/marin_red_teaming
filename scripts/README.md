@@ -431,3 +431,7 @@ repro-olmo3-safety/.venv-safety-eval/bin/python scripts/rederive_intervals.py \
     --twin-responses $L/benign_twins_v2/raw/responses.jsonl \
     --out docs/results/09-09_procedure_selection
 ```
+- `calibrate_paired_variant.py` — gap check: the registered calibration compares disjoint seed halves
+  (unpaired), but every recorded contrast is applied paired. This re-runs the same 126 splits pairing seed
+  *i* with seed *i*, an artificial pairing of independent seeds. ADDED analysis; does not replace the
+  registered calibration.

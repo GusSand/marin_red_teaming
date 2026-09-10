@@ -207,6 +207,61 @@ against `P0`'s [+137.04, +162.35]. The verdict does not flip — both exclude ze
 of +1.50 constraints carries far less precision than recorded. As pre-registered, the correct statement is
 **"not resolvable at this seed count"**, not a flipped verdict.
 
+### ADDED gap check: the paired variant, which the registered calibration did not cover
+
+The registered calibration compares **disjoint** seed halves, an unpaired contrast. But every recorded
+contrast is applied **paired** — seed *s* is the same sampling seed on both sides. The paired variant was
+therefore never calibrated. Closing that (`scripts/calibrate_paired_variant.py`) by pairing seed *i* of one
+half with seed *i* of the other: an **artificial** pairing of independent seeds, the worst case, since the
+pairing carries no information.
+
+| tag | series | `P0` | `P1` | `P2` | `P3` |
+|---|---|---|---|---|---|
+| phoenix | harmful | 27.8% | 7.9% | 4.0% | 7.1% |
+| phoenix | refusal | 34.9% | 9.5% | 9.5% | 10.3% |
+| starling | harmful | 10.3% | 2.4% | 0.0% | 1.6% |
+| starling | refusal | 15.9% | 4.0% | 1.6% | 3.2% |
+| deeper-starling | harmful | 2.4% | 7.1% | 0.0% | 0.0% |
+| deeper-starling | refusal | 7.1% | **0.0%** | 0.0% | 0.0% |
+| jellyfish | harmful | 40.5% | 6.3% | 7.9% | 8.7% |
+| jellyfish | refusal | 30.2% | 3.2% | 6.3% | 7.1% |
+
+`P1` paired sits in [2.4%, 9.5%] in **seven of eight** cells and fails, again, only at deeper-starling
+refusal. The paired form runs slightly more liberal than the unpaired (7.9 / 9.5 at phoenix against
+4.8 / 5.6) and still never exceeds 10.3%. **The conclusion is unchanged in the configuration that is
+actually used.**
+
+### Why `P0` fails, confirmed: its error rate tracks seed instability exactly
+
+Per-seed spread by checkpoint:
+
+| tag | harmful sd | refusal sd | `P0` type-I (harmful / refusal) |
+|---|---|---|---|
+| jellyfish | **13.57pp** | 10.62pp | **40.5% / 30.2%** |
+| phoenix | 10.38pp | 10.66pp | 27.8% / 34.9% |
+| starling | 5.55pp | 4.79pp | 10.3% / 15.9% |
+| deeper-starling | **4.43pp** | 4.72pp | **2.4% / 7.1%** |
+
+`P0`'s false-positive rate is **monotone in the seed standard deviation it ignores**, from 2.4% where seed
+noise is smallest to 40.5% where it is largest. That is not a correlation found by searching; it is the
+predicted signature of the diagnosed defect, and it is the strongest internal evidence that the diagnosis
+is right rather than a coincidence of one checkpoint.
+
+It also explains the single stubborn cell. At deeper-starling, seed noise is smallest, so `P0` is nearly
+calibrated (2.4%) and the seed-aware procedures — which add a seed term that is genuinely near zero there —
+become conservative. **The one cell that fails the bar is the one where the incumbent needed no fixing.**
+
+### Incidental substantive finding: cooldown roughly halves sampling variance
+
+Phoenix's harmful rate varies **sd 10.38pp** across seeds; Starling's **5.55pp**, deeper-starling's
+**4.43pp**. Refusal shows the same pattern, 10.66pp → 4.79pp → 4.72pp. The cooled-down checkpoints are
+about **twice as consistent** run to run as the base checkpoints.
+
+This is a by-product of a methods task and has **not** been pre-registered or tested — no interval, no
+verdict, and it must not be quoted as a result. But it belongs in Stage 1's picture: the change from
+Phoenix to Starling is not only a shift in the mean, it is a **tightening of the distribution**. Flagged
+for `S1-SYNTH` as a hypothesis worth its own preregistration, not as a finding.
+
 ### What a reader should take from this
 
 Every substantive conclusion in this project survives. **No direction reverses and no significance call
