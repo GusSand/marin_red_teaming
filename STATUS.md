@@ -5,7 +5,7 @@
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
 - **Current task:** `S1-ENDORSE-V2`
 - **Task status:** `IN_PROGRESS`
-- **Next checkpoint:** Build the blinded 1,080-row Part A package under the frozen feature codebook. Run two independent full-set raters. Seal both outputs before the disagreement audit or checkpoint analysis. `S1-05C` remains READY.
+- **Next checkpoint:** Part A package is built and passes all 24 standing gates. Rater A (full set) is running. Rater B needs a different model family and is `IN-009`. Seal both outputs before the disagreement audit or any checkpoint reading. `S1-05C` remains READY.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-09`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
