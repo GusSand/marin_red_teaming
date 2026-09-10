@@ -3,9 +3,10 @@
 - **Last updated:** `2026-09-10`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
-- **Current task:** `S1-ENDORSE-V2`
-- **Task status:** `IN_PROGRESS`
-- **Next checkpoint:** Part A package is built and passes all 24 standing gates. Rater A (full set) is running. Rater B needs a different model family and is `IN-009`. Seal both outputs before the disagreement audit or any checkpoint reading. `S1-05C` remains READY.
+- **Current task:** `S1-05C`
+- **Task status:** `READY`
+- **Blocked:** `S1-ENDORSE-V2` is `BLOCKED` on `IN-009` (rater B must be a different model family)
+- **Next checkpoint:** Rater A is sealed — 1,080 rows, 12/12 row gates, sha256 `7aef8de0…`. `S1-ENDORSE-V2` is now **BLOCKED on `IN-009`**: rater B needs a different model family, and the audit plus every checkpoint reading waits on it. Next unblocked task is `S1-05C`.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-09`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
@@ -48,8 +49,8 @@ alternative, not a retired one.
 
 ## Critical path
 
-1. `S1-ENDORSE-V2` — feature-level decomposition of the unresolved endorsement composition. **Current; IN_PROGRESS; non-gating.**
-2. `S1-05C` — benign control on constraints orthogonal to document format. **READY.**
+1. `S1-05C` — benign control on constraints orthogonal to document format. **Next; READY.**
+2. `S1-ENDORSE-V2` — feature-level decomposition of the unresolved endorsement composition. **BLOCKED on `IN-009`; non-gating.** Rater A sealed; rater B needs a different model family.
 3. `S1-PREFIX-B` — content-free compliance prefill arm, to separate a delivery disposition from mere refusal suppression. **READY.** Sequenced after `S1-05C` because the benign control is a Stage 1 exit gate and this is not.
 4. `S1-06` — blocked on `IN-006`: the ≥150 target is not reachable from registered sources.
 5. `S1-SYNTH` — write the Stage 1 synthesis and lock Stage 2 endpoints.
