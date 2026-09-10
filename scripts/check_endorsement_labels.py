@@ -48,12 +48,22 @@ def main():
     ap.add_argument("--package", required=True, help="package dir holding shards/")
     ap.add_argument("--labels", required=True, nargs="+", help="rater label jsonl files")
     ap.add_argument("--parts", type=int, default=10)
+    ap.add_argument("--shard-only", action="store_true",
+                    help="validate one shard's labels: require coverage of the shards passed to "
+                         "--shard-items rather than of the whole universe")
+    ap.add_argument("--shard-items", nargs="+",
+                    help="the item files these labels cover; implies --shard-only")
     a = ap.parse_args()
 
     items = {}
     for p in range(1, a.parts + 1):
         for r in load(Path(a.package) / "shards" / f"items_part{p}.jsonl"):
             items[r["cid"]] = r["response"]
+
+    universe = dict(items)
+    if a.shard_items:
+        a.shard_only = True
+        universe = {r["cid"]: r["response"] for f in a.shard_items for r in load(f)}
 
     labels = {}
     dupes = []
@@ -68,9 +78,11 @@ def main():
     gate = lambda ok, msg: (warns if ok else fails).append(("PASS " if ok else "FAIL ") + msg)
 
     gate(not dupes, f"no duplicate cids across shards: {len(dupes)}")
-    gate(set(labels) == set(items),
-         f"one-to-one onto the universe: {len(labels)} labels vs {len(items)} items; "
-         f"missing {len(set(items) - set(labels))}, unexpected {len(set(labels) - set(items))}")
+    scope = "shard" if a.shard_only else "universe"
+    gate(set(labels) == set(universe),
+         f"one-to-one onto the {scope}: {len(labels)} labels vs {len(universe)} items; "
+         f"missing {len(set(universe) - set(labels))}, "
+         f"unexpected {len(set(labels) - set(universe))}")
 
     bad_value = defaultdict(list)
     bad_flag, missing_span, unverbatim = [], [], []
