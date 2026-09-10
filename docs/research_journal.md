@@ -1711,3 +1711,67 @@ Evidence: `docs/experiments/09-08_prefix_framing-intervention.md`; `docs/results
 `scripts/analyze_prefix_framing.py`, `scripts/calibrate_behavior_bootstrap.py`,
 `scripts/xtab_wildguard_labels.py`, `scripts/inspect_prefix_tripwires.py`,
 `scripts/prefix_framing_sensitivities.py`.
+
+## 2026-09-09 · S1-STATS — is the project's interval procedure calibrated?
+
+**Research question.** Which interval procedure is calibrated on this data, and which recorded verdicts
+change under it?
+
+**Method.** Four candidates: `P0` incumbent (bootstrap over behaviours, conditioning on the seed draw),
+`P1` seed-as-unit *t*, `P2` two-way cluster bootstrap, `P3` variance components. Null calibration on every
+disjoint 5-vs-5 split of a tag's ten seeds (126 per cell), where the true difference is zero by construction.
+Selection on phoenix; confirmation on starling, deeper-starling, jellyfish. Acceptance bar, tie-break and a
+frozen UNCHANGED / FLIPPED / WEAKENED rule all fixed before any candidate ran. Plan frozen at `bc0a32e`.
+
+**Results.** Type-I error against a nominal 5%: `P0` 2.4-40.5%, `P1` 0.0-7.1%, `P2` 0.0-6.3%, `P3` 0.0-7.9%.
+All four fail the frozen two-sided `[2.0%, 12.0%]` bar — `P0` on the high side, the rest on the low side.
+The tie-break never fired. Across 20 in-scope contrasts spanning `S1-TRAJ`, `S1-CKPT`, `S1-05B`, `S1-FORMAT`
+and `S1-PREFIX`, **0 disagree between `P0` and `P1` on excluding zero.**
+
+**Verification.** REPRODUCED WITH CONCERNS. 32 of 32 calibration cells within the 3.0pp tolerance, max
+1.6pp; `P1` and `P3` are closed-form and matched to the digit at all 16 of their cells. Spot-check contrasts
+matched to 0.19pp. `S1-05B` and `document_open` were both recomputed end to end from raw data and reproduce
+exactly.
+
+**Interpretation (mine).**
+
+1. **The frozen rule contradicts itself and was therefore not executed.** It declares `P0` ineligible to
+   win, then its no-winner branch hands `P0` the win. Recorded outcome: the procedure decision is **OPEN**.
+   The action taken instead requires no selection — report `P0` and `P1` side by side and rest every verdict
+   on the **wider** interval. That is monotonically a weakening, so it cannot manufacture a finding.
+   Adopting `P1` outright needs `IN-008` or a successor preregistration with a one-sided bar; re-running
+   with a friendlier bar now would be selecting on the outcome.
+2. **My bar had two further defects.** It was symmetric when the losses are not — over-coverage costs power,
+   under-coverage manufactures findings. And its 2.0% floor sits below the estimator's own resolution: 126
+   splits can only produce 0.00 / 0.79 / 1.59 / 2.38%, and the per-cell sd is 1.4-1.9pp.
+3. **`P0`'s error rate is monotone in the seed sd it ignores** — jellyfish 13.57pp → 40.5%, phoenix 10.38 →
+   27.8%, starling 5.55 → 10.3%, deeper-starling 4.43 → 2.4%. The predicted signature of the defect, not a
+   coincidence at one checkpoint.
+4. **The corrected headline.** Not "0 of 20 flip". Rather: **0 of 20 direction verdicts flip, at least 2 of
+   20 precision claims weaken, and every in-scope interval is roughly half the width it should be**
+   (`P0`/`P1` median width ratio 2.16x harmful, 2.47x refusal). Claims shaped "narrow interval, therefore
+   null" or "N SEs from the bar" do change. Claims shaped "large effect, this direction" do not.
+
+**The mechanism, found in verification and sharper than "seed noise exists".** Starling seed 5 shows
+first-line `Title:` at **27.78% on L40S (traj2) and 29.63% on H200 (traj4)** against 0.00% at all nine other
+starling seeds — **it reproduces across hardware and jobs**, so it is a property of the sampling seed, not
+noise in one run. It is checkpoint-specific (phoenix seed 5: 1.85%) and the run is otherwise healthy: normal
+content labels, no empties, normal truncation. Assistant-preamble across the ten starling seeds runs
+`38.9, 48.2, 64.8, 1.9, 0.0, 0.0, 20.4, 0.0, 20.4, 40.7` — a 0-to-65pp swing within one checkpoint, against
+harmful% spanning only 64.8-83.3. **Format measures are far more seed-clustered than harmfulness measures,
+and all five `S1-FORMAT` measures are format measures**, which is why its null was the claim that broke.
+
+**Corrections issued.** `S1-FORMAT`'s "well-powered null": SE 1.547 → 3.338pp, MDE 4.34 → 9.44pp, bar
+25.8 → 11.9 SEs. Verdict DOES NOT CARRY unaffected. `S1-05B`: recorded ±8.6% precision is honestly ±61%
+(width ratio 7.24x at 3 seeds); the verdict holds comfortably, with the `P1` lower bound at 2.9x the
+decision threshold — so the pre-registered "not resolvable at this seed count" outcome **did not occur**,
+and claiming it would have been false humility.
+
+**Not resolved.** The traj4 `provenance.json` directories are absent from the workspace, a surviving
+consequence of the 2026-09-08 `rsync --delete` incident, so seed-5's engine flags could not be diffed.
+Cross-hardware reproduction makes a config difference unlikely; it is not claimed.
+
+Evidence: `docs/experiments/09-09_inference-procedure_recalibration.md`;
+`docs/results/09-09_procedure_selection/`; `scripts/select_inference_procedure.py`,
+`scripts/rederive_intervals.py`, `scripts/calibrate_behavior_bootstrap.py`,
+`scripts/calibrate_paired_variant.py`.

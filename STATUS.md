@@ -3,9 +3,9 @@
 - **Last updated:** `2026-09-09`
 - **Overall:** AMBER — Stage 1 has a verified behavioral finding; causal attribution is not established.
 - **Current phase:** Stage 1 closure and Stage 2 readiness.
-- **Current task:** `S1-STATS`
-- **Task status:** `IN_PROGRESS`
-- **Next checkpoint:** Freeze a corrected inference procedure, then re-derive every published interval. `S1-PREFIX` closed SUFFICIENT but its verification showed the behaviour-level bootstrap is ~6x anticonservative, so the credibility of every recorded CI is the blocking question. Plan frozen 2026-09-09 in `docs/experiments/09-09_inference-procedure_recalibration.md`: four candidate procedures, a calibration bar and tie-break fixed before any is run, and a frozen UNCHANGED / FLIPPED / WEAKENED rule for the five in-scope recorded verdicts.
+- **Current task:** `S1-05C`
+- **Task status:** `READY`
+- **Next checkpoint:** A benign control that separates Starling's deliver-the-requested-artifact framing from a compliance change. **Nothing is `IN_PROGRESS`: `S1-05C` flips only in the change set that freezes its preregistration.** Its design must now also answer `S1-STATS` — format measures swing 0-65pp across seeds of one checkpoint, so a 3-seed or 5-seed format contrast will not support a precision claim.
 - **Living report:** `docs/reports/phoenix-starling/index.html` — reconciled through `2026-09-09`.
 
 This is the operational source of truth. `BACKLOG.md` holds the ordered task queue. `INBOX.md`
