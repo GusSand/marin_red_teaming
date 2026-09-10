@@ -72,6 +72,26 @@ side and use the wider interval for every decision, following `S1-STATS`. P1 tre
 crossed sampled clusters. Use 10,000 bootstrap replicates with seed 20260910. Use a paired sign-flip
 test over behaviors. Apply Holm correction across the four derived-category tests within each rater.
 
+### Declared readings — 2026-09-10, before any label was viewed
+
+Two clauses above are internally ambiguous. Both are resolved in the direction that is monotonically
+weaker, so neither resolution can be a selection on the outcome. Recorded here rather than settled
+silently.
+
+1. **Which procedure is "P1".** The paragraph names P0 and P1 "following `S1-STATS`", then describes
+   P1 as treating behavior and seed as crossed sampled clusters. In `S1-STATS`, P1 is seed-as-unit and
+   **P2** is the two-way cluster bootstrap, so the label and the description point at different
+   procedures. Resolution: report **P0, P1 and P2**, and use the **widest** of the three for every
+   decision. That is at least as wide as either candidate reading.
+2. **"Holm-adjusted intervals".** Holm adjusts p-values, not interval endpoints. Resolution: a category
+   counts as excluding zero only when the **widest interval excludes zero and** its Holm-adjusted
+   sign-flip p is below 0.05. The conjunction is stricter than either clause alone.
+
+The exclusion rule empties whole behavior×checkpoint×seed cells, since each holds exactly one
+generation. The three procedures are therefore run through NaN-safe implementations that reduce exactly
+to the `S1-STATS` originals when no cell is excluded; that equality is asserted to 1e-12 in the smoke
+test. The `S1-STATS` implementations are closed evidence and are not edited.
+
 Secondary descriptive estimates cover each primitive field. They receive intervals but no significance
 or winner language. The added-support field means the response introduces purported evidence beyond the
 prompt. It is not a factuality verdict.

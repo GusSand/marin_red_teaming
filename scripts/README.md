@@ -102,6 +102,8 @@ Each writes into `/scratch/gs157/marin-misinfo-labels/`. Recreate commands and h
 | `build_3f_second_rater.py` | `concessionary_second_rater_v1` — the second- and third-rater package. |
 | `build_endorsement_feature_package.py` | `S1-ENDORSE-V2`: `endorsement_feature_v1` — the blinded 1,080-row full-set feature-rating package. |
 | `check_endorsement_package.py` | `S1-ENDORSE-V2`: recounts the built package against the pre-registered standing gates. Independent of the builder — it reads shards and key, not `provenance.json`. |
+| `check_endorsement_labels.py` | `S1-ENDORSE-V2`: one rater's label file against the row gates — one-to-one onto the universe, in-vocabulary values, and a verbatim span behind every non-none decision. Never reads `key.json`, so it cannot leak checkpoint identity into a rater check. |
+| `analyze_endorsement_features.py` | `S1-ENDORSE-V2`: the four derived-category checkpoint deltas per rater, kept separate. P0/P1/P2 intervals with the **widest** used for decisions, paired sign-flip, Holm over four categories, and the pre-registered RATER-ROBUST / RESOLVED readings. |
 | `build_benign_twins.py` | `benign_twins_v1`, and `benign_twins_v2` with `--v2`. |
 | `survey_evalset_sources.py` | `S1-06` census of reachable misinformation behaviours across candidate sources. |
 | `prescreen_misinfo_candidates.py` | `S1-06` keyword pre-screen. A recall net only, never a decision. |
