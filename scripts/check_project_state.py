@@ -200,10 +200,28 @@ def main() -> None:
         if not referenced and not named:
             fail(f"blocked task {task_id} names no live INBOX ID and no live blocking task")
 
+    # The mind map is generated from make_mindmap.py's BRANCHES table. Re-render and compare rather
+    # than trusting an mtime: a stale map that someone touched would pass a date check and still show
+    # the wrong verdicts. This is the same freshness discipline as the living report above.
+    sys.path.insert(0, str(ROOT / "scripts"))
+    try:
+        import make_mindmap
+    except Exception as exc:  # noqa: BLE001 - a broken generator must fail the check, not the import
+        fail(f"cannot import scripts/make_mindmap.py: {exc}")
+    mindmap = ROOT / "docs" / "mindmap.svg"
+    if not mindmap.exists():
+        fail("docs/mindmap.svg is missing; run python scripts/make_mindmap.py")
+    if mindmap.read_text() != make_mindmap.render():
+        fail("docs/mindmap.svg does not match BRANCHES in scripts/make_mindmap.py; "
+             "update BRANCHES for the closed task and run python scripts/make_mindmap.py")
+    branches = len(make_mindmap.BRANCHES)
+    answered = sum(1 for _, st, _ in make_mindmap.BRANCHES if st == "answered")
+
     print(
         f"PROJECT STATE OK — current={current_task}:{current_status}; "
         f"tasks={len(task_rows)}; inbox={len(inbox_rows)}; wip={len(in_progress)}; "
-        f"report={report_state}@{report_updated_raw}"
+        f"report={report_state}@{report_updated_raw}; "
+        f"mindmap={answered}/{branches} answered"
     )
 
 

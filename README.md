@@ -7,6 +7,11 @@
 > **Living report:** [`docs/reports/phoenix-starling/index.html`](docs/reports/phoenix-starling/index.html)
 > is the continuously updated reader-facing account of the Phoenix-to-Starling investigation.
 
+> **Mind map:** [`docs/mindmap.svg`](docs/mindmap.svg) — the whole investigation on one page: the driving
+> question, each sub-question colored by whether it is answered, partial or open, and the verified
+> evidence under each. Read it first to see what is settled and what is not. Generated from
+> `scripts/make_mindmap.py`; `check_project_state.py` fails if it drifts from the results.
+
 ## TL;DR
 
 I red-teamed **[Marin-8B](https://huggingface.co/marin-community/marin-8b-base)** against **[Olmo-3-7B-Instruct](https://huggingface.co/allenai/Olmo-3-7B-Instruct)** as a reference, then asked the question that matters for an *open* model: does its safety survive someone fine-tuning the weights?

@@ -231,12 +231,19 @@ Rules that follow:
 - `docs/experiments/MM-DD_<model>_<dataset>_<experiment>.md` — **one file per experiment, created before the run, not after.** At plan time it holds the research question / hypothesis, setup (model, dataset, inputs), and success criteria + tolerance — these *are* the pre-registered criteria the verifier checks against. After the run, fill in results (no interp), verified/unverified, learnings, and links to the scripts. A scoping question like "which model?" or "which dataset?" is its own **selection experiment** (e.g. `07-01_diffusion_model-selection.md`): candidates = the hypotheses, the small runs = the setup, the chosen one + why = the result.
 - `docs/decisions.md` — append-only, one line per settled choice (`2026-07-01 · picked model Y over X/Z → experiments/07-01_diffusion_model-selection.md`). **Write a line the moment a selection experiment reaches a verdict** (dataset/model/method chosen) — not while still exploring. Never rewrite past lines. Look here before re-opening a decision.
 - If you create a dataset, add it to `docs/DATA_INVENTORY.md` with how to recreate it, size, and which experiment used it.
+- `docs/mindmap.svg` — **the whole investigation on one page.** Root is the driving question, one branch
+  per sub-question colored answered / partial / open, first leaf the current answer, the rest the verified
+  evidence. It is the fastest way for a reader — or a fresh session — to see what is settled and what is
+  not. Generated from the `BRANCHES` table in `scripts/make_mindmap.py`; **only verified results become
+  leaves.** Update `BRANCHES` and re-render in the same change set that closes a task. `check_project_state.py`
+  re-renders and fails on a mismatch, so a stale map cannot be committed. Reference it from the root README.
 
 ### Result lifecycle
 
 A task is not `DONE` when a job ends. Close it only when durable evidence, independent verification (or
 an approved `UNVERIFIED` label), the journal entry, any decision entry, `STATUS.md`, and the active backlog
-row agree in the same commit. The living report's progress pointer must agree too. If the result changes a
+row agree in the same commit. The living report's progress pointer must agree too, and so must the mind
+map's `BRANCHES` — a closed task usually moves a branch's status or adds a leaf. If the result changes a
 claim, limitation, figure, or next step, update that content in the same close transaction. Do not create new
 `RESUME HERE` journal entries; update `STATUS.md` instead.
 

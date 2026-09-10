@@ -52,7 +52,8 @@ experiment step.
 ### Project control
 | Script | What it does |
 |---|---|
-| `check_project_state.py` | Validates `STATUS.md` against the active tables, enforces the WIP limit, checks blockers and living-report freshness. The pre-commit hook and `submit.sh` both run it. |
+| `check_project_state.py` | Validates `STATUS.md` against the active tables, enforces the WIP limit, checks blockers, living-report freshness and mind-map freshness. The pre-commit hook and `submit.sh` both run it. |
+| `make_mindmap.py` | Renders `docs/mindmap.svg` from its `BRANCHES` table — one branch per sub-question, colored answered / partial / open, first leaf the current answer. `--check` re-renders and exits 1 if the file on disk is stale, which is what the state checker calls. Only verified results become leaves. |
 | `submit.sh` | The only sanctioned GPU submission path. Runs `dry_run_check.py` and refuses to `sbatch` without `DRY RUN OK`. |
 | `dry_run_check.py` | Preflight: env, paths, cached weights, judge presence, seed patch. A CPU minute against a dead GPU job. |
 | `sync_to_torch.sh` † | The only sanctioned way to push this repo to the Torch workspace. **Refuses `--delete`** — added after the 2026-09-08 incident destroyed 270GB of untracked workspace state. |
